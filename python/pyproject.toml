@@ -1,0 +1,46 @@
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry]
+name = "installer-toolbox"
+version = "0.0.dev0"
+description = "Toolbox webapp to install tools and software on remote and local target machines"
+license = "Proprietary"
+readme = "README.md"
+authors = [
+    "Sharath Thomas <sharathct22@gmail.com"
+]
+keywords = ["toolbox", "ansible", "installler"]
+classifiers = [
+    "Development Status :: 1 - Planning",
+    "Environment :: Console",
+    "Intended Audience :: Developers",
+    "License :: Other/Proprietary License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python",
+]
+
+[tool.poetry.dependencies]
+python = ">=3.9"
+ansible = "^8.0.0"
+flask = "^2.3.2"
+flask-socketio = "^5.3.4"
+flask-cors = "^3.0.10"
+
+[tool.poetry.group.test.dependencies]
+pytest = "^7.3.2"
+
+[tool.poetry.group.doc.dependencies]
+sphinx = "^7.0.1"
+
+[tool.poetry.group.code_style.dependencies]
+codespell = "^2.2.4"
+pydocstyle = "^6.3.0"
+isort = "^5.12.0"
+flake8 = "^6.0.0"
+black = "^23.3.0"
+
+[tool.poetry.group.build.dependencies]
+twine = "*"
+build = "*"
