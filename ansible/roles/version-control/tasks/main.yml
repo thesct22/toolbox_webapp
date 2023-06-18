@@ -1,0 +1,23 @@
+- name: Install git
+  include_tasks: git.yml
+  tags: git-install
+
+- name: Uninstall git
+  include_tasks: git.yml
+  tags: git-uninstall
+
+- name: Install TortoiseSVN
+  include_tasks: tortoisesvn.yml
+  tags: tortoisesvn-install
+
+- name: Uninstall TortoiseSVN
+  include_tasks: tortoisesvn.yml
+  tags: tortoisesvn-uninstall
+
+- name: Install SVN
+  include_tasks: svn.yml
+  tags: svn-install
+
+- name: Uninstall SVN
+  include_tasks: svn.yml
+  tags: svn-uninstall

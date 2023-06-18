@@ -1,0 +1,23 @@
+- name: Install Chrome
+  include_tasks: chrome.yml
+  tags: chrome-install
+
+- name: Uninstall Chrome
+  include_tasks: chrome.yml
+  tags: chrome-uninstall
+
+- name: Install Firefox
+  include_tasks: firefox.yml
+  tags: firefox-install
+
+- name: Uninstall Firefox
+  include_tasks: firefox.yml
+  tags: firefox-uninstall
+
+- name: Install Edge
+  include_tasks: edge.yml
+  tags: edge-install
+
+- name: Uninstall Edge
+  include_tasks: edge.yml
+  tags: edge-uninstall

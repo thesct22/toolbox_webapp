@@ -1,0 +1,23 @@
+[admin-machines]
+admin-01 ansible_host=<IP>
+admin-02 ansible_host=<IP>
+
+[user-machines]
+user-01 ansible_host=<IP>
+user-02 ansible_host=<IP>
+
+[cloud-machines]
+cloud-01 ansible_host=<IP>
+cloud-02 ansible_host=<IP>
+
+[local-virtual-machines]
+local-01 ansible_host=<IP>
+local-02 ansible_host=<IP>
+
+[VMs:children]
+local-virtual-machines
+cloud-machines
+
+[non-admin-machines:children]
+user-machines
+VMs

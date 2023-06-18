@@ -1,0 +1,71 @@
+- name: Install Subversion
+  block:
+    - name: Install svn on Windows
+      win_chocolatey:
+        name: svn
+        state: latest
+      become: true
+      become_method: runas
+      become_user: "{{ admin_username }}"
+      when: ansible_os_family == "Windows"
+    - name: Install svn on Debian
+      apt:
+        name: subversion, libapache2-mod-svn, libsvn-dev, subversion-tools
+        state: latest
+      become: true
+      when: ansible_os_family == "Debian"
+    - name: Install svn on RedHat
+      yum:
+        name: subversion
+        state: latest
+      become: true
+      when: ansible_os_family == "RedHat"
+    - name: Install svn on MacOS
+      homebrew:
+        name: svn
+        state: latest
+      become: true
+      when: ansible_os_family == "Darwin"
+    - name: Install svn on Alpine
+      apk:
+        name: subversion, apache2, apache2-utils, apache2-webdav, mod_dav_svn
+        state: latest
+      become: true
+      when: ansible_os_family == "Alpine"
+  tags: svn-install
+
+- name: Uninstall Subversion
+  block:
+    - name: Uninstall svn on Windows
+      win_chocolatey:
+        name: svn
+        state: absent
+      become: true
+      become_method: runas
+      become_user: "{{ admin_username }}"
+      when: ansible_os_family == "Windows"
+    - name: Uninstall svn on Debian
+      apt:
+        name: subversion, libapache2-mod-svn, libsvn-dev, subversion-tools
+        state: absent
+      become: true
+      when: ansible_os_family == "Debian"
+    - name: Uninstall svn on RedHat
+      yum:
+        name: subversion
+        state: absent
+      become: true
+      when: ansible_os_family == "RedHat"
+    - name: Uninstall svn on MacOS
+      homebrew:
+        name: svn
+        state: absent
+      become: true
+      when: ansible_os_family == "Darwin"
+    - name: Uninstall svn on Alpine
+      apk:
+        name: subversion, apache2, apache2-utils, apache2-webdav, mod_dav_svn
+        state: absent
+      become: true
+      when: ansible_os_family == "Alpine"
+  tags: svn-uninstall
