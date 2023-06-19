@@ -1,7 +1,7 @@
 cache-dir = ".poetry_cache"
 
 [virtualenvs]
-in-project = false
+in-project = true
 
 [installer]
 modern-installation = true

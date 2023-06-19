@@ -7,16 +7,13 @@ if (Test-Path -Path ".poetry/poetry_cache") {
 }
 
 # install pywin32
-python -m pip install pywin32
+python -m pip install --upgrade pip setuptools pywin32 pipx
 
 # create a new virtual environment
 python -m venv .venv
 
-# update pip and install setuptools
-.venv\Scripts\python -m pip install --upgrade pip setuptools
-
 # install poetry
-.venv\Scripts\python -m pip install poetry
+pipx install poetry
 
 # install all dependencies
-.venv\Scripts\poetry install --with test,doc,code_style,build
+poetry install --with test,doc,code_style,build
