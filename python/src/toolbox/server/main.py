@@ -1,7 +1,8 @@
-from pathlib import Path
-
-import uvicorn
+"""Run the server."""
 from fastapi import FastAPI
+from pathlib import Path
+import uvicorn
+
 from toolbox.server.mount_api import mount_api
 from toolbox.server.mount_frontend import mount_frontend
 
@@ -11,6 +12,14 @@ def run_server(
     host: str = "localhost",
     port: int = 8000,
 ):
+    """
+    Run the server.
+
+    Args:
+        react_build_dir (Path): Path to the react build directory.
+        host (str): Host to run the server on.
+        port (int): Port to run the server on.
+    """
     app = FastAPI(title="Toolbox Webapp")
     app = mount_api(app)
     app = mount_frontend(app, react_build_dir=react_build_dir)
