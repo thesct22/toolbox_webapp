@@ -1,0 +1,3 @@
+[flake8]
+exclude = .git,__pycache__,docs/source/conf.py,old,build,dist,.venv,.poetry_cache
+max-line-length = 140

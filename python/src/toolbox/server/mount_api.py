@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 
+
 def mount_api(app: FastAPI):
     @app.get("/api")
     def read_root():
