@@ -1,2 +1,12 @@
+# Virtual Environments
+
 **/.venv
 **/.poetry_cache
+
+# Pycache
+
+**/__pycache__
+
+# Build folder
+
+**/build

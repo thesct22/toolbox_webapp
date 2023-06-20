@@ -9,7 +9,7 @@ description = "Toolbox webapp to install tools and software on remote and local 
 license = "Proprietary"
 readme = "README.md"
 authors = [
-    "Sharath Thomas <sharathct22@gmail.com"
+    "Sharath Thomas <sharathct22@gmail.com>"
 ]
 keywords = ["toolbox", "ansible", "installler"]
 classifiers = [
@@ -19,6 +19,9 @@ classifiers = [
     "License :: Other/Proprietary License",
     "Operating System :: Unix",
     "Programming Language :: Python",
+]
+packages = [
+    { include = "toolbox", from = "src" },
 ]
 
 [tool.poetry.dependencies]
@@ -39,6 +42,7 @@ pydocstyle = "^6.3.0"
 isort = "^5.12.0"
 flake8 = "^6.0.0"
 black = "^23.3.0"
+pre-commit = "^3.3.3"
 
 [tool.poetry.group.build.dependencies]
 twine = "*"
