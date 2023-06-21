@@ -10,3 +10,7 @@
 # Build folder
 
 **/build
+
+# Ansible folder
+
+**/ansible

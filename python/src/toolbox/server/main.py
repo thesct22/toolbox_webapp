@@ -1,10 +1,10 @@
 """Run the server."""
-from fastapi import FastAPI
 from pathlib import Path
-import uvicorn
 
+from fastapi import FastAPI
 from toolbox.server.mount_api import mount_api
 from toolbox.server.mount_frontend import mount_frontend
+import uvicorn
 
 
 def run_server(

@@ -8,13 +8,20 @@ repos:
         types: [python]
         args: [.]
         pass_filenames: false
-      - id: ruff
-        name: ruff
-        entry: ./python/.venv/bin/ruff
+      - id: flake8
+        name: flake8
+        entry: ./python/.venv/bin/flake8
         language: system
         types: [python]
-        pass_filenames: false
         args: [.]
+        pass_filenames: false 
+      - id: isort
+        name: isort
+        entry: ./python/.venv/bin/isort
+        language: system
+        types: [python]
+        args: [.]
+        pass_filenames: false
       - id: codespell
         name: codespell
         entry: ./python/.venv/bin/codespell
