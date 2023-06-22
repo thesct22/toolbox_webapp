@@ -2,6 +2,7 @@
 from pathlib import Path
 
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from toolbox.server.mount_api import mount_api
 from toolbox.server.mount_frontend import mount_frontend
 import uvicorn
@@ -21,6 +22,12 @@ def run_server(
         port (int): Port to run the server on.
     """
     app = FastAPI(title="Toolbox Webapp")
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=["*"],
+        allow_methods=["*"],
+        allow_headers=["*"],
+    )
     app = mount_api(app)
     app = mount_frontend(app, react_build_dir=react_build_dir)
 

@@ -1,12 +1,18 @@
 import React from 'react';
-import logo from './logo.svg';
-import { Counter } from './features/counter/Counter';
+import { Routes, Route } from 'react-router-dom';
+// import logo from './logo.svg';
+// import { Counter } from './features/counter/Counter';
 import './App.css';
+
+import Home from './components/Home/Home';
+import CodeEditor from './components/CodeEditor/CodeEditor';
+import Terminal from './components/Terminal/Terminal';
+import Instructions from './components/Instructions/Instructions';
 
 function App() {
   return (
     <div className="App">
-      <header className="App-header">
+      {/* <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
         <Counter />
         <p>
@@ -50,7 +56,13 @@ function App() {
             React Redux
           </a>
         </span>
-      </header>
+      </header> */}
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/code-editor" element={<CodeEditor />} />
+        <Route path="/terminal" element={<Terminal />} />
+        <Route path="/instructions" element={<Instructions />} />
+      </Routes>
     </div>
   );
 }
