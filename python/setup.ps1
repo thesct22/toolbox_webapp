@@ -1,13 +1,11 @@
-# remove old virtual environment and cache if present
-if (Test-Path -Path ".venv") {
-    Remove-Item -Recurse -Force .venv
-}
-if (Test-Path -Path ".poetry/poetry_cache") {
-    Remove-Item -Recurse -Force .poetry_cache
-}
+# Path: python\setup.ps1
 
-# install pywin32
-python -m pip install --upgrade pip setuptools pywin32 pipx
+# remove old virtual environment and cache
+Remove-Item -Recurse -Force .venv
+Remove-Item -Recurse -Force .poetry_cache
+
+# install pipx and setuptools, and upfate pip
+python -m pip install --upgrade pip setuptools pipx
 
 # create a new virtual environment
 python -m venv .venv
