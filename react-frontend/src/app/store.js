@@ -26,5 +26,13 @@ export const store = configureStore({
           return state;
       }
     },
+    selectedTags: (state = { selectedTags: [] }, action) => {
+      switch (action.type) {
+        case "selectedTags/setSelectedTags":
+          return { selectedTags: action.payload };
+        default:
+          return state;
+      }
+    }
   },
 });
