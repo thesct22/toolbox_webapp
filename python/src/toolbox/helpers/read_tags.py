@@ -6,7 +6,7 @@ from typing import Dict, List
 import yaml
 
 
-def read_tags_helper(install_tags: bool) -> Dict[str, List[str]]:
+def read_tags_helper(install_tags: bool) -> List[Dict[str, str | List[str]]]:
     """
     Read all the tags inside ansible/roles/xyz/tasks/main.yml and return them as a key-value pair.
 
@@ -16,7 +16,7 @@ def read_tags_helper(install_tags: bool) -> Dict[str, List[str]]:
         Dict[str, List[str]]: The tags as "software name": ["tag1", "tag2"] key-value pairs.
     """
     ansible_roles_dir = Path(__file__).parent.parent / "ansible" / "roles"
-    tags = {}
+    tagsList: List[Dict[str, str | List[str]]] = []
     if not ansible_roles_dir.exists():
         raise ValueError(
             f"Ansible roles directory '{ansible_roles_dir}' does not exist."
@@ -38,7 +38,10 @@ def read_tags_helper(install_tags: bool) -> Dict[str, List[str]]:
                         continue
                     if not isinstance(task["tags"], list):
                         continue
-                    tags[str(task["name"]).split("Install")[1].strip()] = task["tags"]
+                    software: Dict[str, str | List[str]] = {}
+                    software["title"] = str(task["name"]).split("Install")[1].strip()
+                    software["tags"] = task["tags"]
+                    tagsList.append(software)
     else:
         for role_dir in ansible_roles_dir.iterdir():
             if not role_dir.is_dir():
@@ -56,5 +59,8 @@ def read_tags_helper(install_tags: bool) -> Dict[str, List[str]]:
                         continue
                     if not isinstance(task["tags"], list):
                         continue
-                    tags[str(task["name"]).split("Uninstall")[1].strip()] = task["tags"]
-    return tags
+                    software = {}
+                    software["title"] = str(task["name"]).split("Uninstall")[1].strip()
+                    software["tags"] = task["tags"]
+                    tagsList.append(software)
+    return tagsList

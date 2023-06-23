@@ -15,39 +15,44 @@ class Tags(BaseModel):
         tags (Dict[str, List[str]]): The tags for the installable software.
     """
 
-    tags: Dict[str, List[str]] = Field(
-        {},
+    tags: List[Dict[str, str | List[str]]] = Field(
+        [],
         description="The tags for the software.",
     )
 
     def __init__(self):
         """Initialize the tags."""
         super().__init__()
-        self.tags = {}
+        self.tags = []
 
     @validator("tags")
     def validate_tags(cls, tags):
         """Validate the tags."""
-        for tag_name, tag_value in tags.items():
-            if not isinstance(tag_value, list):
-                raise ValueError(
-                    f"Tag value '{tag_value}' for tag name '{tag_name}' is invalid."
-                    f"Only lists are allowed."
-                )
-            for tag in tag_value:
-                if re.match(r"^[a-zA-Z0-9_]+$", tag) is None:
+        for tag in tags:
+            if "title" not in tag:
+                raise ValueError("Title not found in tag.")
+            if "tags" not in tag:
+                raise ValueError("Tags not found in tag.")
+            if not isinstance(tag["tags"], list):
+                raise ValueError("Tags must be a list.")
+            if not isinstance(tag["title"], str):
+                raise ValueError("Title must be a string.")
+            for tag_name in tag["tags"]:
+                if not isinstance(tag_name, str):
+                    raise ValueError("Tag name must be a string.")
+                if re.match(r"^[a-zA-Z0-9_]+$", tag_name) is None:
                     raise ValueError(
-                        f"Tag value '{tag_value}' for tag '{tag_name}' is invalid."
+                        f"Tag value '{tag_name}' for '{tag['title']}' is invalid."
                         f"Only alphanumeric characters and underscores are allowed."
                     )
-                if not tag.islower():
+                if not tag_name.islower():
                     raise ValueError(
-                        f"Tag value '{tag_value}' for tag '{tag_name}' is invalid."
+                        f"Tag value '{tag_name}' for '{tag['title']}' is invalid."
                         f"Only lowercase characters are allowed."
                     )
-            if re.match(r"^[a-zA-Z0-9_\-\.\/ ]+$", tag_name) is None:
+            if re.match(r"^[a-zA-Z0-9_\-\.\/ ]+$", tag["title"]) is None:
                 raise ValueError(
-                    f"Tag name '{tag_name}' is invalid."
+                    f"Software naming '{tag['title']}' is invalid."
                     f"Only alphanumeric characters, hyphens, underscores, dots, slashes and spaces are allowed."
                 )
         return tags

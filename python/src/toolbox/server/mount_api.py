@@ -2,6 +2,7 @@
 from typing import Dict, List
 
 from fastapi import FastAPI
+from fastapi.encoders import jsonable_encoder
 from toolbox.core.tags import InstallationTags, UninstallationTags
 
 
@@ -16,12 +17,12 @@ def mount_api(app: FastAPI) -> FastAPI:
     """
 
     @app.get("/api")
-    def read_root():
+    def read_root() -> Dict[str, str]:
         """Return a hello world message."""
         return {"Hello": "World"}
 
     @app.get("/api/items/{item_id}")
-    def read_item(item_id: int, q: str = ""):
+    def read_item(item_id: int, q: str = "") -> Dict[str, int | str]:
         """Return the item id and query string."""
         return {"item_id": item_id, "q": q}
 
@@ -44,20 +45,25 @@ def install_endpoints(app: FastAPI) -> FastAPI:
         FastAPI: The FastAPI app.
     """
 
-    @app.get("/api/install/tags", response_model=Dict[str, List[str]])
-    def get_tags():
+    @app.get("/api/install/tags", response_model=List[Dict[str, str | List[str]]])
+    def get_tags() -> List[Dict[str, str | List[str]]]:
         """
         Return all the tags.
 
         Format:
-        {
-            "tag_type": ["tag1", "tag2", ...],
+        [
+            {
+                "title": "software_name",
+                "tags": ["tag1", "tag2", ...]
+            },
             ...
-        }
+        ]
         """
         tags = InstallationTags()
         tags.read_tags_from_playbooks()
-        return tags.get_tags()
+        response = jsonable_encoder(tags.get_tags())
+        print(response)
+        return response
 
     return app
 
@@ -72,19 +78,23 @@ def uninstall_endpoints(app: FastAPI) -> FastAPI:
         FastAPI: The FastAPI app.
     """
 
-    @app.get("/api/uninstall/tags", response_model=Dict[str, List[str]])
-    def get_tags():
+    @app.get("/api/uninstall/tags", response_model=List[Dict[str, str | List[str]]])
+    def get_tags() -> List[Dict[str, str | List[str]]]:
         """
         Return all the tags.
 
         Format:
-        {
-            "tag_type": ["tag1", "tag2", ...],
+        [
+            {
+                "title": "software_name",
+                "tags": ["tag1", "tag2", ...]
+            },
             ...
-        }
+        ]
         """
         tags = UninstallationTags()
         tags.read_tags_from_playbooks()
-        return tags.get_tags()
+        response = jsonable_encoder(tags.get_tags())
+        return response
 
     return app
