@@ -53,7 +53,11 @@ export default function Home() {
 
     useEffect(() => {
         fetchTags();
-    }, );
+    }, []);
+
+    useEffect(() => {
+        dispatch({ type: "currentPage/setCurrentPage", payload: "Installer" });
+    }, []);
 
     return (
         <div>
