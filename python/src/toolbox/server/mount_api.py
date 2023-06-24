@@ -1,9 +1,11 @@
 """API endpoints for the toolbox server."""
 from typing import Dict, List
 
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from fastapi.encoders import jsonable_encoder
+from toolbox.core.ansible import Ansible
 from toolbox.core.tags import InstallationTags, UninstallationTags
+from toolbox.helpers.config_target import config_target
 
 
 def mount_api(app: FastAPI) -> FastAPI:
@@ -31,6 +33,9 @@ def mount_api(app: FastAPI) -> FastAPI:
 
     uninstall_endpoint = uninstall_endpoints(app)
     app.mount("/api/uninstall", uninstall_endpoint, name="uninstall")
+
+    target_endpoint = target_endpoints(app)
+    app.mount("/api/target", target_endpoint, name="target")
 
     return app
 
@@ -96,5 +101,85 @@ def uninstall_endpoints(app: FastAPI) -> FastAPI:
         tags.read_tags_from_playbooks()
         response = jsonable_encoder(tags.get_tags())
         return response
+
+    return app
+
+
+def target_endpoints(app: FastAPI) -> FastAPI:
+    """
+    Aggregate of all the /api/target endpoints.
+
+    Args:
+        app (FastAPI): The FastAPI app.
+    Returns:
+        FastAPI: The FastAPI app.
+    """
+
+    @app.put("/api/target/configure", response_model=str)
+    async def configure_target(request: Request) -> str:
+        """
+        Configure the target machines.
+
+        Input Format:
+        {
+            "hosts": "hosts",
+            "user": "user",
+            "password": "password"
+        }
+        """
+        data = await request.json()
+        hosts = data["hosts"]
+        user = data["user"]
+        password = data["password"]
+        hosts = hosts.split(",")
+        for host in hosts:
+            config_target(host, user, password)
+        return "Configured target machines."
+
+    @app.put("/api/target/ping", response_model=str)
+    async def ping_target(request: Request) -> str:
+        """
+        Ping the target machines.
+
+        Input Format:
+        {
+            "hosts": "hosts",
+            "user": "user",
+            "password": "password"
+        }
+        """
+        data = await request.json()
+        hosts = data["hosts"]
+        user = data["user"]
+        password = data["password"]
+        hosts = hosts.split(",")
+        ansible = Ansible(hosts=hosts, user=user, password=password)
+        ping_command = ansible.get_ping_command()
+        result = ansible.run_command(ping_command)
+        return result
+
+    @app.put("/api/target/install", response_model=str)
+    async def install_target(request: Request) -> str:
+        """
+        Install the software on the target machines.
+
+        Input Format:
+        {
+            "hosts": "hosts",
+            "user": "user",
+            "password": "password",
+            "tags": ["tag1", "tag2", ...]
+        }
+        """
+        data = await request.json()
+        hosts = data["hosts"]
+        user = data["user"]
+        password = data["password"]
+        tags = data["tags"]
+        hosts = hosts.split(",")
+        ansible = Ansible(hosts=hosts, user=user, password=password, tags=tags)
+        install_command = ansible.get_command()
+        result = ansible.run_command(install_command)
+        return result
 
     return app
