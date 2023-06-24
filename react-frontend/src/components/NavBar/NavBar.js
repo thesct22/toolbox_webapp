@@ -8,6 +8,7 @@ import InstallDesktopIcon from '@mui/icons-material/InstallDesktop';
 import CodeIcon from '@mui/icons-material/Code';
 import TerminalIcon from '@mui/icons-material/Terminal';
 import InfoIcon from '@mui/icons-material/Info';
+import SettingsIcon from '@mui/icons-material/Settings';
 import Tooltip from '@mui/material/Tooltip';
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
@@ -28,6 +29,11 @@ export default function NavBar() {
           <Tooltip title="Installer">
             <IconButton color="inherit" onClick={() => navigate("/")}>
               <InstallDesktopIcon />
+            </IconButton>
+          </Tooltip>
+          <Tooltip title="Configure Target">
+            <IconButton color="inherit" onClick={() => navigate("/configure-target")}>
+              <SettingsIcon />
             </IconButton>
           </Tooltip>
           <Tooltip title="Code Editor">

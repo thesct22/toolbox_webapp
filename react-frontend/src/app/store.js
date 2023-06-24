@@ -33,6 +33,14 @@ export const store = configureStore({
         default:
           return state;
       }
-    }
+    },
+    hosts: (state = { hosts: "" }, action) => {
+      switch (action.type) {
+        case "hosts/setHosts":
+          return { hosts: action.payload };
+        default:
+          return state;
+      }
+    },
   },
 });
