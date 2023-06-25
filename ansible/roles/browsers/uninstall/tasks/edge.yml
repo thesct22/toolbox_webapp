@@ -1,0 +1,9 @@
+- name: Uninstall Edge on Windows
+  win_chocolatey:
+    name: microsoft-edge
+    state: absent
+  become: true
+  become_method: runas
+  become_user: "{{ admin_username }}"
+  when: ansible_os_family == "Windows"
+  tags: edge

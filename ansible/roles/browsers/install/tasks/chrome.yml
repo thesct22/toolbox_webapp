@@ -1,0 +1,69 @@
+- name: Install Chrome
+  block:
+    - name: Install Chrome on Windows
+      win_chocolatey:
+        name: googlechrome
+        state: latest
+      become: true
+      become_method: runas
+      become_user: "{{ admin_username }}"
+      when: ansible_os_family == "Windows"
+    - name: Add apt key for Chrome on Debian
+      apt_key:
+        url: https://dl.google.com/linux/linux_signing_key.pub
+        state: present
+      become: true
+      when: ansible_os_family == "Debian"
+    - name: Add Chrome repo on Debian
+      apt_repository:
+        repo: deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main
+        state: present
+        filename: google-chrome
+        update_cache: yes
+      become: true
+      when: ansible_os_family == "Debian"
+    - name: Install Chrome on Debian
+      apt:
+        name: google-chrome-stable
+        state: latest
+      become: true
+      when: ansible_os_family == "Debian"
+    - name: Add Chrome repo on RedHat
+      yum_repository:
+        name: google-chrome
+        description: Google Chrome
+        baseurl: http://dl.google.com/linux/chrome/rpm/stable/$basearch
+        gpgkey: https://dl.google.com/linux/linux_signing_key.pub
+        enabled: yes
+        gpgcheck: yes
+      become: true
+      when: ansible_os_family == "RedHat"
+    - name: Install Chrome on RedHat
+      yum:
+        name: google-chrome-stable
+        state: latest
+      become: true
+      when: ansible_os_family == "RedHat"
+    - name: Install Chrome on MacOS
+      homebrew:
+        name: google-chrome
+        state: latest
+      become: true
+      when: ansible_os_family == "Darwin"
+    - name: Add Chrome repo on Alpine
+      apk_repository:
+        name: google-chrome
+        description: Google Chrome
+        baseurl: http://dl.google.com/linux/chrome/rpm/stable/$basearch
+        gpgkey: https://dl.google.com/linux/linux_signing_key.pub
+        enabled: yes
+        gpgcheck: yes
+      become: true
+      when: ansible_os_family == "Alpine"
+    - name: Install Chrome on Alpine
+      apk:
+        name: chromium
+        state: latest
+      become: true
+      when: ansible_os_family == "Alpine"
+  tags: chrome

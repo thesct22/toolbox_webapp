@@ -1,0 +1,35 @@
+- name: Install git
+  block:
+    - name: Install git on Windows
+      win_chocolatey:
+        name: git
+        state: latest
+      become: true
+      become_method: runas
+      become_user: "{{ admin_username }}"
+      when: ansible_os_family == "Windows"
+    - name: Install git on Debian
+      apt:
+        name: git
+        state: latest
+      become: true
+      when: ansible_os_family == "Debian"
+    - name: Install git on RedHat
+      yum:
+        name: git
+        state: latest
+      become: true
+      when: ansible_os_family == "RedHat"
+    - name: Install git on MacOS
+      homebrew:
+        name: git
+        state: latest
+      become: true
+      when: ansible_os_family == "Darwin"
+    - name: Install git on Alpine
+      apk:
+        name: git
+        state: latest
+      become: true
+      when: ansible_os_family == "Alpine"
+  tags: git

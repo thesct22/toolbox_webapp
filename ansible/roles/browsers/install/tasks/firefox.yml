@@ -1,0 +1,62 @@
+- name: Install Firefox
+  block:
+    - name: Install Firefox on Windows
+      win_chocolatey:
+        name: firefox
+        state: latest
+      become: true
+      become_method: runas
+      become_user: "{{ admin_username }}"
+      when: ansible_os_family == "Windows"
+    - name: Add Firefox repository on Debian
+      apt_repository:
+        repo: deb http://ppa.launchpad.net/ubuntu-mozilla-security/ppa/ubuntu bionic main
+        state: present
+        filename: firefox
+        update_cache: yes
+      become: true
+      when: ansible_os_family == "Debian"
+    - name: Install Firefox on Debian
+      apt:
+        name: firefox
+        state: latest
+      become: true
+      when: ansible_os_family == "Debian"
+    - name: Add Firefox repository on RedHat
+      yum_repository:
+        name: firefox
+        description: Firefox
+        baseurl: http://ppa.launchpad.net/ubuntu-mozilla-security/ppa/ubuntu bionic main
+        gpgkey: https://keyserver.ubuntu.com/pks/lookup?op=get&search=0x9BDB3D89CE49EC21
+        enabled: yes
+        gpgcheck: yes
+      become: true
+      when: ansible_os_family == "RedHat"
+    - name: Install Firefox on RedHat
+      yum:
+        name: firefox
+        state: latest
+      become: true
+      when: ansible_os_family == "RedHat"
+    - name: Install Firefox on MacOS
+      homebrew:
+        name: firefox
+        state: latest
+      become: true
+      when: ansible_os_family == "Darwin"
+    - name: Add Firefox repository on Alpine
+      apk_repository:
+        name: firefox
+        description: Firefox
+        baseurl: http://dl-cdn.alpinelinux.org/alpine/edge/testing
+        enabled: yes
+        gpgcheck: yes
+      become: true
+      when: ansible_os_family == "Alpine"
+    - name: Install Firefox on Alpine
+      apk:
+        name: firefox-esr
+        state: latest
+      become: true
+      when: ansible_os_family == "Alpine"
+  tags: firefox

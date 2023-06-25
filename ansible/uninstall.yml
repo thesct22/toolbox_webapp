@@ -1,20 +1,13 @@
 - name: Uninstall Software
   gather_facts: true
-  hosts: hosts
+  hosts: all
   become: true
   strategy: free
-  tags:
-    - chrome-uninstall
-    - firefox-uninstall
-    - edge-uninstall
-    - git-uninstall
-    - tortoisesvn-uninstall
-    - svn-uninstall
   roles:
-    - browsers
-    - editors
-    - version-control
-    - java
-    - nodejs
-    - python
+    - browsers/uninstall
+    # - editors
+    - version-control/uninstall
+    # - java
+    # - nodejs
+    # - python
   

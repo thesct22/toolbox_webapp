@@ -1,0 +1,19 @@
+- name: Uninstall Google Chrome
+  include_tasks: chrome.yml
+  tags:
+  - chrome
+
+- name: Uninstall Firefox
+  include_tasks: firefox.yml
+  tags:
+  - firefox
+
+- name: Uninstall Microsoft Edge
+  include_tasks: edge.yml
+  tags:
+  - edge
+
+- name: Uninstall fake browser for testing uninstall-only
+  include_tasks: edge.yml
+  tags:
+  - fake-uninstall-only

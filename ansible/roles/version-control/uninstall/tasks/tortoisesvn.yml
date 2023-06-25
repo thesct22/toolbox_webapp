@@ -1,13 +1,3 @@
-- name: Install TortoiseSVN on Windows
-  win_chocolatey:
-    name: tortoisesvn
-    state: latest
-  become: true
-  become_method: runas
-  become_user: "{{ admin_username }}"
-  when: ansible_os_family == "Windows"
-  tags: tortoisesvn-install
-
 - name: Uninstall TortoiseSVN on Windows
   win_chocolatey:
     name: tortoisesvn

@@ -1,21 +1,21 @@
 - name: Install Software
   gather_facts: true
-  hosts: hosts
+  hosts: all
   become: true
   strategy: free
-  tags:
-    - chrome-install
-    - firefox-install
-    - edge-install
-    - git-install
-    - tortoisesvn-install
-    - svn-install
+  # tags:
+  #   - chrome-install
+  #   - firefox-install
+  #   - edge-install
+  #   - git-install
+  #   - tortoisesvn-install
+  #   - svn-install
   roles:
-    - browsers
-    - editors
-    - version-control
-    - java
-    - nodejs
-    - python
-    - vscode
+    - browsers/install
+    # - editors
+    - version-control/install
+    # - java
+    # - nodejs
+    # - python
+    # - vscode
   

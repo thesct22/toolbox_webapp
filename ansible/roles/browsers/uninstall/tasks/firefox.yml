@@ -1,0 +1,64 @@
+- name: Uninstall Firefox
+  block:
+    - name: Uninstall Firefox on Windows
+      win_chocolatey:
+        name: firefox
+        state: absent
+      become: true
+      become_method: runas
+      become_user: "{{ admin_username }}"
+      when: ansible_os_family == "Windows"
+    - name: Remove Firefox repository on Debian
+      apt_repository:
+        repo: deb http://ppa.launchpad.net/ubuntu-mozilla-security/ppa/ubuntu bionic main
+        state: absent
+        filename: firefox
+        update_cache: yes
+      become: true
+      when: ansible_os_family == "Debian"
+    - name: Uninstall Firefox on Debian
+      apt:
+        name: firefox
+        state: absent
+      become: true
+      when: ansible_os_family == "Debian"
+    - name: Remove Firefox repository on RedHat
+      yum_repository:
+        name: firefox
+        description: Firefox
+        baseurl: http://ppa.launchpad.net/ubuntu-mozilla-security/ppa/ubuntu bionic main
+        gpgkey: https://keyserver.ubuntu.com/pks/lookup?op=get&search=0x9BDB3D89CE49EC21
+        enabled: yes
+        gpgcheck: yes
+        state: absent
+      become: true
+      when: ansible_os_family == "RedHat"
+    - name: Uninstall Firefox on RedHat
+      yum:
+        name: firefox
+        state: absent
+      become: true
+      when: ansible_os_family == "RedHat"
+    - name: Uninstall Firefox on MacOS
+      homebrew:
+        name: firefox
+        state: absent
+      become: true
+      when: ansible_os_family == "Darwin"
+    - name: Remove Firefox repository on Alpine
+      apk_repository:
+        name: firefox
+        description: Firefox
+        baseurl: http://dl-cdn.alpinelinux.org/alpine/edge/testing
+        enabled: yes
+        gpgcheck: yes
+        state: absent
+      become: true
+      when: ansible_os_family == "Alpine"
+    - name: Uninstall Firefox on Alpine
+      apk:
+        name: firefox-esr
+        state: absent
+      become: true
+      when: ansible_os_family == "Alpine"
+  tags: firefox

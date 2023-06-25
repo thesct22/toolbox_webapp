@@ -3,6 +3,11 @@ import { useDispatch, useSelector } from "react-redux";
 import Grid from '@mui/material/Grid';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
+import Snackbar from "@mui/material/Snackbar";
+import Alert from "@mui/material/Alert";
+import IconButton from "@mui/material/IconButton";
+import CloseIcon from "@mui/icons-material/Close";
+
 
 export default function ConfigureTarget() {
 	const dispatch = useDispatch();
@@ -10,16 +15,20 @@ export default function ConfigureTarget() {
 	const [username, setUsername] = React.useState("");
 	const [password, setPassword] = React.useState("");
 	const [hosts, setHosts] = React.useState(useSelector((state) => state.hosts.hosts));
+	const [snackbarOpen, setSnackbarOpen] = React.useState(false);
+	const [snackbarMessage, setSnackbarMessage] = React.useState("");
+	const [messageColor, setMessageColor] = React.useState("success");
+
 	const usernameChanged = (event) => {
-			setUsername(event.target.value);
+		setUsername(event.target.value);
 	}
 	const passwordChanged = (event) => {
-			setPassword(event.target.value);
+		setPassword(event.target.value);
 	}
 
 	const hostsChanged = (event) => {
-			setHosts(event.target.value);
-			dispatch({ type: "hosts/setHosts", payload: event.target.value });
+		setHosts(event.target.value);
+		dispatch({ type: "hosts/setHosts", payload: event.target.value });
 	};
 	
 	const handleClick = () => {
@@ -34,19 +43,43 @@ export default function ConfigureTarget() {
 				hosts: hosts,
 			}),
 		})
-			.then((response) => {
-				if (!response.ok) {
-					throw new Error(response.statusText);
-				}
-				return response.json();
-			})
-			.then((data) => {
-				console.log("Success:", data);
-			})
-			.catch((error) => {
-				console.log("Error:", error.message);
-			});
+		.then((response) => {
+
+			return [response.json(), response.ok];
+		})
+		.then(async (data) => {
+			var status = data[1];
+			data = await data[0];
+			if (!status) {
+				throw new Error(data.detail);
+			}
+			console.log("Success:", data);
+			setSnackbarOpen(true);
+			setMessageColor("success");
+			setSnackbarMessage("Target(s) configured successfully");
+		})
+		.catch((error) => {
+			console.log("Error:", error.message);
+			setSnackbarOpen(true);
+			setMessageColor("error");
+			setSnackbarMessage("Error: " + error.message);
+		});
 	};
+
+	const snackbaraction = (
+		<React.Fragment>
+			<IconButton
+				size="small"
+				aria-label="close"
+				color="inherit"
+				onClick={() => {setSnackbarOpen(false);}}
+			>
+				<CloseIcon fontSize="small" />
+			</IconButton>
+		</React.Fragment>
+	);
+	
+
 	return (
 		<div>
 			<h1>Configure Target</h1>
@@ -95,6 +128,20 @@ export default function ConfigureTarget() {
 					</Button>
 				</Grid>
 			</Grid>
+			<Snackbar
+				open={snackbarOpen}
+				autoHideDuration={6000}
+				onClose={() => setSnackbarOpen(false)}
+			>
+				<Alert 
+          onClose={() => {setSnackbarOpen(false);}} 
+          severity={messageColor}
+          sx={{ width: "100%" }}
+          action={snackbaraction}
+        >
+          {snackbarMessage}
+        </Alert>
+			</Snackbar>
 		</div>
 	);
 }

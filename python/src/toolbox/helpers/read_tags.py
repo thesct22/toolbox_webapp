@@ -23,6 +23,8 @@ def read_tags_helper(install_tags: bool) -> List[Dict[str, str | List[str]]]:
         )
     if install_tags:
         for role_dir in ansible_roles_dir.iterdir():
+            role_dir = role_dir / "install"
+            print(role_dir)
             if not role_dir.is_dir():
                 continue
             if not (role_dir / "tasks" / "main.yml").exists():
@@ -44,6 +46,7 @@ def read_tags_helper(install_tags: bool) -> List[Dict[str, str | List[str]]]:
                     tagsList.append(software)
     else:
         for role_dir in ansible_roles_dir.iterdir():
+            role_dir = role_dir / "uninstall"
             if not role_dir.is_dir():
                 continue
             if not (role_dir / "tasks" / "main.yml").exists():
