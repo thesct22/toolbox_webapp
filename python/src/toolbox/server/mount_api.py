@@ -4,6 +4,7 @@ from typing import Dict, List
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.encoders import jsonable_encoder
 from toolbox.core.ansible import Ansible
+from toolbox.core.rsakey import RSAKey
 from toolbox.core.tags import InstallationTags, UninstallationTags
 from toolbox.helpers.config_target import config_target
 
@@ -19,14 +20,15 @@ def mount_api(app: FastAPI) -> FastAPI:
     """
 
     @app.get("/api")
-    def read_root() -> Dict[str, str]:
+    def read_root() -> str:
         """Return a hello world message."""
-        return {"Hello": "World"}
+        return "This is the toolbox server API endpoint."
 
-    @app.get("/api/items/{item_id}")
-    def read_item(item_id: int, q: str = "") -> Dict[str, int | str]:
-        """Return the item id and query string."""
-        return {"item_id": item_id, "q": q}
+    @app.get("/api/public_key", response_model=Dict[str, str])
+    def get_public_key() -> Dict[str, str]:
+        """Return the public key."""
+        public_key = RSAKey().get_public_key()
+        return {"public_key": public_key}
 
     install_endpoint = install_endpoints(app)
     app.mount("/api/install", install_endpoint, name="install")
@@ -67,7 +69,6 @@ def install_endpoints(app: FastAPI) -> FastAPI:
         tags = InstallationTags()
         tags.read_tags_from_playbooks()
         response = jsonable_encoder(tags.get_tags())
-        print(response)
         return response
 
     return app
@@ -134,9 +135,9 @@ def target_endpoints(app: FastAPI) -> FastAPI:
             raise HTTPException(
                 status_code=400, detail="Missing hosts, user or password."
             )
-        hosts = data["hosts"]
-        user = data["user"]
-        password = data["password"]
+        hosts = RSAKey().decrypt(data["hosts"])
+        user = RSAKey().decrypt(data["user"])
+        password = RSAKey().decrypt(data["password"])
         hosts = hosts.split(",")
         for host in hosts:
             config_target(host, user, password)
@@ -161,9 +162,10 @@ def target_endpoints(app: FastAPI) -> FastAPI:
             raise HTTPException(
                 status_code=400, detail="Missing hosts, user or password."
             )
-        hosts = data.get("hosts")
-        user = data.get("user")
-        password = data.get("password")
+        print(data["hosts"])
+        hosts = RSAKey().decrypt(data["hosts"])
+        user = RSAKey().decrypt(data["user"])
+        password = RSAKey().decrypt(data["password"])
         ansible = Ansible(inventory=hosts, user=user, password=password)
         try:
             ansible.verfiy_auth()
@@ -196,9 +198,9 @@ def target_endpoints(app: FastAPI) -> FastAPI:
             )
         if data["tags"] == []:
             raise HTTPException(status_code=400, detail="No tags provided.")
-        hosts = data.get("hosts")
-        user = data.get("user")
-        password = data.get("password")
+        hosts = RSAKey().decrypt(data["hosts"])
+        user = RSAKey().decrypt(data["user"])
+        password = RSAKey().decrypt(data["password"])
         tags = data.get("tags")
         ansible = Ansible(
             inventory=hosts,
@@ -238,9 +240,9 @@ def target_endpoints(app: FastAPI) -> FastAPI:
             )
         if data["tags"] == []:
             raise HTTPException(status_code=400, detail="No tags provided.")
-        hosts = data.get("hosts")
-        user = data.get("user")
-        password = data.get("password")
+        hosts = RSAKey().decrypt(data["hosts"])
+        user = RSAKey().decrypt(data["user"])
+        password = RSAKey().decrypt(data["password"])
         tags = data.get("tags")
         ansible = Ansible(
             inventory=hosts,

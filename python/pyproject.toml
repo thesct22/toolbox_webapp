@@ -27,6 +27,7 @@ packages = [
 [tool.poetry.dependencies]
 python = ">=3.9"
 ansible = "^8.0.0"
+cryptography = "^41.0.1"
 fastapi = "^0.97.0"
 uvicorn = {extras = ["standard"], version = "^0.22.0"}
 

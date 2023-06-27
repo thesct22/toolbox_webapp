@@ -1,5 +1,6 @@
 import React from 'react';
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
+import * as forge from "node-forge";
 import Grid from '@mui/material/Grid';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
@@ -7,17 +8,29 @@ import Snackbar from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert";
 import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
+import Backdrop from "@mui/material/Backdrop";
+import CircularProgress from "@mui/material/CircularProgress";
 
 
 export default function ConfigureTarget() {
 	const dispatch = useDispatch();
-
+	const [rsaKey, setRsaKey] = React.useState("");
 	const [username, setUsername] = React.useState("");
 	const [password, setPassword] = React.useState("");
-	const [hosts, setHosts] = React.useState(useSelector((state) => state.hosts.hosts));
+	const [hosts, setHosts] = React.useState("");
 	const [snackbarOpen, setSnackbarOpen] = React.useState(false);
 	const [snackbarMessage, setSnackbarMessage] = React.useState("");
 	const [messageColor, setMessageColor] = React.useState("success");
+
+	const fetchRSAKey = async () => {
+		const response = await fetch(process.env.REACT_APP_API_URL + "/public_key");
+		const data = await response.json();
+		setRsaKey(data["public_key"]);
+	};
+
+	React.useEffect(() => {
+		fetchRSAKey();
+	}, []);
 
 	const usernameChanged = (event) => {
 		setUsername(event.target.value);
@@ -30,17 +43,43 @@ export default function ConfigureTarget() {
 		setHosts(event.target.value);
 		dispatch({ type: "hosts/setHosts", payload: event.target.value });
 	};
+
+  if (rsaKey === "") {
+    return (
+      <Backdrop
+        sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        open={true}
+      >
+        <CircularProgress color="inherit" />
+      </Backdrop>
+    );
+  }
+
+	var publicKey = forge.pki.publicKeyFromPem(rsaKey);
+  var encrypt = function (text) {
+    let encrypted = publicKey.encrypt(text, "RSA-OAEP", {
+      md: forge.md.sha256.create(),
+      mgf1: {
+        md: forge.md.sha256.create(),
+      },
+    });
+    return forge.util.encode64(encrypted);
+  };
 	
 	const handleClick = () => {
+		const encryptedUsername = encrypt(username);
+		const encryptedPassword = encrypt(password);
+		const encryptedHosts = encrypt(hosts);
+
 		fetch(process.env.REACT_APP_API_URL + "/target/configure", {
 			method: "PUT",
 			headers: {
 				"Content-Type": "application/json",
 			},
 			body: JSON.stringify({
-				user: username,
-				password: password,
-				hosts: hosts,
+				user: encryptedUsername,
+				password: encryptedPassword,
+				hosts: encryptedHosts,
 			}),
 		})
 		.then((response) => {
@@ -117,7 +156,7 @@ export default function ConfigureTarget() {
 						fullWidth
 						placeholder="IP addresses or hostnames separated by commas"
 						onChange={hostsChanged}
-						value={useSelector((state) => state.hosts.hosts)}	
+						value={hosts}	
 					/>
 				</Grid>
 				<Grid item xs={12}>

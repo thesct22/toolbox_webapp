@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import * as forge from 'node-forge';
 import Grid from '@mui/material/Grid';
 import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
@@ -18,6 +19,7 @@ import DialogTitle from '@mui/material/DialogTitle';
 
 export default function Home() {
   const dispatch = useDispatch();
+  const [rsaKey, setRsaKey] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [hosts, setHosts] = useState(useSelector((state) => state.hosts.hosts));
@@ -30,24 +32,6 @@ export default function Home() {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [dialogMessage, setDialogMessage] = useState("");
 
-  const handleSoftwareListChange = (value) => {
-    var tagsList = [];
-    value.map((softwareItem) => {
-      softwareItem.tags.map((tag) => {
-        if (!tagsList.includes(tag)) {
-          tagsList.push(tag);
-        }
-      });
-    });
-    setSelectedTags(tagsList);
-    dispatch({ type: "selectedTags/setSelectedTags", payload: tagsList });
-  };
-
-
-  const handleHostsChange = (value) => {
-    setHosts(value);
-    dispatch({ type: "hosts/setHosts", payload: value });
-  };
 
   const fetchTags = async () => {
     const install_response = await fetch(process.env.REACT_APP_API_URL + "/install/tags");
@@ -72,25 +56,90 @@ export default function Home() {
     dispatch({ type: "tags/setTags", payload: data });
   };
 
+  const fetchRSAKey = async () => {
+    const response = await fetch(process.env.REACT_APP_API_URL + "/public_key");
+    const data = await response.json();
+    setRsaKey(data["public_key"]);
+  };
+
   useEffect(() => {
     fetchTags();
+    fetchRSAKey();
   }, []);
 
   useEffect(() => {
     dispatch({ type: "currentPage/setCurrentPage", payload: "Installer" });
   }, []);
 
+  const descriptionElementRef = React.useRef(null);
+  React.useEffect(() => {
+    if (dialogOpen) {
+      const { current: descriptionElement } = descriptionElementRef;
+      if (descriptionElement !== null) {
+        descriptionElement.focus();
+      }
+    }
+  }, [dialogOpen]);
+
+  if (rsaKey === "") {
+    return (
+      <Backdrop
+        sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        open={true}
+      >
+        <CircularProgress color="inherit" />
+      </Backdrop>
+    );
+  }
+
+  const handleSoftwareListChange = (value) => {
+    var tagsList = [];
+    value.map((softwareItem) => {
+      softwareItem.tags.map((tag) => {
+        if (!tagsList.includes(tag)) {
+          tagsList.push(tag);
+        }
+      });
+    });
+    setSelectedTags(tagsList);
+    dispatch({ type: "selectedTags/setSelectedTags", payload: tagsList });
+  };
+
+  const handleHostsChange = (value) => {
+    setHosts(value);
+    dispatch({ type: "hosts/setHosts", payload: value });
+  };
+  if (rsaKey !== "") {
+    var publicKey = forge.pki.publicKeyFromPem(rsaKey);
+  }
+  else {
+    publicKey = "";
+  }
+  var encrypt = function (text) {
+    let encrypted = publicKey.encrypt(text, "RSA-OAEP", {
+      md: forge.md.sha256.create(),
+      mgf1: {
+        md: forge.md.sha256.create(),
+      },
+    });
+    return forge.util.encode64(encrypted);
+  };
+
   const handlePing = () => {
     setBackdropOpen(true);
+    const encryptedUsername = encrypt(username);
+    const encryptedPassword = encrypt(password);
+    const encryptedHosts = encrypt(hosts);
+
     fetch(process.env.REACT_APP_API_URL + "/target/ping", {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        hosts: hosts,
-        user: username,
-        password: password,
+        hosts: encryptedHosts,
+        user: encryptedUsername,
+        password: encryptedPassword,
       }),
     })
     .then((response) => {
@@ -121,6 +170,10 @@ export default function Home() {
 
   const handleInstallUninstall = (install) => {
     setBackdropOpen(true);
+    const encryptedUsername = encrypt.encrypt(username.encode());
+    const encryptedPassword = encrypt.encrypt(password.encode());
+    const encryptedHosts = encrypt.encrypt(hosts.encode());
+
     const api_url = install?"/target/install":"/target/uninstall";
     fetch(process.env.REACT_APP_API_URL + api_url, {
       method: "PUT",
@@ -128,9 +181,9 @@ export default function Home() {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        hosts: hosts,
-        user: username,
-        password: password,
+        hosts: encryptedHosts,
+        user: encryptedUsername,
+        password: encryptedPassword,
         tags: selectedTags,
       }),
     })
@@ -159,17 +212,6 @@ export default function Home() {
       setDialogMessage(error.message);
     });
   };
-
-
-  const descriptionElementRef = React.useRef(null);
-  React.useEffect(() => {
-    if (dialogOpen) {
-      const { current: descriptionElement } = descriptionElementRef;
-      if (descriptionElement !== null) {
-        descriptionElement.focus();
-      }
-    }
-  }, [dialogOpen]);
 
   const snackbaraction = (
     <React.Fragment>
