@@ -1,14 +1,14 @@
 - name: Install git
   include_tasks: git.yml
   tags:
-  - git
+    - git
 
 - name: Install TortoiseSVN
   include_tasks: tortoisesvn.yml
   tags:
-  - tortoisesvn
+    - tortoisesvn
 
 - name: Install SVN
   include_tasks: svn.yml
   tags:
-  - svn
+    - svn

@@ -14,7 +14,7 @@ repos:
         language: system
         types: [python]
         args: [.]
-        pass_filenames: false 
+        pass_filenames: false
       - id: isort
         name: isort
         entry: ./python/.venv/bin/isort
@@ -32,3 +32,15 @@ repos:
         entry: ./python/.venv/bin/pydocstyle
         language: system
         types: [python]
+      - id: eslint
+        name: eslint
+        entry: npm run --prefix react-frontend lint
+        language: system
+        types: [javascript]
+        pass_filenames: false
+      - id: prettier
+        name: prettier
+        entry: npm run --prefix react-frontend format
+        language: system
+        types: [javascript]
+        pass_filenames: false

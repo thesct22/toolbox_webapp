@@ -1,14 +1,14 @@
 - name: Uninstall git
   include_tasks: git.yml
   tags:
-  - git
+    - git
 
 - name: Uninstall TortoiseSVN
   include_tasks: tortoisesvn.yml
   tags:
-  - tortoisesvn
+    - tortoisesvn
 
 - name: Uninstall SVN
   include_tasks: svn.yml
   tags:
-  - svn
+    - svn

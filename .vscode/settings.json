@@ -1,6 +1,4 @@
 {
-    "ansible.python.interpreterPath": "c:\\Program Files\\Python311\\python.exe",
-    "python.analysis.extraPaths": [
-        "./python/src"
-    ]
+  "ansible.python.interpreterPath": "c:\\Program Files\\Python311\\python.exe",
+  "python.analysis.extraPaths": ["./python/src"]
 }
