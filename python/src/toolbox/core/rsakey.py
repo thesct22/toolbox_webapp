@@ -43,9 +43,9 @@ class RSAKey(BaseModel):
         Returns:
             str: The decrypted package.
         """
-        package = base64.b64decode(package)
+        package_decoded = base64.b64decode(package)
         decrypted_message = self.__private_key.decrypt(
-            package,
+            package_decoded,
             padding=padding.OAEP(
                 mgf=padding.MGF1(algorithm=hashes.SHA256()),
                 algorithm=hashes.SHA256(),

@@ -62,10 +62,20 @@ def target_endpoints(app: FastAPI) -> FastAPI:
             raise HTTPException(
                 status_code=400, detail="Missing hosts, user or password."
             )
-        print(data["hosts"])
-        hosts = RSAKey().decrypt(data["hosts"])
-        user = RSAKey().decrypt(data["user"])
-        password = RSAKey().decrypt(data["password"])
+        try:
+            hosts = RSAKey().decrypt(data["hosts"])
+            user = RSAKey().decrypt(data["user"])
+            password = RSAKey().decrypt(data["password"])
+        except ValueError as e:
+            print(e)
+            raise HTTPException(
+                status_code=400,
+                detail=str("Missing hosts, user or password, or malformed data."),
+            )
+        if hosts == "" or user == "" or password == "":
+            raise HTTPException(
+                status_code=400, detail="Missing hosts, user or password."
+            )
         ansible = Ansible(inventory=hosts, user=user, password=password)
         try:
             ansible.verfiy_auth()

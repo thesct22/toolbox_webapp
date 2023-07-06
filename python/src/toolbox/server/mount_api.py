@@ -24,6 +24,11 @@ def mount_api(app: FastAPI) -> FastAPI:
         """Return a hello world message."""
         return "This is the toolbox server API endpoint."
 
+    @app.get("/api/health")
+    def read_health() -> str:
+        """Return a health message."""
+        return "OK"
+
     @app.get("/api/public_key", response_model=Dict[str, str])
     def get_public_key() -> Dict[str, str]:
         """Return the public key."""
