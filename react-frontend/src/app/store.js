@@ -1,8 +1,9 @@
+/* eslint-disable default-param-last */
 import { configureStore } from '@reduxjs/toolkit';
 
 const store = configureStore({
 	reducer: {
-		currentPage: (action, state = { currentPage: 'Home' }) => {
+		currentPage: (state = { currentPage: 'Home' }, action) => {
 			switch (action.type) {
 				case 'currentPage/setCurrentPage':
 					return { currentPage: action.payload };
@@ -10,7 +11,7 @@ const store = configureStore({
 					return state;
 			}
 		},
-		currentPageIcon: (action, state = { currentPageIcon: 'home' }) => {
+		currentPageIcon: (state = { currentPageIcon: 'home' }, action) => {
 			switch (action.type) {
 				case 'currentPageIcon/setCurrentPageIcon':
 					return { currentPageIcon: action.payload };
@@ -18,7 +19,7 @@ const store = configureStore({
 					return state;
 			}
 		},
-		tags: (action, state = { tags: [] }) => {
+		tags: (state = { tags: [] }, action) => {
 			switch (action.type) {
 				case 'tags/setTags':
 					return { tags: action.payload };
@@ -26,7 +27,7 @@ const store = configureStore({
 					return state;
 			}
 		},
-		selectedTags: (action, state = { selectedTags: [] }) => {
+		selectedTags: (state = { selectedTags: [] }, action) => {
 			switch (action.type) {
 				case 'selectedTags/setSelectedTags':
 					return { selectedTags: action.payload };
@@ -34,7 +35,7 @@ const store = configureStore({
 					return state;
 			}
 		},
-		hosts: (action, state = { hosts: '' }) => {
+		hosts: (state = { hosts: '' }, action) => {
 			switch (action.type) {
 				case 'hosts/setHosts':
 					return { hosts: action.payload };
@@ -42,7 +43,7 @@ const store = configureStore({
 					return state;
 			}
 		},
-		fileList: (action, state = { fileList: [] }) => {
+		fileList: (state = { fileList: [] }, action) => {
 			switch (action.type) {
 				case 'fileList/setFileList':
 					return { fileList: action.payload };
@@ -50,7 +51,7 @@ const store = configureStore({
 					return state;
 			}
 		},
-		selectedFile: (action, state = { selectedFile: '' }) => {
+		selectedFile: (state = { selectedFile: '' }, action) => {
 			switch (action.type) {
 				case 'selectedFile/setSelectedFile':
 					return { selectedFile: action.payload };
@@ -58,7 +59,7 @@ const store = configureStore({
 					return state;
 			}
 		},
-		fileContent: (action, state = { fileContent: '' }) => {
+		fileContent: (state = { fileContent: '' }, action) => {
 			switch (action.type) {
 				case 'fileContent/setFileContent':
 					return { fileContent: action.payload };

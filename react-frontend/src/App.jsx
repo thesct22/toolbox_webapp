@@ -1,11 +1,11 @@
 import React from 'react';
-import Routes from './Routes';
 import './App.css';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 
 import NavBar from './components/NavBar/NavBar';
+import Routes from './Routes';
 
 function App() {
 	const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)');

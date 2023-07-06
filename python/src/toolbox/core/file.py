@@ -64,7 +64,7 @@ class File(FileBase):
             raise ValueError(f"{v} is not in the ansible folder")
         if v.parts[index + 1] == "inventory" or v.parts[index + 1] == "roles":
             return v
-        if v.parent == "ansible":
+        if v.parent.name == "ansible":
             return v
         raise ValueError(
             f"{v} is not from the ansible root, ansible/inventory or ansible/roles folders"

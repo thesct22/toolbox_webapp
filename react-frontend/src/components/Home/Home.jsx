@@ -197,14 +197,16 @@ export default function Home() {
 					throw new Error(data.detail);
 				}
 				setSnackbarOpen(true);
-				setSnackbarMessage('Install successful');
+				if (install) setSnackbarMessage('Install successful');
+				else setSnackbarMessage('Uninstall successful');
 				setBackdropOpen(false);
 				setMessageColor('success');
 				setDialogMessage(data);
 			})
 			.catch((error) => {
 				setSnackbarOpen(true);
-				setSnackbarMessage('Install failed');
+				if (install) setSnackbarMessage('Install failed');
+				else setSnackbarMessage('Uninstall failed');
 				setBackdropOpen(false);
 				setMessageColor('error');
 				setDialogMessage(error.message);
@@ -379,18 +381,16 @@ export default function Home() {
 						ref={descriptionElementRef}
 						tabIndex={-1}
 					>
-						{dialogMessage.split('\n').map((i) => {
+						{dialogMessage.split('\n').map((message, messageIndex) => {
 							// preserve the number of spaces at the beginning of the line
 							let spaces = 0;
-							while (i[spaces] === ' ') {
+							while (message[spaces] === ' ') {
 								spaces += 1;
 							}
+							const key = `dialog-message-${message}-${messageIndex}`;
 							return (
-								<span
-									key={`dialog-message-${i}`}
-									style={{ marginLeft: spaces * 10 }}
-								>
-									{i}
+								<span key={key} style={{ marginLeft: spaces * 10 }}>
+									{message}
 									<br />
 								</span>
 							);

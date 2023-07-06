@@ -35,9 +35,19 @@ def target_endpoints(app: FastAPI) -> FastAPI:
             raise HTTPException(
                 status_code=400, detail="Missing hosts, user or password."
             )
-        hosts = RSAKey().decrypt(data["hosts"])
-        user = RSAKey().decrypt(data["user"])
-        password = RSAKey().decrypt(data["password"])
+        try:
+            hosts = RSAKey().decrypt(data["hosts"])
+            user = RSAKey().decrypt(data["user"])
+            password = RSAKey().decrypt(data["password"])
+        except ValueError:
+            raise HTTPException(
+                status_code=400,
+                detail=str("Missing hosts, user or password, or malformed data."),
+            )
+        if hosts == "" or user == "" or password == "":
+            raise HTTPException(
+                status_code=400, detail="Missing hosts, user or password."
+            )
         hosts = hosts.split(",")
         for host in hosts:
             config_target(host, user, password)
@@ -66,8 +76,7 @@ def target_endpoints(app: FastAPI) -> FastAPI:
             hosts = RSAKey().decrypt(data["hosts"])
             user = RSAKey().decrypt(data["user"])
             password = RSAKey().decrypt(data["password"])
-        except ValueError as e:
-            print(e)
+        except ValueError:
             raise HTTPException(
                 status_code=400,
                 detail=str("Missing hosts, user or password, or malformed data."),
@@ -80,7 +89,6 @@ def target_endpoints(app: FastAPI) -> FastAPI:
         try:
             ansible.verfiy_auth()
         except ValueError as e:
-            print(e)
             raise HTTPException(status_code=400, detail=str(e))
         ping_command = ansible.get_ping_command()
         result = ansible.run_command(ping_command)
@@ -108,9 +116,19 @@ def target_endpoints(app: FastAPI) -> FastAPI:
             )
         if data["tags"] == []:
             raise HTTPException(status_code=400, detail="No tags provided.")
-        hosts = RSAKey().decrypt(data["hosts"])
-        user = RSAKey().decrypt(data["user"])
-        password = RSAKey().decrypt(data["password"])
+        try:
+            hosts = RSAKey().decrypt(data["hosts"])
+            user = RSAKey().decrypt(data["user"])
+            password = RSAKey().decrypt(data["password"])
+        except ValueError:
+            raise HTTPException(
+                status_code=400,
+                detail=str("Missing hosts, user or password, or malformed data."),
+            )
+        if hosts == "" or user == "" or password == "":
+            raise HTTPException(
+                status_code=400, detail="Missing hosts, user or password."
+            )
         tags = data.get("tags")
         ansible = Ansible(
             inventory=hosts,
@@ -122,7 +140,6 @@ def target_endpoints(app: FastAPI) -> FastAPI:
         try:
             ansible.verfiy_auth()
         except ValueError as e:
-            print(e)
             raise HTTPException(status_code=400, detail=str(e))
         install_command = ansible.get_command()
         result = ansible.run_command(install_command)
@@ -150,9 +167,19 @@ def target_endpoints(app: FastAPI) -> FastAPI:
             )
         if data["tags"] == []:
             raise HTTPException(status_code=400, detail="No tags provided.")
-        hosts = RSAKey().decrypt(data["hosts"])
-        user = RSAKey().decrypt(data["user"])
-        password = RSAKey().decrypt(data["password"])
+        try:
+            hosts = RSAKey().decrypt(data["hosts"])
+            user = RSAKey().decrypt(data["user"])
+            password = RSAKey().decrypt(data["password"])
+        except ValueError:
+            raise HTTPException(
+                status_code=400,
+                detail=str("Missing hosts, user or password, or malformed data."),
+            )
+        if hosts == "" or user == "" or password == "":
+            raise HTTPException(
+                status_code=400, detail="Missing hosts, user or password."
+            )
         tags = data.get("tags")
         ansible = Ansible(
             inventory=hosts,
@@ -164,7 +191,6 @@ def target_endpoints(app: FastAPI) -> FastAPI:
         try:
             ansible.verfiy_auth()
         except ValueError as e:
-            print(e)
             raise HTTPException(status_code=400, detail=str(e))
         uninstall_command = ansible.get_command()
         result = ansible.run_command(uninstall_command)
