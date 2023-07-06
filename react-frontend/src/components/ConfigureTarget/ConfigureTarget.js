@@ -1,5 +1,5 @@
 import React from 'react';
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import * as forge from "node-forge";
 import Grid from '@mui/material/Grid';
 import TextField from '@mui/material/TextField';
@@ -17,7 +17,7 @@ export default function ConfigureTarget() {
 	const [rsaKey, setRsaKey] = React.useState("");
 	const [username, setUsername] = React.useState("");
 	const [password, setPassword] = React.useState("");
-	const [hosts, setHosts] = React.useState("");
+	const [hosts, setHosts] = React.useState(useSelector((state) => state.hosts.hosts));
 	const [snackbarOpen, setSnackbarOpen] = React.useState(false);
 	const [snackbarMessage, setSnackbarMessage] = React.useState("");
 	const [messageColor, setMessageColor] = React.useState("success");

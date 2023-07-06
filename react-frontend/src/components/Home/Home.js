@@ -170,9 +170,9 @@ export default function Home() {
 
   const handleInstallUninstall = (install) => {
     setBackdropOpen(true);
-    const encryptedUsername = encrypt.encrypt(username.encode());
-    const encryptedPassword = encrypt.encrypt(password.encode());
-    const encryptedHosts = encrypt.encrypt(hosts.encode());
+    const encryptedUsername = encrypt(username);
+    const encryptedPassword = encrypt(password);
+    const encryptedHosts = encrypt(hosts);
 
     const api_url = install?"/target/install":"/target/uninstall";
     fetch(process.env.REACT_APP_API_URL + api_url, {

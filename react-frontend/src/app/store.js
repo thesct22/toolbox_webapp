@@ -42,5 +42,29 @@ export const store = configureStore({
           return state;
       }
     },
+    fileList: (state = { fileList: [] }, action) => {
+      switch (action.type) {
+        case "fileList/setFileList":
+          return { fileList: action.payload };
+        default:
+          return state;
+      }
+    },
+    selectedFile: (state = { selectedFile: "" }, action) => {
+      switch (action.type) {
+        case "selectedFile/setSelectedFile":
+          return { selectedFile: action.payload };
+        default:
+          return state;
+      }
+    },
+    fileContent: (state = { fileContent: "" }, action) => {
+      switch (action.type) {
+        case "fileContent/setFileContent":
+          return { fileContent: action.payload };
+        default:
+          return state;
+      }
+    },
   },
 });
