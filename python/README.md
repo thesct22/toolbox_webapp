@@ -27,8 +27,16 @@ Run the setup script.
 ```
 
 > Note: If you get a permission denied error, run `chmod +x setup.sh` and try again.
-> Note: Powershell equivalent: `.\setup.ps1` is also provided. However, it is limited in capacity due to ansible not supporting Windows.
+>
+> Note: Powershell equivalent: `.\setup.ps1` is also provided. However, it is limited in capacity due to ansible not supporting Windows host machines. Ansible does support Windows target machines though.
 
+Build the react static files and copy them and the ansible folder to the python source folder using this python script.
+
+```bash
+python ./tools/build.py
+```
+
+> Note: Make sure you run this from the `python` directory.
 
 ## Usage
 
@@ -49,6 +57,7 @@ poetry run python -m toolbox.main
 ### Enabling pre-commit hooks
 
 > Note: Pre-commit is used for code quality and formatting. It is recommended to enable it.
+>
 > It runs code style checks and auto-formats code before committing and fails if there are any issues with the code, so you can fix them before committing.
 
 ```bash
