@@ -3,7 +3,7 @@
 from pathlib import Path
 from typing import Dict, List, Union
 
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Request
 from fastapi.encoders import jsonable_encoder
 from toolbox.core.file import AnsibleRootFolder, File, Folder
 
@@ -70,7 +70,7 @@ def editor_endpoints(app: FastAPI) -> FastAPI:
         return {"content": content}
 
     @app.post("/api/editor/file/write", response_model=Dict[str, str])
-    def write_file(path: str, content: str) -> Dict[str, str]:
+    async def write_file(request: Request) -> Dict[str, str]:
         """
         Write a file.
 
@@ -80,12 +80,19 @@ def editor_endpoints(app: FastAPI) -> FastAPI:
         Returns:
             Dict[str, str]: The file content.
         """
+        data = await request.json()
+        if data is None:
+            raise HTTPException(status_code=400, detail="No data provided.")
+        if data["path"] == "" or data["content"] == "":
+            raise HTTPException(status_code=400, detail="Missing path or content.")
+        path = data["path"]
+        content = data["content"]
         try:
             file = File(path)
             written = file.write_content(content)
         except ValueError or FileNotFoundError as e:
             raise HTTPException(status_code=404, detail=str(e))
-        return {"written": str(written)}
+        return {"written": str(written), "success": "true"}
 
     @app.post("/api/editor/file/create", response_model=Dict[str, str])
     def create_file(path: str) -> Dict[str, str]:

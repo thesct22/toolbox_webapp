@@ -76,7 +76,7 @@ export default function Home() {
 	}, []);
 
 	const descriptionElementRef = React.useRef(null);
-	React.useEffect(() => {
+	useEffect(() => {
 		if (dialogOpen) {
 			const { current: descriptionElement } = descriptionElementRef;
 			if (descriptionElement !== null) {
