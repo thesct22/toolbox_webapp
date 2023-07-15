@@ -50,7 +50,7 @@ class File(FileBase):
     def path_has_ansible(cls, v: Path):
         """Validate if path is in the ansible folder."""
         if "ansible" not in v.parts:
-            raise ValueError(f"{v} is not from the ansible folder")
+            raise ValueError("This file is not from the ansible folder")
         return v
 
     @validator("path")
@@ -61,13 +61,13 @@ class File(FileBase):
             if part == "ansible":
                 index = i
         if index == -1:
-            raise ValueError(f"{v} is not in the ansible folder")
-        if v.parts[index + 1] == "inventory" or v.parts[index + 1] == "roles":
-            return v
+            raise ValueError("This file is not in the ansible folder")
         if v.parent.name == "ansible":
             return v
+        if v.parts[index + 1] == "inventory" or v.parts[index + 1] == "roles":
+            return v
         raise ValueError(
-            f"{v} is not from the ansible root, ansible/inventory or ansible/roles folders"
+            "This file is not from the ansible root, ansible/inventory or ansible/roles folders"
         )
 
     def __init__(self, path: Union[str, Path]):
@@ -78,7 +78,7 @@ class File(FileBase):
     def check_if_file(self) -> None:
         """Check if the path is a file."""
         if not self.path.is_file():
-            raise ValueError(f"{self.path} is not a file.")
+            raise ValueError("This is not a file.")
 
     def check_if_not_in_custom_roles_folder(self) -> None:
         """Check if the path is in the roles folder but not in the custom roles folder."""
@@ -87,12 +87,13 @@ class File(FileBase):
             if part == "ansible":
                 index = i
         if index == -1:
-            raise ValueError(f"{self.path} is not in the ansible folder")
-        if self.path.parts[index + 1] == "roles":
-            if self.path.parts[index + 2] != "custom":
-                raise ValueError(
-                    f"{self.path} is in the roles folder but not in the custom roles folder"
-                )
+            raise ValueError("This file is not in the ansible folder")
+        # if self.path.parts[index + 1] == "roles":
+        #     if len(self.path.parts) > index + 2 and self.path.parts[index + 2] != "custom":
+        #         raise ValueError(
+        #             "This file is in the roles folder but not in the custom roles folder"
+        #         )
+        # commented out the above part until the custom roles folder is implemented
 
     def read_content(self) -> str:
         """Return the content of the file."""
@@ -114,7 +115,7 @@ class File(FileBase):
     def create(self) -> None:
         """Create the file."""
         if self.path.is_file():
-            raise ValueError(f"{self.path} already exists.")
+            raise FileExistsError("This file already exists.")
         self.check_if_not_in_custom_roles_folder()
         self.path.touch()
 
@@ -147,7 +148,7 @@ class Folder(FileBase):
     def path_has_ansible(cls, v: Path):
         """Validate if path is in the ansible folder."""
         if "ansible" not in v.parts:
-            raise ValueError(f"{v} is not from the ansible folder")
+            raise ValueError("This folder is not from the ansible folder")
         return v
 
     @validator("path")
@@ -158,11 +159,11 @@ class Folder(FileBase):
             if part == "ansible":
                 index = i
         if index == -1:
-            raise ValueError(f"{v} is not in the ansible folder")
+            raise ValueError("This folder is not in the ansible folder")
         if v.parts[index + 1] == "inventory" or v.parts[index + 1] == "roles":
             return v
         raise ValueError(
-            f"{v} is not ansible/inventory or ansible/roles folders or their subfolders"
+            "This folder is not ansible/inventory or ansible/roles folders or their subfolders"
         )
 
     def __init__(self, path: Union[str, Path]):
@@ -173,7 +174,7 @@ class Folder(FileBase):
     def check_if_folder(self) -> None:
         """Check if the path is a folder."""
         if not self.path.is_dir():
-            raise ValueError(f"{self.path} is not a folder.")
+            raise ValueError("This is not a folder.")
 
     def check_if_not_in_custom_roles_folder(self) -> None:
         """Check if the path is in the roles folder but not in the custom roles folder."""
@@ -182,12 +183,13 @@ class Folder(FileBase):
             if part == "ansible":
                 index = i
         if index == -1:
-            raise ValueError(f"{self.path} is not in the ansible folder")
-        if self.path.parts[index + 1] == "roles":
-            if self.path.parts[index + 2] != "custom":
-                raise ValueError(
-                    f"{self.path} is in the roles folder but not in the custom roles folder"
-                )
+            raise ValueError("This folder is not in the ansible folder")
+        # if self.path.parts[index + 1] == "roles":
+        #     if len(self.path.parts) > index + 2 and self.path.parts[index + 2] != "custom":
+        #         raise ValueError(
+        #             "This folder is in the roles folder but not in the custom roles folder"
+        #         )
+        # comment out the above part until the custom roles folder is implemented
 
     def get_items(self) -> List[Dict[str, Union[bool, Path]]]:
         """Return a list of dictionaries with the items in the folder."""
@@ -199,7 +201,7 @@ class Folder(FileBase):
     def create(self) -> None:
         """Create the folder."""
         if self.path.is_dir():
-            raise ValueError(f"{self.path} already exists.")
+            raise FileExistsError("This folder already exists.")
         self.check_if_not_in_custom_roles_folder()
         self.path.mkdir()
 
@@ -218,7 +220,7 @@ class Folder(FileBase):
         self.check_if_not_in_custom_roles_folder()
         # check if folder is empty
         if len(self.get_items()) > 0:
-            raise ValueError(f"{self.path} is not empty.")
+            raise ValueError("This folder is not empty.")
         self.path.rmdir()
         self.path = Path("")
 
@@ -249,7 +251,7 @@ class AnsibleRootFolder(FileBase):
     def path_is_ansible_root(cls, v: Path):
         """Validate if path is the ansible root folder."""
         if not v.name == "ansible":
-            raise ValueError(f"{v} is not the ansible root folder")
+            raise ValueError("This is not the ansible root folder")
         return v
 
     def __init__(self, path: Union[str, Path]):
@@ -283,6 +285,14 @@ class AnsibleRootFolder(FileBase):
                 )
             else:
                 continue
+        items = [
+            {
+                "is_file": False,
+                "path": self.path,
+                "name": self.path.name,
+                "items": items,
+            }
+        ]
         return items
 
     def __get_items_recursive(

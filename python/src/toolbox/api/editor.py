@@ -75,8 +75,7 @@ def editor_endpoints(app: FastAPI) -> FastAPI:
         Write a file.
 
         Args:
-            path (str): The path of the file to write.
-            content (str): The content to write.
+            request (Request): The request.
         Returns:
             Dict[str, str]: The file content.
         """
@@ -95,7 +94,7 @@ def editor_endpoints(app: FastAPI) -> FastAPI:
         return {"written": str(written), "success": "true"}
 
     @app.post("/api/editor/file/create", response_model=Dict[str, str])
-    def create_file(path: str) -> Dict[str, str]:
+    async def create_file(request: Request) -> Dict[str, str]:
         """
         Create a file.
 
@@ -104,23 +103,39 @@ def editor_endpoints(app: FastAPI) -> FastAPI:
         Returns:
             Dict[str, str]: The file content.
         """
+        data = await request.json()
+        if data is None:
+            raise HTTPException(status_code=400, detail="No data provided.")
+        if data["path"] == "":
+            raise HTTPException(status_code=400, detail="Missing path.")
+        path = data["path"]
         try:
             file = File(path)
             file.create()
-        except ValueError or FileNotFoundError as e:
+        except ValueError as e:
+            message = str(e).split("\n")[2].strip()
+            message = message.split("(")[0].strip()
+            raise HTTPException(status_code=404, detail=message)
+        except FileExistsError as e:
             raise HTTPException(status_code=404, detail=str(e))
         return {"created": "true"}
 
     @app.post("/api/editor/file/delete", response_model=Dict[str, str])
-    def delete_file(path: str) -> Dict[str, str]:
+    async def delete_file(request: Request) -> Dict[str, str]:
         """
         Delete a file.
 
         Args:
-            path (str): The path of the file to delete.
+            request (Request): The request.
         Returns:
             Dict[str, str]: The file content.
         """
+        data = await request.json()
+        if data is None:
+            raise HTTPException(status_code=400, detail="No data provided.")
+        if data["path"] == "":
+            raise HTTPException(status_code=400, detail="Missing path.")
+        path = data["path"]
         try:
             file = File(path)
             file.delete()
@@ -129,16 +144,22 @@ def editor_endpoints(app: FastAPI) -> FastAPI:
         return {"deleted": "true"}
 
     @app.post("/api/editor/file/rename", response_model=Dict[str, str])
-    def rename_file(path: str, new_path: str) -> Dict[str, str]:
+    async def rename_file(request: Request) -> Dict[str, str]:
         """
         Rename a file.
 
         Args:
-            path (str): The path of the file to rename.
-            new_path (str): The new path of the file.
+            request (Request): The request.
         Returns:
             Dict[str, str]: The file content.
         """
+        data = await request.json()
+        if data is None:
+            raise HTTPException(status_code=400, detail="No data provided.")
+        if data["path"] == "" or data["new_path"] == "":
+            raise HTTPException(status_code=400, detail="Missing path or new_path.")
+        path = data["path"]
+        new_path = data["new_path"]
         try:
             file = File(path)
             new_name = file.rename(new_path)
@@ -147,7 +168,7 @@ def editor_endpoints(app: FastAPI) -> FastAPI:
         return {"new_path": new_name.as_posix()}
 
     @app.post("/api/editor/folder/create", response_model=Dict[str, str])
-    def create_folder(path: str) -> Dict[str, str]:
+    async def create_folder(request: Request) -> Dict[str, str]:
         """
         Create a folder.
 
@@ -156,15 +177,25 @@ def editor_endpoints(app: FastAPI) -> FastAPI:
         Returns:
             Dict[str, str]: The file content.
         """
+        data = await request.json()
+        if data is None:
+            raise HTTPException(status_code=400, detail="No data provided.")
+        if data["path"] == "":
+            raise HTTPException(status_code=400, detail="Missing path.")
+        path = data["path"]
         try:
             folder = Folder(path)
             folder.create()
-        except ValueError or FileNotFoundError as e:
+        except ValueError as e:
+            message = str(e).split("\n")[2].strip()
+            message = message.split("(")[0].strip()
+            raise HTTPException(status_code=404, detail=message)
+        except FileExistsError as e:
             raise HTTPException(status_code=404, detail=str(e))
         return {"created": "true"}
 
     @app.post("/api/editor/folder/delete", response_model=Dict[str, str])
-    def delete_folder(path: str) -> Dict[str, str]:
+    async def delete_folder(request: Request) -> Dict[str, str]:
         """
         Delete a folder.
 
@@ -173,6 +204,12 @@ def editor_endpoints(app: FastAPI) -> FastAPI:
         Returns:
             Dict[str, str]: The file content.
         """
+        data = await request.json()
+        if data is None:
+            raise HTTPException(status_code=400, detail="No data provided.")
+        if data["path"] == "":
+            raise HTTPException(status_code=400, detail="Missing path.")
+        path = data["path"]
         try:
             folder = Folder(path)
             folder.delete()
@@ -184,15 +221,21 @@ def editor_endpoints(app: FastAPI) -> FastAPI:
         return {"deleted": "true"}
 
     @app.post("/api/editor/folder/delete/confirmed", response_model=Dict[str, str])
-    def delete_folder_confirmed(path: str) -> Dict[str, str]:
+    async def delete_folder_confirmed(request: Request) -> Dict[str, str]:
         """
         Delete a folder.
 
         Args:
-            path (str): The path of the folder to delete.
+            request (Request): The request.
         Returns:
             Dict[str, str]: The file content.
         """
+        data = await request.json()
+        if data is None:
+            raise HTTPException(status_code=400, detail="No data provided.")
+        if data["path"] == "":
+            raise HTTPException(status_code=400, detail="Missing path.")
+        path = data["path"]
         try:
             folder = Folder(path)
             folder.force_delete()
@@ -201,16 +244,22 @@ def editor_endpoints(app: FastAPI) -> FastAPI:
         return {"deleted": "true"}
 
     @app.post("/api/editor/folder/rename", response_model=Dict[str, str])
-    def rename_folder(path: str, new_path: str) -> Dict[str, str]:
+    async def rename_folder(request: Request) -> Dict[str, str]:
         """
         Rename a folder.
 
         Args:
-            path (str): The path of the folder to rename.
-            new_path (str): The new path of the folder.
+            request (Request): The request.
         Returns:
             Dict[str, str]: The file content.
         """
+        data = await request.json()
+        if data is None:
+            raise HTTPException(status_code=400, detail="No data provided.")
+        if data["path"] == "" or data["new_path"] == "":
+            raise HTTPException(status_code=400, detail="Missing path or new_path.")
+        path = data["path"]
+        new_path = data["new_path"]
         try:
             folder = Folder(path)
             new_name = folder.rename(new_path)

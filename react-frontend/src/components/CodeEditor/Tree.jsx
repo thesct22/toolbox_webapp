@@ -5,7 +5,11 @@ import TreeItem from '@mui/lab/TreeItem';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import CircularProgress from '@mui/material/CircularProgress';
-import { Backdrop } from '@mui/material';
+import Menu from '@mui/material/Menu';
+import MenuItem from '@mui/material/MenuItem';
+import Backdrop from '@mui/material/Backdrop';
+import Snackbar from '@mui/material/Snackbar';
+import Alert from '@mui/material/Alert';
 
 export default function Tree() {
 	const dispatch = useDispatch();
@@ -15,12 +19,26 @@ export default function Tree() {
 	const [selectedFile, setSelectedFile] = useState(
 		useSelector((state) => state.selectedFile.selectedFile)
 	);
-	useEffect(() => {
+	const [rightClickedFile, setRightClickedFile] = useState(null);
+	const [menuAnchor, setMenuAnchor] = useState(null);
+	const [snackBarOpen, setSnackBarOpen] = useState(false);
+	const [snackBarMessage, setSnackBarMessage] = useState('');
+	const [snackBarSeverity, setSnackBarSeverity] = useState('success');
+
+	const fetchFiles = () => {
 		fetch(`${process.env.REACT_APP_API_URL}/editor/files`)
-			.then((response) => response.json())
-			.then((data) => {
+			.then((response) => [response.json(), response.ok])
+			.then(async (dataParam) => {
+				const data = await dataParam[0];
+				const status = dataParam[1];
+				if (!status) {
+					setSnackBarOpen(true);
+					setSnackBarMessage(data.detail);
+					setSnackBarSeverity('error');
+					return;
+				}
 				// Sort the data so that files are listed after directories and then by name
-				data.sort((a, b) => {
+				data[0].items.sort((a, b) => {
 					if (a.is_file === b.is_file) {
 						return a.name.localeCompare(b.name);
 					}
@@ -29,6 +47,9 @@ export default function Tree() {
 				setFileList(data);
 				dispatch({ type: 'fileList/setFileList', payload: data });
 			});
+	};
+	useEffect(() => {
+		fetchFiles();
 	}, []);
 
 	const fetchFile = async (node) => {
@@ -46,21 +67,196 @@ export default function Tree() {
 			}
 		);
 		const data = await response.json();
+		if (!response.ok) {
+			setSnackBarOpen(true);
+			setSnackBarMessage(data.detail);
+			setSnackBarSeverity('error');
+			return;
+		}
 		dispatch({ type: 'fileContent/setFileContent', payload: data.content });
+	};
+
+	const handleRightClick = (event, node) => {
+		event.preventDefault();
+		event.stopPropagation();
+		setRightClickedFile(node);
+		setMenuAnchor(event.currentTarget);
 	};
 
 	const renderTree = (nodes) => (
 		<TreeItem
+			id={nodes.path}
 			key={nodes.path}
 			nodeId={nodes.path}
 			label={nodes.name}
 			onClick={() => (nodes.is_file === true ? fetchFile(nodes) : null)}
+			onContextMenu={(event) => handleRightClick(event, nodes)}
+			endIcon={nodes.is_file === true ? null : <ChevronRightIcon />}
 		>
 			{nodes.is_file === true
 				? null
 				: nodes.items.map((node) => renderTree(node))}
 		</TreeItem>
 	);
+
+	const handleNewFile = async (node) => {
+		const newName = prompt('Enter new name'); // eslint-disable-line no-alert
+		if (newName === null) {
+			return;
+		}
+		const response = await fetch(
+			`${process.env.REACT_APP_API_URL}/editor/file/create`,
+			{
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify({
+					path: `${node.path}/${newName}`,
+				}),
+			}
+		);
+		const data = await response.json();
+		if (!response.ok) {
+			setSnackBarOpen(true);
+			setSnackBarMessage(data.detail);
+			setSnackBarSeverity('error');
+			return;
+		}
+		setSnackBarOpen(true);
+		setSnackBarMessage('File created successfully');
+		setSnackBarSeverity('success');
+		fetchFiles();
+	};
+
+	const handleNewFolder = async (node) => {
+		const newName = prompt('Enter new name'); // eslint-disable-line no-alert
+		if (newName === null) {
+			return;
+		}
+		const response = await fetch(
+			`${process.env.REACT_APP_API_URL}/editor/folder/create`,
+			{
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify({
+					path: `${node.path}/${newName}`,
+				}),
+			}
+		);
+		const data = await response.json();
+		if (!response.ok) {
+			setSnackBarOpen(true);
+			setSnackBarMessage(data.detail);
+			setSnackBarSeverity('error');
+			return;
+		}
+		setSnackBarOpen(true);
+		setSnackBarMessage('Folder created successfully');
+		setSnackBarSeverity('success');
+		fetchFiles();
+	};
+
+	const handleRename = async (node) => {
+		const newName = prompt('Enter new name'); // eslint-disable-line no-alert
+		if (newName === null) {
+			return;
+		}
+		const repsonse = await fetch(
+			`${process.env.REACT_APP_API_URL}/editor/${
+				node.is_file ? 'file' : 'folder'
+			}/rename`,
+			{
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify({
+					path: node.path,
+					new_path: newName,
+				}),
+			}
+		);
+		const data = await repsonse.json();
+		if (!repsonse.ok) {
+			setSnackBarOpen(true);
+			setSnackBarMessage(data.detail);
+			setSnackBarSeverity('error');
+			return;
+		}
+		setSnackBarOpen(true);
+		setSnackBarMessage('Renamed successfully');
+		setSnackBarSeverity('success');
+		fetchFiles();
+	};
+
+	const handleDelete = async (node) => {
+		const confirmDelete = window.confirm(
+			// eslint-disable-line no-alert
+			`Are you sure you want to delete ${node.name}?`
+		);
+		if (!confirmDelete) {
+			return;
+		}
+		const response = await fetch(
+			`${process.env.REACT_APP_API_URL}/editor/${
+				node.is_file ? 'file' : 'folder'
+			}/delete`,
+			{
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify({
+					path: node.path,
+				}),
+			}
+		);
+		const data = await response.json();
+		if (!response.ok) {
+			setSnackBarOpen(true);
+			setSnackBarMessage(data.deatil);
+			setSnackBarSeverity('error');
+			return;
+		}
+		if (data.deleted === 'get_confirmation') {
+			const confirmDeleteForced = window.confirm(
+				// eslint-disable-line no-alert
+				`Are you really sure you want to delete ${node.name} as it is not empty?` +
+					`\nThis will delete all files and folders inside it.`
+			);
+			if (!confirmDeleteForced) {
+				return;
+			}
+			const confirmResponse = await fetch(
+				`${process.env.REACT_APP_API_URL}/editor/${
+					node.is_file ? 'file' : 'folder'
+				}/delete/confirmed`,
+				{
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json',
+					},
+					body: JSON.stringify({
+						path: node.path,
+					}),
+				}
+			);
+			const confirmData = await confirmResponse.json();
+			if (!confirmResponse.ok) {
+				setSnackBarOpen(true);
+				setSnackBarMessage(confirmData.detail);
+				setSnackBarSeverity('error');
+				return;
+			}
+		}
+		setSnackBarOpen(true);
+		setSnackBarMessage('Deleted successfully');
+		setSnackBarSeverity('success');
+		fetchFiles();
+	};
 
 	useEffect(() => {
 		// filter everything after /ansible/ to file_path
@@ -90,9 +286,70 @@ export default function Tree() {
 				defaultCollapseIcon={<ExpandMoreIcon />}
 				defaultExpandIcon={<ChevronRightIcon />}
 				sx={{ overflow: 'auto', height: '90vh' }}
+				defaultExpanded={[fileList[0].path]}
 			>
 				{fileList.map((node) => renderTree(node))}
 			</TreeView>
+			<Menu
+				id="file-menu"
+				anchorEl={menuAnchor}
+				open={Boolean(menuAnchor)}
+				onClose={() => setMenuAnchor(null)}
+			>
+				{rightClickedFile && rightClickedFile.is_file ? (
+					''
+				) : (
+					<MenuItem
+						onClick={() => {
+							handleNewFile(rightClickedFile);
+							setMenuAnchor(null);
+						}}
+					>
+						New File
+					</MenuItem>
+				)}
+				{rightClickedFile && rightClickedFile.is_file ? (
+					''
+				) : (
+					<MenuItem
+						onClick={() => {
+							handleNewFolder(rightClickedFile);
+							setMenuAnchor(null);
+						}}
+					>
+						New Folder
+					</MenuItem>
+				)}
+				<MenuItem
+					onClick={() => {
+						handleRename(rightClickedFile);
+						setMenuAnchor(null);
+					}}
+				>
+					Rename
+				</MenuItem>
+				<MenuItem
+					onClick={() => {
+						handleDelete(rightClickedFile);
+						setMenuAnchor(null);
+					}}
+				>
+					Delete
+				</MenuItem>
+			</Menu>
+			<Snackbar
+				open={snackBarOpen}
+				autoHideDuration={6000}
+				onClose={() => setSnackBarOpen(false)}
+			>
+				<Alert
+					onClose={() => setSnackBarOpen(false)}
+					severity={snackBarSeverity}
+					sx={{ width: '100%' }}
+				>
+					{snackBarMessage}
+				</Alert>
+			</Snackbar>
 		</div>
 	);
 }
