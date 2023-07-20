@@ -67,6 +67,30 @@ const store = configureStore({
 					return state;
 			}
 		},
+		language: (state = { language: 'yaml' }, action) => {
+			switch (action.type) {
+				case 'language/setLanguage':
+					return { language: action.payload };
+				default:
+					return state;
+			}
+		},
+		playbook: (state = { playbook: '' }, action) => {
+			switch (action.type) {
+				case 'playbook/setPlaybook':
+					return { playbook: action.payload };
+				default:
+					return state;
+			}
+		},
+		inventory: (state = { inventory: '' }, action) => {
+			switch (action.type) {
+				case 'inventory/setInventory':
+					return { inventory: action.payload };
+				default:
+					return state;
+			}
+		},
 	},
 });
 

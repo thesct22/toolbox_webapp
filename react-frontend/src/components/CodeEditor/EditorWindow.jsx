@@ -5,11 +5,13 @@ import Editor from '@monaco-editor/react'; // used by vscode, microsoft and gith
 export default function EditorWindow() {
 	const dispatch = useDispatch();
 	const fileContent = useSelector((state) => state.fileContent.fileContent);
+	const language = useSelector((state) => state.language.language);
 
 	return (
 		<Editor
 			height="80vh"
-			defaultLanguage="python"
+			defaultLanguage="yaml"
+			language={language}
 			value={fileContent}
 			theme="vs-dark"
 			options={{

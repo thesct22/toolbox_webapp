@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import * as forge from 'node-forge';
 import Grid from '@mui/material/Grid';
@@ -13,15 +13,13 @@ import CircularProgress from '@mui/material/CircularProgress';
 
 export default function ConfigureTarget() {
 	const dispatch = useDispatch();
-	const [rsaKey, setRsaKey] = React.useState('');
-	const [username, setUsername] = React.useState('');
-	const [password, setPassword] = React.useState('');
-	const [hosts, setHosts] = React.useState(
-		useSelector((state) => state.hosts.hosts)
-	);
-	const [snackbarOpen, setSnackbarOpen] = React.useState(false);
-	const [snackbarMessage, setSnackbarMessage] = React.useState('');
-	const [messageColor, setMessageColor] = React.useState('success');
+	const [rsaKey, setRsaKey] = useState('');
+	const [username, setUsername] = useState('');
+	const [password, setPassword] = useState('');
+	const [hosts, setHosts] = useState(useSelector((state) => state.hosts.hosts));
+	const [snackbarOpen, setSnackbarOpen] = useState(false);
+	const [snackbarMessage, setSnackbarMessage] = useState('');
+	const [messageColor, setMessageColor] = useState('success');
 
 	const fetchRSAKey = async () => {
 		const response = await fetch(`${process.env.REACT_APP_API_URL}/public_key`);
@@ -29,8 +27,12 @@ export default function ConfigureTarget() {
 		setRsaKey(data.public_key);
 	};
 
-	React.useEffect(() => {
+	useEffect(() => {
 		fetchRSAKey();
+		dispatch({
+			type: 'currentPage/setCurrentPage',
+			payload: 'Configure Target',
+		});
 	}, []);
 
 	const usernameChanged = (event) => {

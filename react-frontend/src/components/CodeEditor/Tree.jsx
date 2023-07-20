@@ -55,6 +55,46 @@ export default function Tree() {
 	const fetchFile = async (node) => {
 		setSelectedFile(node);
 		dispatch({ type: 'selectedFile/setSelectedFile', payload: node });
+		if (node.is_file === true) {
+			if (node.name.split('.').length === 1) {
+				dispatch({ type: 'language/setLanguage', payload: 'ini' });
+			} else {
+				const extension = node.name.split('.').pop();
+				switch (extension) {
+					case 'yml':
+						dispatch({ type: 'language/setLanguage', payload: 'yaml' });
+						break;
+					case 'yaml':
+						dispatch({ type: 'language/setLanguage', payload: 'yaml' });
+						break;
+					case 'json':
+						dispatch({ type: 'language/setLanguage', payload: 'json' });
+						break;
+					case 'ini':
+						dispatch({ type: 'language/setLanguage', payload: 'ini' });
+						break;
+					case 'sh':
+						dispatch({ type: 'language/setLanguage', payload: 'shell' });
+						break;
+					case 'ps1':
+						dispatch({ type: 'language/setLanguage', payload: 'powershell' });
+						break;
+					case 'bat':
+						dispatch({ type: 'language/setLanguage', payload: 'bat' });
+						break;
+					case 'py':
+						dispatch({ type: 'language/setLanguage', payload: 'python' });
+						break;
+					case 'md':
+						dispatch({ type: 'language/setLanguage', payload: 'markdown' });
+						break;
+					default:
+						dispatch({ type: 'language/setLanguage', payload: 'plaintext' });
+						break;
+				}
+			}
+		}
+
 		const response = await fetch(
 			`${
 				process.env.REACT_APP_API_URL
@@ -224,6 +264,7 @@ export default function Tree() {
 		if (data.deleted === 'get_confirmation') {
 			const confirmDeleteForced = window.confirm(
 				// eslint-disable-line no-alert
+
 				`Are you really sure you want to delete ${node.name} as it is not empty?` +
 					`\nThis will delete all files and folders inside it.`
 			);

@@ -1,80 +1,42 @@
 import React, { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import * as forge from 'node-forge';
-import Grid from '@mui/material/Grid';
-import TextField from '@mui/material/TextField';
-import Autocomplete from '@mui/material/Autocomplete';
-import Alert from '@mui/material/Alert';
-import Button from '@mui/material/Button';
-import Backdrop from '@mui/material/Backdrop';
-import CircularProgress from '@mui/material/CircularProgress';
-import Snackbar from '@mui/material/Snackbar';
-import IconButton from '@mui/material/IconButton';
+import { useSelector } from 'react-redux';
+import forge from 'node-forge';
+import {
+	Alert,
+	Backdrop,
+	Button,
+	CircularProgress,
+	Dialog,
+	DialogActions,
+	DialogContent,
+	DialogContentText,
+	DialogTitle,
+	IconButton,
+	Snackbar,
+	Grid,
+	// Slider,
+	TextField,
+	Typography,
+} from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
-import Dialog from '@mui/material/Dialog';
-import DialogActions from '@mui/material/DialogActions';
-import DialogContent from '@mui/material/DialogContent';
-import DialogContentText from '@mui/material/DialogContentText';
-import DialogTitle from '@mui/material/DialogTitle';
 
-export default function Home() {
-	const dispatch = useDispatch();
+export default function CustomForm({ playbookPath, inventoryPath }) {
+	// eslint-disable-line
 	const [rsaKey, setRsaKey] = useState('');
 	const [username, setUsername] = useState('');
 	const [password, setPassword] = useState('');
-	const [hosts, setHosts] = useState(useSelector((state) => state.hosts.hosts));
-	const [tags, setTags] = useState(useSelector((state) => state.tags.tags));
-	const [selectedTags, setSelectedTags] = useState(
-		useSelector((state) => state.selectedTags.selectedTags)
-	);
 	const [backdropOpen, setBackdropOpen] = useState(false);
 	const [snackbarOpen, setSnackbarOpen] = useState(false);
 	const [snackbarMessage, setSnackbarMessage] = useState('');
 	const [messageColor, setMessageColor] = useState('success');
-	const [dialogOpen, setDialogOpen] = useState(false);
 	const [dialogMessage, setDialogMessage] = useState('');
-
-	const fetchTags = async () => {
-		const installResponse = await fetch(
-			`${process.env.REACT_APP_API_URL}/install/tags`
-		);
-		const installData = await installResponse.json();
-		const uninstallResponse = await fetch(
-			`${process.env.REACT_APP_API_URL}/uninstall/tags`
-		);
-		const uninstallData = await uninstallResponse.json();
-		const data = [...installData];
-		for (let i = 0; i < uninstallData.length; i += 1) {
-			if (!data.some((item) => item.title === uninstallData[i].title)) {
-				uninstallData[i].title = `${uninstallData[i].title} (uninstall only)`;
-				data.push(uninstallData[i]);
-			}
-		}
-		for (let i = 0; i < installData.length; i += 1) {
-			if (!uninstallData.some((item) => item.title === installData[i].title)) {
-				data.splice(i, 1);
-				installData[i].title = `${installData[i].title} (install only)`;
-				data.push(installData[i]);
-			}
-		}
-		setTags(data);
-		dispatch({ type: 'tags/setTags', payload: data });
-	};
+	const [dialogOpen, setDialogOpen] = useState(false);
 
 	const fetchRSAKey = async () => {
 		const response = await fetch(`${process.env.REACT_APP_API_URL}/public_key`);
 		const data = await response.json();
 		setRsaKey(data.public_key);
 	};
-
-	useEffect(() => {
-		fetchTags();
-		fetchRSAKey();
-	}, []);
-
-	useEffect(() => {
-		dispatch({ type: 'currentPage/setCurrentPage', payload: 'Installer' });
-	}, []);
 
 	const descriptionElementRef = React.useRef(null);
 	useEffect(() => {
@@ -86,37 +48,9 @@ export default function Home() {
 		}
 	}, [dialogOpen]);
 
-	if (rsaKey === '') {
-		return (
-			<Backdrop
-				sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
-				open
-			>
-				<CircularProgress color="inherit" />
-			</Backdrop>
-		);
-	}
-
-	const handleSoftwareListChange = (value) => {
-		const tagsList = [];
-		value.map((softwareItem) => {
-			softwareItem.tags.map((tag) => {
-				if (!tagsList.includes(tag)) {
-					tagsList.push(tag);
-				}
-				return null;
-			});
-			return null;
-		});
-		setSelectedTags(tagsList);
-		dispatch({ type: 'selectedTags/setSelectedTags', payload: tagsList });
-	};
-
-	const handleHostsChange = (value) => {
-		setHosts(value);
-		dispatch({ type: 'hosts/setHosts', payload: value });
-	};
-
+	useEffect(() => {
+		fetchRSAKey();
+	}, []);
 	let publicKey = '';
 	if (rsaKey !== '') {
 		publicKey = forge.pki.publicKeyFromPem(rsaKey);
@@ -133,11 +67,24 @@ export default function Home() {
 		return forge.util.encode64(encrypted);
 	};
 
+	if (rsaKey === '') {
+		return (
+			<Backdrop
+				sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+				open
+			>
+				<CircularProgress color="inherit" />
+			</Backdrop>
+		);
+	}
+
 	const handlePing = () => {
 		setBackdropOpen(true);
 		const encryptedUsername = encrypt(username);
 		const encryptedPassword = encrypt(password);
-		const encryptedHosts = encrypt(hosts);
+		const encryptedHosts = encrypt(
+			useSelector((state) => state.inventory.inventory)
+		);
 
 		fetch(`${process.env.REACT_APP_API_URL}/target/ping`, {
 			method: 'PUT',
@@ -172,23 +119,27 @@ export default function Home() {
 			});
 	};
 
-	const handleInstallUninstall = (install) => {
+	const handleRun = () => {
 		setBackdropOpen(true);
 		const encryptedUsername = encrypt(username);
 		const encryptedPassword = encrypt(password);
-		const encryptedHosts = encrypt(hosts);
+		const encryptedPlaybook = encrypt(
+			useSelector((state) => state.playbook.playbook)
+		);
+		const encryptedInventory = encrypt(
+			useSelector((state) => state.inventory.inventory)
+		);
 
-		const apiUrl = install ? '/target/install' : '/target/uninstall';
-		fetch(process.env.REACT_APP_API_URL + apiUrl, {
+		fetch(`${process.env.REACT_APP_API_URL}/custom/run`, {
 			method: 'PUT',
 			headers: {
 				'Content-Type': 'application/json',
 			},
 			body: JSON.stringify({
-				hosts: encryptedHosts,
+				playbook: encryptedPlaybook,
+				hosts: encryptedInventory,
 				user: encryptedUsername,
 				password: encryptedPassword,
-				tags: selectedTags,
 			}),
 		})
 			.then((response) => [response.json(), response.ok])
@@ -199,16 +150,14 @@ export default function Home() {
 					throw new Error(data.detail);
 				}
 				setSnackbarOpen(true);
-				if (install) setSnackbarMessage('Install successful');
-				else setSnackbarMessage('Uninstall successful');
+				setSnackbarMessage('Playbook run successful');
 				setBackdropOpen(false);
 				setMessageColor('success');
 				setDialogMessage(data);
 			})
 			.catch((error) => {
 				setSnackbarOpen(true);
-				if (install) setSnackbarMessage('Install failed');
-				else setSnackbarMessage('Uninstall failed');
+				setSnackbarMessage('Playbook run failed');
 				setBackdropOpen(false);
 				setMessageColor('error');
 				setDialogMessage(error.message);
@@ -241,12 +190,7 @@ export default function Home() {
 
 	return (
 		<div>
-			<h1>Quick Installer</h1>
-			<p>
-				Page for installing and uninstalling software on multiple hosts with
-				minimal configuration
-			</p>
-			<Grid container spacing={4} padding={4}>
+			<Grid container spacing={1} marginTop={2} paddingRight={2}>
 				<Grid item xs={12} md={6}>
 					<TextField
 						id="username"
@@ -275,59 +219,33 @@ export default function Home() {
 					/>
 				</Grid>
 				<Grid item xs={12}>
-					<TextField
-						id="hosts"
-						required
-						label="Hosts"
-						variant="filled"
-						fullWidth
-						placeholder="IP addresses or hostnames separated by commas"
-						onChange={(event) => {
-							handleHostsChange(event.target.value);
-						}}
-						value={hosts}
-					/>
+					<Typography variant="h6" gutterBottom component="div" align="left">
+						Playbook:{' '}
+						{playbookPath
+							? playbookPath.split('ansible/')[1]
+							: 'No playbook selected'}{' '}
+						{/*eslint-disable-line*/}
+					</Typography>
 				</Grid>
 				<Grid item xs={12}>
-					<Autocomplete
-						multiple
-						id="tags-outlined"
-						options={tags}
-						getOptionLabel={(option) => option.title}
-						filterSelectedOptions
-						renderInput={(params) => (
-							<TextField
-								{...params} // eslint-disable-line react/jsx-props-no-spreading
-								label="Select Software"
-								placeholder="Select Software"
-							/>
-						)}
-						onChange={(event, value) => {
-							handleSoftwareListChange(value);
-						}}
-					/>
+					<Typography variant="h6" gutterBottom component="div" align="left">
+						Inventory:{' '}
+						{inventoryPath
+							? inventoryPath.split('ansible/')[1]
+							: 'No inventory selected'}{' '}
+						{/*eslint-disable-line*/}
+					</Typography>
 				</Grid>
 				<Grid item container>
 					<Grid item margin={2} marginLeft={0}>
 						<Button
 							variant="outlined"
 							onClick={() => {
-								handleInstallUninstall(true);
+								handleRun();
 							}}
 							color="success"
 						>
-							Install
-						</Button>
-					</Grid>
-					<Grid item margin={2}>
-						<Button
-							variant="outlined"
-							onClick={() => {
-								handleInstallUninstall(false);
-							}}
-							color="error"
-						>
-							Uninstall
+							Run
 						</Button>
 					</Grid>
 					<Grid item margin={2}>

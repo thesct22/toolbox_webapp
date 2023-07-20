@@ -1,10 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 
-import Grid from '@mui/material/Grid';
-import Button from '@mui/material/Button';
-import Snackbar from '@mui/material/Snackbar';
-import { Alert } from '@mui/material';
+import { Alert, Button, Grid, Select, Snackbar } from '@mui/material';
 import Tree from './Tree';
 import EditorWindow from './EditorWindow';
 
@@ -16,7 +13,7 @@ export default function CodeEditor() {
 	const fileContent = useSelector((state) => state.fileContent.fileContent);
 
 	useEffect(() => {
-		dispatch({ type: 'currentPage/setCurrentPage', payload: 'Installer' });
+		dispatch({ type: 'currentPage/setCurrentPage', payload: 'Code Editor' });
 	}, []);
 
 	const onSave = async () => {
@@ -79,6 +76,29 @@ export default function CodeEditor() {
 						justifyContent="flex-end"
 						alignItems="baseline"
 					>
+						<Grid item>
+							<Select
+								native
+								value={useSelector((state) => state.language.language)}
+								onChange={(event) => {
+									dispatch({
+										type: 'language/setLanguage',
+										payload: event.target.value,
+									});
+								}}
+							>
+								<option value="yaml">YAML</option>
+								<option value="json">JSON</option>
+								<option value="ini">INI</option>
+								<option value="shell">Shell</option>
+								<option value="powershell">PowerShell</option>
+								<option value="bat">Batch</option>
+								<option value="python">Python</option>
+								<option value="markdown">Markdown</option>
+								<option value="plaintext">Plain Text</option>
+							</Select>
+						</Grid>
+
 						<Grid item>
 							<Button
 								variant="outlined"

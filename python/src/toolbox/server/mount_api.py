@@ -2,6 +2,7 @@
 from typing import Dict
 
 from fastapi import FastAPI
+from toolbox.api.custom import custom_endpoints
 from toolbox.api.editor import editor_endpoints
 from toolbox.api.install import install_endpoints
 from toolbox.api.target import target_endpoints
@@ -46,5 +47,8 @@ def mount_api(app: FastAPI) -> FastAPI:
 
     editor_endpoint = editor_endpoints(app)
     app.mount("/api/editor", editor_endpoint, name="editor")
+
+    custom_endpoint = custom_endpoints(app)
+    app.mount("/api/custom", custom_endpoint, name="custom")
 
     return app

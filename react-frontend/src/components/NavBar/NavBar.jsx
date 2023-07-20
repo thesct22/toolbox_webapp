@@ -5,6 +5,7 @@ import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
 import InstallDesktopIcon from '@mui/icons-material/InstallDesktop';
+import AutoStoriesIcon from '@mui/icons-material/AutoStories';
 import CodeIcon from '@mui/icons-material/Code';
 import TerminalIcon from '@mui/icons-material/Terminal';
 import InfoIcon from '@mui/icons-material/Info';
@@ -28,6 +29,14 @@ export default function NavBar() {
 					<Tooltip title="Installer">
 						<IconButton color="inherit" onClick={() => navigate('/')}>
 							<InstallDesktopIcon />
+						</IconButton>
+					</Tooltip>
+					<Tooltip title="Custom Playbook">
+						<IconButton
+							color="inherit"
+							onClick={() => navigate('/custom-playbook')}
+						>
+							<AutoStoriesIcon />
 						</IconButton>
 					</Tooltip>
 					<Tooltip title="Configure Target">

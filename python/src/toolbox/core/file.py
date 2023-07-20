@@ -6,6 +6,31 @@ from typing import Dict, List, Union
 from pydantic import BaseModel, Field, validator
 
 
+def get_items_recursive(path: Path) -> List[Dict[str, Union[bool, str, list]]]:
+    """
+    Recursive function to get all the items in a folder.
+
+    Args:
+        path (Path): The path to the folder.
+    Returns:
+        List[Dict[str, Union[bool, str, list]]]: List of dictionaries with the items in the folder.
+    """
+    items = []
+    for item in path.iterdir():
+        if item.is_file():
+            items.append({"is_file": True, "path": item, "name": item.name})
+        else:
+            items.append(
+                {
+                    "is_file": False,
+                    "path": item,
+                    "name": item.name,
+                    "items": get_items_recursive(item),
+                }
+            )
+    return items
+
+
 class FileBase(BaseModel):
     """Base class for File and Folder."""
 
@@ -280,7 +305,7 @@ class AnsibleRootFolder(FileBase):
                         "is_file": False,
                         "path": item,
                         "name": item.name,
-                        "items": self.__get_items_recursive(item),
+                        "items": get_items_recursive(item),
                     }
                 )
             else:
@@ -295,28 +320,57 @@ class AnsibleRootFolder(FileBase):
         ]
         return items
 
-    def __get_items_recursive(
-        self, path: Path
-    ) -> List[Dict[str, Union[bool, str, list]]]:
-        """
-        Recursive function to get all the items in a folder.
 
-        Args:
-            path (Path): The path to the folder.
+class CustomFiles(FileBase):
+    """Class for handling the custom file requests."""
+
+    @validator("path")
+    def path_is_ansible_root(cls, v: Path):
+        """Validate if path is the ansible root folder."""
+        if not v.name == "ansible":
+            raise ValueError("This is not the ansible root folder")
+        return v
+
+    def __init__(self, path: Union[str, Path]):
+        """Initialize an AnsibleRootFolder object."""
+        super().__init__(path=path)
+        self.path = self.path.resolve()
+
+    def get_playbooks(self) -> List[Dict[str, Union[bool, str]]]:
+        """
+        Return all the playbooks in the ansible root folder.
+
         Returns:
-            List[Dict[str, Union[bool, str, list]]]: List of dictionaries with the items in the folder.
+            List[Dict[str, Union[bool, str]]]: List of dictionaries with the yml files in the ansible root folder.
         """
         items = []
-        for item in path.iterdir():
+        for item in self.path.iterdir():
+            if item.is_file() and (item.suffix == ".yml" or item.suffix == ".yaml"):
+                items.append(
+                    {"is_file": True, "path": item.as_posix(), "name": item.name}
+                )
+        return items
+
+    def get_inventory(self) -> List[Dict[str, Union[bool, str, list]]]:
+        """
+        Return all the files and folders inside the inventory folder.
+
+        Returns:
+            List[Dict[str, Union[bool, str, list]]]: List of dictionaries with the items in the inventory folder.
+        """
+        items = []
+        for item in (self.path / "inventory").iterdir():
             if item.is_file():
                 items.append({"is_file": True, "path": item, "name": item.name})
-            else:
+            elif item.name == "inventory":
                 items.append(
                     {
                         "is_file": False,
                         "path": item,
                         "name": item.name,
-                        "items": self.__get_items_recursive(item),
+                        "items": get_items_recursive(item),
                     }
                 )
+            else:
+                continue
         return items
