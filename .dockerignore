@@ -1,0 +1,9 @@
+#React stuff
+react-frontend/node_modules
+react-frontend/build
+
+##FastAPI stuff
+python/.venv
+python/.poetry_cache
+python/src/toolbox/ansible
+python/src/toolbox/build

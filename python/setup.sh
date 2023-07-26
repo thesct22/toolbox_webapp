@@ -13,5 +13,8 @@ python3.11 -m venv .venv
 # install poetry
 pipx install poetry
 
+# ensure path is set correctly
+pipx ensurepath
+
 # install all dependencies
 poetry install --with test,doc,code_style,build
