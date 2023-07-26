@@ -1,0 +1,35 @@
+- name: Uninstall Golang
+  include_tasks: go.yml
+  tags:
+  - go
+
+- name: Uninstall Java Development Kit
+  include_tasks: java.yml
+  tags:
+  - jdk
+
+- name: Uninstall NodeJS LTS
+  include_tasks: nodejs.yml
+  tags:
+  - nodejs
+  - npm
+
+- name: Uninstall Python 3.8
+  include_tasks: python.yml
+  tags:
+  - python38
+
+- name: Uninstall Python 3.9
+  include_tasks: python.yml
+  tags:
+  - python39
+
+- name: Uninstall Python 3.10
+  include_tasks: python.yml
+  tags:
+  - python310
+
+- name: Uninstall Python 3.11
+  include_tasks: python.yml
+  tags:
+  - python311

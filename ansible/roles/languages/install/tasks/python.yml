@@ -1,0 +1,144 @@
+- name: Install Python 3.8
+  block:
+    - name: Install Python 3.8 on Windows
+      win_chocolatey:
+        name: python38
+        state: latest
+      become: true
+      become_method: runas
+      become_user: "{{ admin_username }}"
+      when: ansible_os_family == "Windows"
+    - name: Install Python 3.8 on Debian
+      apt:
+        name: python3.8
+        state: latest
+      become: true
+      when: ansible_os_family == "Debian"
+    - name: Install Python 3.8 on RedHat
+      yum:
+        name: python38
+        state: latest
+      become: true
+      when: ansible_os_family == "RedHat"
+    - name: Install Python 3.8 on MacOS
+      homebrew:
+        name: python@3.8
+        state: latest
+      become: true
+      when: ansible_os_family == "Darwin"
+    - name: Install Python 3.8 on Alpine
+      apk:
+        name: python3.8
+        state: latest
+      become: true
+      when: ansible_os_family == "Alpine"
+  tags:
+    - python38
+- name: Install Python 3.9
+  block:
+    - name: Install Python 3.9 on Windows
+      win_chocolatey:
+        name: python39
+        state: latest
+      become: true
+      become_method: runas
+      become_user: "{{ admin_username }}"
+      when: ansible_os_family == "Windows"
+    - name: Install Python 3.9 on Debian
+      apt:
+        name: python3.9
+        state: latest
+      become: true
+      when: ansible_os_family == "Debian"
+    - name: Install Python 3.9 on RedHat
+      yum:
+        name: python39
+        state: latest
+      become: true
+      when: ansible_os_family == "RedHat"
+    - name: Install Python 3.9 on MacOS
+      homebrew:
+        name: python@3.9
+        state: latest
+      become: true
+      when: ansible_os_family == "Darwin"
+    - name: Install Python 3.9 on Alpine
+      apk:
+        name: python3.9
+        state: latest
+      become: true
+      when: ansible_os_family == "Alpine"
+  tags:
+    - python39
+- name: Install Python 3.10
+  block:
+    - name: Install Python 3.10 on Windows
+      win_chocolatey:
+        name: python310
+        state: latest
+      become: true
+      become_method: runas
+      become_user: "{{ admin_username }}"
+      when: ansible_os_family == "Windows"
+    - name: Install Python 3.10 on Debian
+      apt:
+        name: python3.10
+        state: latest
+      become: true
+      when: ansible_os_family == "Debian"
+    - name: Install Python 3.10 on RedHat
+      yum:
+        name: python310
+        state: latest
+      become: true
+      when: ansible_os_family == "RedHat"
+    - name: Install Python 3.10 on MacOS
+      homebrew:
+        name: python@3.10
+        state: latest
+      become: true
+      when: ansible_os_family == "Darwin"
+    - name: Install Python 3.10 on Alpine
+      apk:
+        name: python3.10
+        state: latest
+      become: true
+      when: ansible_os_family == "Alpine"
+  tags:
+    - python310
+- name: Install Python 3.11
+  block:
+    - name: Install Python 3.11 on Windows
+      win_chocolatey:
+        name: python311
+        state: latest
+      become: true
+      become_method: runas
+      become_user: "{{ admin_username }}"
+      when: ansible_os_family == "Windows"
+    - name: Install Python 3.11 on Debian
+      apt:
+        name: python3.11
+        state: latest
+      become: true
+      when: ansible_os_family == "Debian"
+    - name: Install Python 3.11 on RedHat
+      yum:
+        name: python311
+        state: latest
+      become: true
+      when: ansible_os_family == "RedHat"
+    - name: Install Python 3.11 on MacOS
+      homebrew:
+        name: python@3.11
+        state: latest
+      become: true
+      when: ansible_os_family == "Darwin"
+    - name: Install Python 3.11 on Alpine
+      apk:
+        name: python3.11
+        state: latest
+      become: true
+      when: ansible_os_family == "Alpine"
+  tags:
+    - python311

@@ -1,0 +1,55 @@
+- name: Install Golang
+  block:
+    - name: Install Golang on Windows
+      win_chocolatey:
+        name: golang
+        state: latest
+      become: true
+      become_method: runas
+      become_user: "{{ admin_username }}"
+      when: ansible_os_family == "Windows"
+    - name: Add golang repository to Debian
+      apt_repository:
+        repo: deb http://ppa.launchpad.net/longsleep/golang-backports/ubuntu $(lsb_release -cs) main
+        state: present
+        filename: longsleep-golang-backports
+        update_cache: yes
+      become: true
+      when: ansible_os_family == "Debian"
+    - name: Install Golang on Debian
+      apt:
+        name: golang-go
+        state: latest
+      become: true
+      when: ansible_os_family == "Debian"
+    - name: Install Golang on RedHat
+      yum:
+        name: epel-release golang
+        state: latest
+      become: true
+      when: ansible_os_family == "RedHat"
+    - name: Install Golang on MacOS
+      homebrew:
+        name: golang
+        state: latest
+      become: true
+      when: ansible_os_family == "Darwin"
+    - name: Install Golang on Alpine
+      apk:
+        name: go
+        state: latest
+      become: true
+      when: ansible_os_family == "Alpine"
+    - name: Set Golang environment variables on Alpine
+      lineinfile:
+        path: /etc/profile
+        line: |
+          export GOROOT=/usr/lib/go
+          export GOPATH=$HOME/go
+          export PATH=$PATH:$GOROOT/bin:$GOPATH/bin
+        state: present
+      become: true
+      when: ansible_os_family == "Alpine"
+  tags:
+    - go
+    - golang

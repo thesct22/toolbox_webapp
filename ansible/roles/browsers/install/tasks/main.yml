@@ -1,19 +1,19 @@
 - name: Install Google Chrome
   include_tasks: chrome.yml
   tags:
-    - chrome
+  - chrome
 
 - name: Install Firefox
   include_tasks: firefox.yml
   tags:
-    - firefox
+  - firefox
 
 - name: Install Microsoft Edge
   include_tasks: edge.yml
   tags:
-    - edge
+  - edge
 
 - name: Install fake browser for testing install-only
   include_tasks: edge.yml
   tags:
-    - fake-install-only
+  - fake-install-only

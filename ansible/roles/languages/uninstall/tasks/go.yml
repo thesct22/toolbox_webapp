@@ -1,0 +1,44 @@
+- name: Uninstall Golang
+  block:
+    - name: Uninstall Golang on Windows
+      win_chocolatey:
+        name: golang
+        state: absent
+      become: true
+      become_method: runas
+      become_user: "{{ admin_username }}"
+      when: ansible_os_family == "Windows"
+    - name: Uninstall Golang on Debian
+      apt:
+        name: golang-go
+        state: absent
+      become: true
+      when: ansible_os_family == "Debian"
+    - name: Uninstall Golang on RedHat
+      yum:
+        name: golang
+        state: absent
+      become: true
+      when: ansible_os_family == "RedHat"
+    - name: Uninstall Golang on MacOS
+      homebrew:
+        name: golang
+        state: absent
+      become: true
+      when: ansible_os_family == "Darwin"
+    - name: Uninstall Golang on Alpine
+      apk:
+        name: go
+        state: absent
+      become: true
+      when: ansible_os_family == "Alpine"
+    - name: Remove Golang variables from Alpine
+      lineinfile:
+        path: /etc/profile
+        regexp: '^export GOROOT=/usr/lib/go$'
+        state: absent
+      become: true
+      when: ansible_os_family == "Alpine"
+  tags:
+    - go
+    - golang

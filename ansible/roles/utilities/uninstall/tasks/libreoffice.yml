@@ -1,0 +1,36 @@
+- name: Uninstall Libre Office Suite
+  block:
+    - name: Uninstall Libre Office Suite on Windows
+      win_chocolatey:
+        name: libreoffice-fresh
+        state: absent
+      become: true
+      become_method: runas
+      become_user: "{{ admin_username }}"
+      when: ansible_os_family == "Windows"
+    - name: Uninstall Libre Office Suite on Debian
+      apt:
+        name: libreoffice
+        state: absent
+      become: true
+      when: ansible_os_family == "Debian"
+    - name: Uninstall Libre Office Suite on RedHat
+      yum:
+        name: libreoffice
+        state: absent
+      become: true
+      when: ansible_os_family == "RedHat"
+    - name: Uninstall Libre Office Suite on MacOS
+      homebrew:
+        name: libreoffice
+        state: absent
+      become: true
+      when: ansible_os_family == "Darwin"
+    - name: Uninstall Libre Office Suite on Alpine
+      apk:
+        name: libreoffice
+        state: absent
+      become: true
+      when: ansible_os_family == "Alpine"
+  tags:
+    - libreoffice

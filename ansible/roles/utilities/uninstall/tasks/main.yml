@@ -1,0 +1,20 @@
+- name: Uninstall Docker CLI
+  include_tasks: docker.yml
+  tags:
+  - docker-cli
+  - docker
+
+- name: Uninstall Docker Desktop
+  include_tasks: docker.yml
+  tags:
+  - docker-desktop
+
+- name: Uninstall K3s
+  include_tasks: k3s.yml
+  tags:
+  - k3s
+
+- name: Uninstall LibreOffice
+  include_tasks: libreoffice.yml
+  tags:
+  - libreoffice

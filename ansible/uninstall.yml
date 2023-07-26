@@ -5,8 +5,6 @@
   strategy: free
   roles:
     - browsers/uninstall
-    # - editors
     - version-control/uninstall
-    # - java
-    # - nodejs
-    # - python
+    - languages/uninstall
+    - utilities/uninstall

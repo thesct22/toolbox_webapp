@@ -1,0 +1,49 @@
+- name: Uninstall NodeJS LTS
+  block:
+    - name: Uninstall NodeJS LTS on Windows
+      win_chocolatey:
+        name: nodejs-lts
+        state: absent
+      become: true
+      become_method: runas
+      become_user: "{{ admin_username }}"
+      when: ansible_os_family == "Windows"
+    - name: Uninstall NodeJS LTS on Debian
+      apt:
+        name: nodejs
+        state: absent
+      become: true
+      when: ansible_os_family == "Debian"
+    - name: Uninstall NodeJS LTS on RedHat
+      yum:
+        name: nodejs
+        state: absent
+      become: true
+      when: ansible_os_family == "RedHat"
+    - name: Uninstall NPM on RedHat
+      yum:
+        name: npm
+        state: absent
+      become: true
+      when: ansible_os_family == "RedHat"
+    - name: Uninstall NodeJS LTS on MacOS
+      homebrew:
+        name: node
+        state: absent
+      become: true
+      when: ansible_os_family == "Darwin"
+    - name: Uninstall NodeJS LTS on Alpine
+      apk:
+        name: nodejs
+        state: absent
+      become: true
+      when: ansible_os_family == "Alpine"
+    - name: Uninstall npm on Alpine
+      apk:
+        name: npm
+        state: absent
+      become: true
+      when: ansible_os_family == "Alpine"
+  tags:
+    - nodejs
+    - npm

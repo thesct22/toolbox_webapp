@@ -1,0 +1,60 @@
+- name: Install NodeJS LTS
+  block:
+    - name: Install NodeJS LTS on Windows
+      win_chocolatey:
+        name: nodejs-lts
+        state: latest
+      become: true
+      become_method: runas
+      become_user: "{{ admin_username }}"
+      when: ansible_os_family == "Windows"
+    - name: Download NodeJS LTS on Debian
+      get_url:
+        url: https://deb.nodesource.com/setup_lts.x
+        dest: /tmp/setup_lts.sh
+        mode: 0755
+      become: true
+      when: ansible_os_family == "Debian"
+    - name: Run NodeJS LTS setup on Debian
+      shell: /tmp/setup_lts.sh
+      become: true
+      when: ansible_os_family == "Debian"
+    - name: Install NodeJS LTS on Debian
+      apt:
+        name: nodejs
+        state: latest
+      become: true
+      when: ansible_os_family == "Debian"
+    - name: Install NodeJS LTS on RedHat
+      yum:
+        name: nodejs
+        state: latest
+      become: true
+      when: ansible_os_family == "RedHat"
+    - name: Install NPM on RedHat
+      yum:
+        name: npm
+        state: latest
+      become: true
+      when: ansible_os_family == "RedHat"
+    - name: Install NodeJS LTS on MacOS
+      homebrew:
+        name: node
+        state: latest
+      become: true
+      when: ansible_os_family == "Darwin"
+    - name: Install NodeJS LTS on Alpine
+      apk:
+        name: nodejs
+        state: latest
+      become: true
+      when: ansible_os_family == "Alpine"
+    - name: Install npm on Alpine
+      apk:
+        name: npm
+        state: latest
+      become: true
+      when: ansible_os_family == "Alpine"
+  tags:
+    - nodejs
+    - npm

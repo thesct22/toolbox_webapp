@@ -1,0 +1,75 @@
+- name: Uninstall Docker Desktop
+  block:
+    - name: Uninstall Docker Desktop on Windows
+      win_chocolatey:
+        name: docker-desktop
+        state: absent
+      become: true
+      become_method: runas
+      become_user: "{{ admin_username }}"
+      when: ansible_os_family == "Windows"
+    - name: Uninstall Docker on Debian
+      apt:
+        name: docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+        state: absent
+      become: true
+      when: ansible_os_family == "Debian"
+    - name: Download Docker Desktop deb package on Debian
+      get_url:
+        url: https://desktop.docker.com/linux/main/amd64/docker-desktop-{{ docker_desktop_version }}.deb
+        dest: /tmp/docker-desktop.deb
+        mode: 0644
+      become: true
+      when: ansible_os_family == "Debian"
+    - name: Uninstall Docker Desktop deb package on Debian
+      apt:
+        deb: /tmp/docker-desktop.deb
+        state: absent
+      become: true
+      when: ansible_os_family == "Debian"
+    - name: Uninstall Docker Desktop on MacOS
+      homebrew:
+        name: docker
+        state: absent
+      become: true
+      when: ansible_os_family == "Darwin"
+  tags:
+    - docker-desktop
+
+- name: Uninstall Docker CLI
+  block:
+    - name: Uninstall Docker on Windows
+      win_chocolatey:
+        name: docker-cli
+        state: absent
+      become: true
+      become_method: runas
+      become_user: "{{ admin_username }}"
+      when: ansible_os_family == "Windows"
+    - name: Uninstall Docker on Debian
+      apt:
+        name: docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+        state: absent
+      become: true
+      when: ansible_os_family == "Debian"
+    - name: Uninstall Docker on RedHat
+      yum:
+        name: docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+        state: absent
+      become: true
+      when: ansible_os_family == "RedHat"
+    - name: Uninstall Docker on MacOS
+      homebrew:
+        name: docker
+        state: absent
+      become: true
+      when: ansible_os_family == "Darwin"
+    - name: Uninstall Docker on Alpine
+      apk:
+        name: docker
+        state: absent
+      become: true
+      when: ansible_os_family == "Alpine"
+  tags:
+    - docker-cli
+    - docker

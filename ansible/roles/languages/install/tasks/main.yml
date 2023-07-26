@@ -1,0 +1,36 @@
+- name: Install Golang
+  include_tasks: go.yml
+  tags:
+  - go
+  - golang
+
+- name: Install Java Development Kit
+  include_tasks: java.yml
+  tags:
+  - jdk
+
+- name: Install NodeJS LTS
+  include_tasks: nodejs.yml
+  tags:
+  - nodejs
+  - npm
+
+- name: Install Python 3.8
+  include_tasks: python.yml
+  tags:
+  - python38
+
+- name: Install Python 3.9
+  include_tasks: python.yml
+  tags:
+  - python39
+
+- name: Install Python 3.10
+  include_tasks: python.yml
+  tags:
+  - python310
+
+- name: Install Python 3.11
+  include_tasks: python.yml
+  tags:
+  - python311

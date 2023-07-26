@@ -1,0 +1,117 @@
+- name: Install Docker Desktop
+  block:
+    - name: Install Docker Desktop on Windows
+      win_chocolatey:
+        name: docker-desktop
+        state: latest
+      become: true
+      become_method: runas
+      become_user: "{{ admin_username }}"
+      when: ansible_os_family == "Windows"
+    - name: Add Docker GPG key on Debian
+      apt_key:
+        url: https://download.docker.com/linux/debian/gpg
+        state: present
+      become: true
+      when: ansible_os_family == "Debian"
+    - name: Setup Docker repository on Debian
+      apt_repository:
+        code-name: "{{ ansible_distribution_release }}"
+        repo: deb [arch=$(dpkg --print-architecture)] signed-by=/usr/share/keyrings/docker-archive-keyring.gpg https://download.docker.com/linux/debian $(lsb_release -cs) stable
+        signed-by: /usr/share/keyrings/docker-archive-keyring.gpg
+        state: present
+        filename: docker
+        update_cache: yes
+      become: true
+      when: ansible_os_family == "Debian"
+    - name: Install Docker on Debian
+      apt:
+        name: docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+        state: latest
+      become: true
+      when: ansible_os_family == "Debian"
+    - name: Download Docker Desktop deb package on Debian
+      get_url:
+        url: https://desktop.docker.com/linux/main/amd64/docker-desktop-{{ docker_desktop_version }}.deb
+        dest: /tmp/docker-desktop.deb
+        mode: 0644
+      become: true
+      when: ansible_os_family == "Debian"
+    - name: Install Docker Desktop deb package on Debian
+      apt:
+        deb: /tmp/docker-desktop.deb
+        state: present
+      become: true
+      when: ansible_os_family == "Debian"
+    - name: Install Docker Desktop on MacOS
+      homebrew:
+        name: docker
+        state: latest
+      become: true
+      when: ansible_os_family == "Darwin"
+  tags:
+    - docker-desktop
+
+- name: Install Docker CLI
+  block:
+    - name: Install Docker on Windows
+      win_chocolatey:
+        name: docker-cli
+        state: latest
+      become: true
+      become_method: runas
+      become_user: "{{ admin_username }}"
+      when: ansible_os_family == "Windows"
+    - name: Add Docker GPG key on Debian
+      apt_key:
+        url: https://download.docker.com/linux/debian/gpg
+        state: present
+      become: true
+      when: ansible_os_family == "Debian"
+    - name: Setup Docker repository on Debian
+      apt_repository:
+        code-name: "{{ ansible_distribution_release }}"
+        repo: deb [arch=$(dpkg --print-architecture)] signed-by=/usr/share/keyrings/docker-archive-keyring.gpg https://download.docker.com/linux/debian $(lsb_release -cs) stable
+        signed-by: /usr/share/keyrings/docker-archive-keyring.gpg
+        state: present
+        filename: docker
+        update_cache: yes
+      become: true
+      when: ansible_os_family == "Debian"
+    - name: Install Docker on Debian
+      apt:
+        name: docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+        state: latest
+      become: true
+      when: ansible_os_family == "Debian"
+    - name: Install Yum Utils on RedHat
+      yum:
+        name: yum-utils
+        state: latest
+      become: true
+      when: ansible_os_family == "RedHat"
+    - name: Add Docker repository on RedHat
+      shell: yum-config-manager --add-repo https://download.docker.com/linux/$basearch/docker-ce.repo
+      become: true
+      when: ansible_os_family == "RedHat"
+    - name: Install Docker on RedHat
+      yum:
+        name: docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+        state: latest
+      become: true
+      when: ansible_os_family == "RedHat"
+    - name: Install Docker on MacOS
+      homebrew:
+        name: docker
+        state: latest
+      become: true
+      when: ansible_os_family == "Darwin"
+    - name: Install Docker on Alpine
+      apk:
+        name: docker
+        state: latest
+      become: true
+      when: ansible_os_family == "Alpine"
+  tags:
+    - docker-cli
+    - docker

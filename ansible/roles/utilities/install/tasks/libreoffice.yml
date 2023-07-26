@@ -1,0 +1,44 @@
+- name: Install Libre Office Suite
+  block:
+    - name: Install Libre Office Suite on Windows
+      win_chocolatey:
+        name: libreoffice-fresh
+        state: latest
+      become: true
+      become_method: runas
+      become_user: "{{ admin_username }}"
+      when: ansible_os_family == "Windows"
+    - name: Add libreoffice repository to Debian
+      apt_repository:
+        repo: deb http://ppa.launchpad.net/libreoffice/ppa/ubuntu $(lsb_release -cs) main
+        state: present
+        filename: libreoffice
+        update_cache: yes
+      become: true
+      when: ansible_os_family == "Debian"
+    - name: Install Libre Office Suite on Debian
+      apt:
+        name: libreoffice
+        state: latest
+      become: true
+      when: ansible_os_family == "Debian"
+    - name: Install Libre Office Suite on RedHat
+      yum:
+        name: libreoffice
+        state: latest
+      become: true
+      when: ansible_os_family == "RedHat"
+    - name: Install Libre Office Suite on MacOS
+      homebrew:
+        name: libreoffice
+        state: latest
+      become: true
+      when: ansible_os_family == "Darwin"
+    - name: Install Libre Office Suite on Alpine
+      apk:
+        name: libreoffice
+        state: latest
+      become: true
+      when: ansible_os_family == "Alpine"
+  tags:
+    - libreoffice

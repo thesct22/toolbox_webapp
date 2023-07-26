@@ -1,0 +1,29 @@
+- name: Install k3s on main server node
+  become: true
+  shell: "curl -sfL https://get.k3s.io | K3S_TOKEN={{ k3s_server_token }} sh -s - server --cluster-init"
+  register: k3s_install
+  failed_when: k3s_install.rc != 0 and 'already part of cluster' not in k3s_install.stderr
+  changed_when: k3s_install.rc == 0 or 'already part of cluster' in k3s_install.stderr
+  tags:
+    - k3s
+    - k3s-main-server
+- name: Install K3s on additional server nodes
+  become: true
+  shell: curl -sfL https://get.k3s.io | K3S_TOKEN={{ k3s_server_token }} sh -s - server --server https://{{ k3s_server_ip }}:6443
+  register: k3s_install
+  failed_when: k3s_install.rc != 0 and 'already part of cluster' not in k3s_install.stderr
+  changed_when: k3s_install.rc == 0 or 'already part of cluster' in k3s_install.stderr
+  when: k3s_server_ip is defined
+  tags:
+    - k3s
+    - k3s-additional-server
+- name: Install K3s on agent nodes
+  become: true
+  shell: curl -sfL https://get.k3s.io | K3S_TOKEN={{ k3s_server_token }} K3S_URL=https://{{ k3s_server_ip }}:6443 sh -
+  register: k3s_install
+  failed_when: k3s_install.rc != 0 and 'already part of cluster' not in k3s_install.stderr
+  changed_when: k3s_install.rc == 0 or 'already part of cluster' in k3s_install.stderr
+  when: k3s_server_ip is defined
+  tags:
+    - k3s
+    - k3s-agent

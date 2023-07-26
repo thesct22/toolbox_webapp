@@ -1,0 +1,38 @@
+- name: Install Docker CLI
+  include_tasks: docker.yml
+  tags:
+  - docker-cli
+  - docker
+
+- name: Install Docker Desktop
+  include_tasks: docker.yml
+  tags:
+  - docker-desktop
+
+- name: Install Helm
+  include_tasks: helm.yml
+  tags:
+  - helm
+
+- name: Install K3s on Main Server
+  include_tasks: k3s.yml
+  tags:
+  - k3s-main-server
+  - k3s
+
+- name: Install K3s on Additional Server
+  include_tasks: k3s.yml
+  tags:
+  - k3s-additional-server
+  - k3s
+
+- name: Install K3s on Agent
+  include_tasks: k3s.yml
+  tags:
+  - k3s-agent
+  - k3s
+
+- name: Install LibreOffice
+  include_tasks: libreoffice.yml
+  tags:
+  - libreoffice

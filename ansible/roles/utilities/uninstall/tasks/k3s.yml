@@ -1,0 +1,20 @@
+- name: Remove k3s from agent nodes
+  become: true
+  shell: "/usr/local/bin/k3s-agent-uninstall.sh"
+  register: k3s_uninstall
+  failed_when: k3s_uninstall.rc != 0 and 'not found' not in k3s_uninstall.stderr
+  tags:
+    - k3s-agent
+    - k3s
+
+- name: Remove k3s from server nodes
+  block:
+    - name: Remove k3s from server nodes by running k3s-uninstall.sh
+      become: true
+      shell: "/usr/local/bin/k3s-uninstall.sh"
+      register: k3s_uninstall
+      failed_when: k3s_uninstall.rc != 0 and 'not found' not in k3s_uninstall.stderr
+  tags:
+    - k3s-additional-server
+    - k3s-main-server
+    - k3s

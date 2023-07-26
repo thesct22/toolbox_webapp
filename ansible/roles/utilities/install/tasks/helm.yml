@@ -1,0 +1,11 @@
+- name: Add helm on all nodes
+  block:
+    - name: Install helm on main server
+      become: true
+      shell: "curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 && chmod 700 get_helm.sh && ./get_helm.sh"
+      register: helm_install
+      failed_when: helm_install.rc != 0 and 'already part of cluster' not in helm_install.stderr
+      changed_when: helm_install.rc == 0 or 'already part of cluster' in helm_install.stderr
+      when: k3s_install.rc == 0 or 'already part of cluster' in k3s_install.stderr
+  tags:
+    - helm
