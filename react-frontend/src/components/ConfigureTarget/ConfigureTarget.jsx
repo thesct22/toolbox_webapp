@@ -157,7 +157,9 @@ export default function ConfigureTarget() {
 					/>
 				</Grid>
 				<Grid item xs={12}>
-					<Button onClick={handleClick}>Configure</Button>
+					<Button onClick={handleClick} variant="contained" color="warning">
+						Configure
+					</Button>
 				</Grid>
 			</Grid>
 			<Snackbar

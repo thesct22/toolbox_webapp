@@ -73,6 +73,10 @@ def target_endpoints(app: FastAPI) -> FastAPI:
                 status_code=400, detail="Missing hosts, user or password."
             )
         try:
+            verboisty = int(data["verbosity"])
+        except ValueError:
+            verboisty = 0
+        try:
             hosts = RSAKey().decrypt(data["hosts"])
             user = RSAKey().decrypt(data["user"])
             password = RSAKey().decrypt(data["password"])
@@ -85,13 +89,18 @@ def target_endpoints(app: FastAPI) -> FastAPI:
             raise HTTPException(
                 status_code=400, detail="Missing hosts, user or password."
             )
-        ansible = Ansible(inventory=hosts, user=user, password=password)
+        ansible = Ansible(
+            inventory=hosts, user=user, password=password, verbosity=verboisty
+        )
         try:
             ansible.verfiy_auth()
         except ValueError as e:
             raise HTTPException(status_code=400, detail=str(e))
         ping_command = ansible.get_ping_command()
-        result = ansible.run_command(ping_command)
+        try:
+            result = ansible.run_command(ping_command)
+        except ValueError as e:
+            raise HTTPException(status_code=400, detail=str(e))
         return result
 
     @app.put("/api/target/install", response_model=str)

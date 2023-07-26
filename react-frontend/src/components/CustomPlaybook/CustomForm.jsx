@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
 import forge from 'node-forge';
 import {
 	Alert,
@@ -14,17 +13,21 @@ import {
 	IconButton,
 	Snackbar,
 	Grid,
-	// Slider,
 	TextField,
 	Typography,
+	Slider,
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 
+// eslint-disable-next-line
 export default function CustomForm({ playbookPath, inventoryPath }) {
-	// eslint-disable-line
 	const [rsaKey, setRsaKey] = useState('');
 	const [username, setUsername] = useState('');
 	const [password, setPassword] = useState('');
+	const [verbosity, setVerbosity] = useState(0);
+	const [tags, setTags] = useState('');
+	const [extraArgs, setExtraArgs] = useState('');
+	const [extraVars, setExtraVars] = useState([{ key: '', value: '' }]);
 	const [backdropOpen, setBackdropOpen] = useState(false);
 	const [snackbarOpen, setSnackbarOpen] = useState(false);
 	const [snackbarMessage, setSnackbarMessage] = useState('');
@@ -82,9 +85,7 @@ export default function CustomForm({ playbookPath, inventoryPath }) {
 		setBackdropOpen(true);
 		const encryptedUsername = encrypt(username);
 		const encryptedPassword = encrypt(password);
-		const encryptedHosts = encrypt(
-			useSelector((state) => state.inventory.inventory)
-		);
+		const encryptedHosts = encrypt(inventoryPath);
 
 		fetch(`${process.env.REACT_APP_API_URL}/target/ping`, {
 			method: 'PUT',
@@ -95,6 +96,7 @@ export default function CustomForm({ playbookPath, inventoryPath }) {
 				hosts: encryptedHosts,
 				user: encryptedUsername,
 				password: encryptedPassword,
+				verbosity,
 			}),
 		})
 			.then((response) => [response.json(), response.ok])
@@ -123,11 +125,17 @@ export default function CustomForm({ playbookPath, inventoryPath }) {
 		setBackdropOpen(true);
 		const encryptedUsername = encrypt(username);
 		const encryptedPassword = encrypt(password);
-		const encryptedPlaybook = encrypt(
-			useSelector((state) => state.playbook.playbook)
-		);
-		const encryptedInventory = encrypt(
-			useSelector((state) => state.inventory.inventory)
+		const encryptedPlaybook = encrypt(playbookPath);
+		const encryptedInventory = encrypt(inventoryPath);
+		const encryptedTags = encrypt(tags);
+		const encryptedExtraArgs = encrypt(extraArgs);
+		// select all extraVars where key and value are not empty
+		const encryptedExtraVars = encrypt(
+			JSON.stringify(
+				extraVars.filter(
+					(extraVar) => extraVar.key !== '' && extraVar.value !== ''
+				)
+			)
 		);
 
 		fetch(`${process.env.REACT_APP_API_URL}/custom/run`, {
@@ -140,6 +148,10 @@ export default function CustomForm({ playbookPath, inventoryPath }) {
 				hosts: encryptedInventory,
 				user: encryptedUsername,
 				password: encryptedPassword,
+				verbosity,
+				tags: encryptedTags,
+				extra_args: encryptedExtraArgs,
+				extra_vars: encryptedExtraVars,
 			}),
 		})
 			.then((response) => [response.json(), response.ok])
@@ -162,6 +174,14 @@ export default function CustomForm({ playbookPath, inventoryPath }) {
 				setMessageColor('error');
 				setDialogMessage(error.message);
 			});
+	};
+
+	const onVerbosityChange = (value) => {
+		setVerbosity(value);
+	};
+
+	const onTagChange = (value) => {
+		setTags(value);
 	};
 
 	const snackbaraction = (
@@ -202,6 +222,7 @@ export default function CustomForm({ playbookPath, inventoryPath }) {
 							setUsername(event.target.value);
 						}}
 						value={username}
+						size="small"
 					/>
 				</Grid>
 				<Grid item xs={12} md={6}>
@@ -216,30 +237,155 @@ export default function CustomForm({ playbookPath, inventoryPath }) {
 							setPassword(event.target.value);
 						}}
 						value={password}
+						size="small"
 					/>
 				</Grid>
-				<Grid item xs={12}>
-					<Typography variant="h6" gutterBottom component="div" align="left">
+				<Grid item xs={12} alignItems="center">
+					<Typography variant="h6" gutterBottom align="left">
 						Playbook:{' '}
 						{playbookPath
-							? playbookPath.split('ansible/')[1]
+							? playbookPath.split('ansible/')[1] // eslint-disable-line
 							: 'No playbook selected'}{' '}
-						{/*eslint-disable-line*/}
+					</Typography>
+				</Grid>
+				<Grid item xs={12} alignItems="center">
+					<Typography variant="h6" gutterBottom align="left">
+						Inventory:{' '}
+						{inventoryPath
+							? inventoryPath.split('ansible/')[1] // eslint-disable-line
+							: 'No inventory selected'}{' '}
+					</Typography>
+				</Grid>
+				<Grid item container xs>
+					<Grid item container xs={12} md={6} alignItems="center">
+						<Grid item sx={{ alignItems: 'center' }}>
+							<Typography variant="h6" gutterBottom>
+								Verbosity:
+							</Typography>
+						</Grid>
+						<Grid item xs padding={2}>
+							<Slider
+								aria-label="Verbosity"
+								valueLabelDisplay="auto"
+								step={1}
+								marks
+								min={0}
+								max={4}
+								value={verbosity}
+								onChange={(_, value) => {
+									onVerbosityChange(value);
+								}}
+							/>
+						</Grid>
+					</Grid>
+					<Grid item xs={12} md={6}>
+						<TextField
+							id="tags"
+							label="Tags"
+							variant="filled"
+							fullWidth
+							onChange={(event) => {
+								onTagChange(event.target.value);
+							}}
+							value={tags}
+							size="small"
+						/>
+					</Grid>
+				</Grid>
+				<Grid item xs={12}>
+					<TextField
+						id="extra_args"
+						label="Extra Arguments"
+						variant="filled"
+						fullWidth
+						value={extraArgs}
+						onChange={(event) => {
+							setExtraArgs(event.target.value);
+						}}
+						size="small"
+					/>
+				</Grid>
+				<Grid item xs={12} alignItems="center">
+					<Typography variant="h6" gutterBottom align="left">
+						Extra Variables:
 					</Typography>
 				</Grid>
 				<Grid item xs={12}>
-					<Typography variant="h6" gutterBottom component="div" align="left">
-						Inventory:{' '}
-						{inventoryPath
-							? inventoryPath.split('ansible/')[1]
-							: 'No inventory selected'}{' '}
-						{/*eslint-disable-line*/}
-					</Typography>
+					{extraVars.map((extraVar, index) => (
+						<Grid
+							container
+							spacing={1}
+							key={`extra-var-${index}`} // eslint-disable-line
+							alignItems="center"
+						>
+							<Grid item xs={5}>
+								<TextField
+									id={`extra-var-key-${index}`}
+									label="Key"
+									variant="filled"
+									fullWidth
+									value={extraVar.key}
+									onChange={(event) => {
+										const newExtraVars = [...extraVars];
+										newExtraVars[index].key = event.target.value;
+										setExtraVars(newExtraVars);
+										if (
+											index === extraVars.length - 1 &&
+											event.target.value !== ''
+										) {
+											setExtraVars([...extraVars, { key: '', value: '' }]);
+										}
+										if (
+											index === extraVars.length - 2 &&
+											event.target.value === '' &&
+											extraVars.length > 1 &&
+											extraVars[index].value === ''
+										) {
+											setExtraVars(extraVars.slice(0, -1));
+										}
+									}}
+									size="small"
+								/>
+							</Grid>
+							<Typography variant="h4" gutterBottom align="center">
+								{' :'}
+							</Typography>
+							<Grid item xs={5}>
+								<TextField
+									id={`extra-var-value-${index}`}
+									label="Value"
+									variant="filled"
+									fullWidth
+									value={extraVar.value}
+									onChange={(event) => {
+										const newExtraVars = [...extraVars];
+										newExtraVars[index].value = event.target.value;
+										setExtraVars(newExtraVars);
+										if (
+											index === extraVars.length - 1 &&
+											event.target.value !== ''
+										) {
+											setExtraVars([...extraVars, { key: '', value: '' }]);
+										}
+										if (
+											index === extraVars.length - 2 &&
+											event.target.value === '' &&
+											extraVars.length > 1 &&
+											extraVars[index].key === ''
+										) {
+											setExtraVars(extraVars.slice(0, -1));
+										}
+									}}
+									size="small"
+								/>
+							</Grid>
+						</Grid>
+					))}
 				</Grid>
 				<Grid item container>
 					<Grid item margin={2} marginLeft={0}>
 						<Button
-							variant="outlined"
+							variant="contained"
 							onClick={() => {
 								handleRun();
 							}}
@@ -250,7 +396,7 @@ export default function CustomForm({ playbookPath, inventoryPath }) {
 					</Grid>
 					<Grid item margin={2}>
 						<Button
-							variant="outlined"
+							variant="contained"
 							onClick={() => {
 								handlePing();
 							}}

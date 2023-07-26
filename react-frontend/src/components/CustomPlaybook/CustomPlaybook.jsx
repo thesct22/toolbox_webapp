@@ -151,7 +151,7 @@ export default function CustomPlaybook() {
 				<Grid container item xs={12} md={9}>
 					<Grid item xs={12}>
 						<Editor
-							height="40vh"
+							height="50vh"
 							defaultLanguage="yaml"
 							language={language}
 							value={fileContent}

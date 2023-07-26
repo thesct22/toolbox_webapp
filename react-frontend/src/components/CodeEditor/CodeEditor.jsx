@@ -86,6 +86,7 @@ export default function CodeEditor() {
 										payload: event.target.value,
 									});
 								}}
+								size="small"
 							>
 								<option value="yaml">YAML</option>
 								<option value="json">JSON</option>
@@ -101,7 +102,7 @@ export default function CodeEditor() {
 
 						<Grid item>
 							<Button
-								variant="outlined"
+								variant="contained"
 								color="success"
 								onClick={() => onSave()}
 							>
@@ -110,7 +111,7 @@ export default function CodeEditor() {
 						</Grid>
 						<Grid item>
 							<Button
-								variant="outlined"
+								variant="contained"
 								color="error"
 								onClick={() => onReset()}
 							>

@@ -1,5 +1,6 @@
 """API endpoints for running custom playbooks."""
 
+import json
 from pathlib import Path
 
 from fastapi import FastAPI, HTTPException, Request
@@ -94,10 +95,17 @@ def custom_endpoints(app: FastAPI) -> FastAPI:
                 status_code=400, detail="Missing hosts, user, password or playbook."
             )
         try:
+            verbosity = int(data["verbosity"])
+        except ValueError:
+            verbosity = 0
+        try:
             hosts = RSAKey().decrypt(data["hosts"])
             user = RSAKey().decrypt(data["user"])
             password = RSAKey().decrypt(data["password"])
             playbook = RSAKey().decrypt(data["playbook"])
+            extra_vars = RSAKey().decrypt(data["extra_vars"])
+            tags = RSAKey().decrypt(data["tags"])
+            extra_args = RSAKey().decrypt(data["extra_args"])
         except ValueError:
             raise HTTPException(
                 status_code=400,
@@ -109,18 +117,38 @@ def custom_endpoints(app: FastAPI) -> FastAPI:
             raise HTTPException(
                 status_code=400, detail="Missing hosts, user, password or playbook."
             )
+        try:
+            extra_vars_temp = json.loads(extra_vars)
+            extra_vars = []
+            for item in extra_vars_temp:
+                extra_vars_item = {item["key"]: item["value"]}
+                extra_vars.append(extra_vars_item)
+            tags = tags.split(",")
+        except Exception as e:
+            print(e)
+            raise HTTPException(
+                status_code=400,
+                detail=str("Malformed extra_vars, must be a JSON string."),
+            )
         ansible = Ansible(
             inventory=hosts,
             user=user,
             password=password,
             playbook=playbook,
+            extra_vars=extra_vars,
+            verbosity=verbosity,
+            tags=tags,
+            extra_args=extra_args,
         )
         try:
             ansible.verfiy_auth()
         except ValueError as e:
             raise HTTPException(status_code=400, detail=str(e))
         install_command = ansible.get_command()
-        result = ansible.run_command(install_command)
+        try:
+            result = ansible.run_command(install_command)
+        except ValueError as e:
+            raise HTTPException(status_code=400, detail=str(e))
         return result
 
     return app

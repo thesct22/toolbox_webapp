@@ -52,7 +52,10 @@ export default function Home() {
 		}
 		for (let i = 0; i < installData.length; i += 1) {
 			if (!uninstallData.some((item) => item.title === installData[i].title)) {
-				data.splice(i, 1);
+				const index = data.findIndex(
+					(item) => item.title === `${installData[i].title}`
+				);
+				data.splice(index, 1);
 				installData[i].title = `${installData[i].title} (install only)`;
 				data.push(installData[i]);
 			}
@@ -310,7 +313,7 @@ export default function Home() {
 				<Grid item container>
 					<Grid item margin={2} marginLeft={0}>
 						<Button
-							variant="outlined"
+							variant="contained"
 							onClick={() => {
 								handleInstallUninstall(true);
 							}}
@@ -321,7 +324,7 @@ export default function Home() {
 					</Grid>
 					<Grid item margin={2}>
 						<Button
-							variant="outlined"
+							variant="contained"
 							onClick={() => {
 								handleInstallUninstall(false);
 							}}
@@ -332,7 +335,7 @@ export default function Home() {
 					</Grid>
 					<Grid item margin={2}>
 						<Button
-							variant="outlined"
+							variant="contained"
 							onClick={() => {
 								handlePing();
 							}}

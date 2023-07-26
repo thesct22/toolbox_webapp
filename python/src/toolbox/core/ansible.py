@@ -15,7 +15,7 @@ class Ansible(BaseModel):
         playbook (str): The ansible playbook file.
         inventory (str): The ansible inventory file/hosts.
         tags (List[str]): The ansible tags to run.
-        extra_vars (Dict[str, str]): The extra variables to pass to ansible.
+        extra_vars (List[Dict[str, str]]): The extra variables to pass to ansible.
         user (str): The user to run ansible as.
         password (str): The password for the user.
         verbosity (int): The verbosity level for ansible.
@@ -43,6 +43,8 @@ class Ansible(BaseModel):
         self.password = data["password"]
         if "verbosity" in data:
             self.verbosity = data["verbosity"]
+        if "extra_args" in data:
+            self.extra_args = data["extra_args"]
 
     run_folder: Path = Field(
         Path(__file__).parent.parent / "ansible",
@@ -61,8 +63,8 @@ class Ansible(BaseModel):
         [],
         description="The ansible tags to run.",
     )
-    extra_vars: Dict[str, str] = Field(
-        {},
+    extra_vars: List[Dict[str, str]] = Field(
+        [],
         description="The extra variables to pass to ansible.",
     )
     user: str = Field(..., description="The user to run ansible as.", required=True)
@@ -70,6 +72,10 @@ class Ansible(BaseModel):
     verbosity: int = Field(
         0,
         description="The verbosity level for ansible.",
+    )
+    extra_args: str = Field(
+        "",
+        description="Other arguments to pass to ansible.",
     )
 
     @validator("playbook")
@@ -111,8 +117,44 @@ class Ansible(BaseModel):
 
     def verfiy_auth(self) -> bool:
         """Verify the username, password and inventory are correct."""
-        inventory = self.inventory.split(",")
-        for host in inventory:
+        if not Path(self.inventory).is_file():
+            inventory = self.inventory.split(",")
+            for host in inventory:
+                command = [
+                    "sshpass",
+                    "-p",
+                    self.password,
+                    "ssh",
+                    "-o",
+                    "PreferredAuthentications=password",
+                    f"{self.user}@{host}",
+                    "echo",
+                    "success",
+                ]
+                try:
+                    output = subprocess.run(
+                        command,
+                        cwd=self.run_folder,
+                        check=True,
+                        stdout=subprocess.PIPE,
+                        stderr=subprocess.PIPE,
+                    )
+                    if output.returncode != 0:
+                        raise ValueError(
+                            "Failed to verify ansible credentials for host: " + host
+                        )
+                    if output.stdout:
+                        if output.stdout.decode("utf-8") != "success\n":
+                            raise ValueError(
+                                "Failed to verify ansible credentials for host: " + host
+                            )
+                except subprocess.CalledProcessError as e:
+                    raise ValueError(
+                        "Failed to verify ansible credentials for host: " + host
+                    ) from e
+            return True
+        else:
+            # verify the credentials against the host machine
             command = [
                 "sshpass",
                 "-p",
@@ -120,7 +162,7 @@ class Ansible(BaseModel):
                 "ssh",
                 "-o",
                 "PreferredAuthentications=password",
-                f"{self.user}@{host}",
+                f"{self.user}@localhost",
                 "echo",
                 "success",
             ]
@@ -134,18 +176,18 @@ class Ansible(BaseModel):
                 )
                 if output.returncode != 0:
                     raise ValueError(
-                        "Failed to verify ansible credentials for host: " + host
+                        "Username and/or password is incorrect for the user on the host machine."
                     )
                 if output.stdout:
                     if output.stdout.decode("utf-8") != "success\n":
                         raise ValueError(
-                            "Failed to verify ansible credentials for host: " + host
+                            "Username and/or password is incorrect for the user on the host machine."
                         )
             except subprocess.CalledProcessError as e:
                 raise ValueError(
-                    "Failed to verify ansible credentials for host: " + host
+                    "Username and/or password is incorrect for the user on the host machine."
                 ) from e
-        return True
+            return True
 
     def get_command(self):
         """Get the ansible command."""
@@ -165,13 +207,18 @@ class Ansible(BaseModel):
             "ansible_ssh_pass={self.password}",
         ]
         if self.verbosity > 0:
-            command.append("-v" * self.verbosity)
-        if self.tags:
+            verbosity = "-" + ("v" * self.verbosity)
+            command.append(verbosity)
+        if self.tags != []:
             command.append("--tags")
             command.append(",".join(self.tags))
-        for key, value in self.extra_vars.items():
-            command.append("-e")
-            command.append(f"{key}={value}")
+        if self.extra_vars != []:
+            for item in self.extra_vars:
+                for key, value in item.items():
+                    command.append("-e")
+                    command.append(f"{key}={value}")
+        if self.extra_args != "":
+            command.append(self.extra_args)
         return command
 
     def get_ping_command(self):
@@ -192,7 +239,8 @@ class Ansible(BaseModel):
             "ping",
         ]
         if self.verbosity > 0:
-            command.append("-v" * self.verbosity)
+            verbosity = "-" + ("v" * self.verbosity)
+            command.append(verbosity)
 
         return command
 
@@ -207,9 +255,19 @@ class Ansible(BaseModel):
                 stderr=subprocess.PIPE,
             )
             if output.returncode != 0:
-                raise ValueError("Failed to run ansible.")
+                error = ""
+                if output.stdout:
+                    error += output.stdout.decode("utf-8")
+                if output.stderr:
+                    error += output.stderr.decode("utf-8")
+                raise ValueError("Failed to run ansible. " + error)
             if output.stdout:
                 return output.stdout.decode("utf-8")
         except subprocess.CalledProcessError as e:
-            raise ValueError("Failed to run ansible.") from e
+            error = ""
+            if e.stdout:
+                error += e.stdout.decode("utf-8")
+            if e.stderr:
+                error += e.stderr.decode("utf-8")
+            raise ValueError("Failed to run ansible. " + error) from e
         return "Ran ansible successfully."
