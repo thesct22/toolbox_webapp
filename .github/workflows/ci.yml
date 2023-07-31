@@ -25,9 +25,11 @@ jobs:
         run: |
           pipx ensurepath
       - name: Install only style dependencies.
+        working-directory: ./python
         run: |
           poetry install --group code_style
       - name: Run style checks.
+        working-directory: ./python
         run: |
           poetry run pre-commit run --all-files
 
@@ -51,19 +53,22 @@ jobs:
         run: |
           pipx ensurepath
       - name: Install only test dependencies.
+        working-directory: ./python
         run: |
           poetry install --group test
       - name: Run tests.
+        working-directory: ./python
         run: |
           poetry run pytest
       - name: Generate coverage report.
+        working-directory: ./python
         run: |
           poetry run pytest --cov=src --cov-report=xml
       - name: Upload coverage report.
         uses: codecov/codecov-action@v2
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
-          file: ./coverage.xml
+          file: ./python/coverage.xml
           flags: unittests
 
   build:
@@ -100,13 +105,15 @@ jobs:
         run: |
           pipx ensurepath
       - name: Install only build dependencies.
+        working-directory: ./python
         run: |
           poetry install --group build
       - name: Build package.
+        working-directory: ./python
         run: |
           poetry build
       - name: Upload package.
         uses: actions/upload-artifact@v2
         with:
           name: package
-          path: dist
+          path: ./python/dist/toolbox-*.whl
