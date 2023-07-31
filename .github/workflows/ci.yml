@@ -27,7 +27,7 @@ jobs:
       - name: Install only style dependencies.
         working-directory: ./python
         run: |
-          poetry install --group code_style
+          poetry install --only code_style
       - name: Run style checks.
         working-directory: ./python
         run: |
@@ -55,7 +55,7 @@ jobs:
       - name: Install only test dependencies.
         working-directory: ./python
         run: |
-          poetry install --group test
+          poetry install --only test
       - name: Run tests.
         working-directory: ./python
         run: |
@@ -107,7 +107,7 @@ jobs:
       - name: Install only build dependencies.
         working-directory: ./python
         run: |
-          poetry install --group build
+          poetry install --only build
       - name: Build package.
         working-directory: ./python
         run: |
