@@ -1,5 +1,7 @@
 """Target API endpoints."""
 
+from json import JSONDecodeError
+
 from fastapi import FastAPI, HTTPException, Request
 from toolbox.core.ansible import Ansible
 from toolbox.core.rsakey import RSAKey
@@ -28,10 +30,20 @@ def target_endpoints(app: FastAPI) -> FastAPI:
             "password": "password"
         }
         """
-        data = await request.json()
+        try:
+            data = await request.json()
+        except JSONDecodeError:
+            raise HTTPException(
+                status_code=400, detail="No data provided or malformed data."
+            )
         if data is None:
             raise HTTPException(status_code=400, detail="No data provided.")
-        if data["hosts"] == "" or data["user"] == "" or data["password"] == "":
+        try:
+            if data["hosts"] == "" or data["user"] == "" or data["password"] == "":
+                raise HTTPException(
+                    status_code=400, detail="Missing hosts, user or password."
+                )
+        except KeyError:
             raise HTTPException(
                 status_code=400, detail="Missing hosts, user or password."
             )
@@ -49,8 +61,15 @@ def target_endpoints(app: FastAPI) -> FastAPI:
                 status_code=400, detail="Missing hosts, user or password."
             )
         hosts = hosts.split(",")
-        for host in hosts:
-            config_target(host, user, password)
+        try:
+            current_host = hosts[0]
+            for host in hosts:
+                current_host = host
+                config_target(host, user, password)
+        except ValueError as e:
+            raise HTTPException(
+                status_code=400, detail=f'Error: "{str(e)}" on {current_host}.'
+            )
         return "Configured target machines."
 
     @app.put("/api/target/ping", response_model=str)
@@ -65,15 +84,27 @@ def target_endpoints(app: FastAPI) -> FastAPI:
             "password": "password"
         }
         """
-        data = await request.json()
+        try:
+            data = await request.json()
+        except JSONDecodeError:
+            raise HTTPException(
+                status_code=400, detail="No data provided or malformed data."
+            )
         if data is None:
             raise HTTPException(status_code=400, detail="No data provided.")
-        if data["hosts"] == "" or data["user"] == "" or data["password"] == "":
+        try:
+            if data["hosts"] == "" or data["user"] == "" or data["password"] == "":
+                raise HTTPException(
+                    status_code=400, detail="Missing hosts, user or password."
+                )
+        except KeyError:
             raise HTTPException(
                 status_code=400, detail="Missing hosts, user or password."
             )
         try:
             verboisty = int(data["verbosity"])
+        except KeyError:
+            verboisty = 0
         except ValueError:
             verboisty = 0
         try:
