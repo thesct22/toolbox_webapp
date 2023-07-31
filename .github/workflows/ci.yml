@@ -62,8 +62,7 @@ jobs:
       - name: Install only test dependencies.
         working-directory: ./python
         run: |
-          poetry install --only-root
-          poetry install --only test
+          poetry install --without doc,build,code_style
       - name: Run tests.
         working-directory: ./python
         run: |
@@ -115,8 +114,7 @@ jobs:
       - name: Install only build dependencies.
         working-directory: ./python
         run: |
-          poetry install --only-root
-          poetry install --only build
+          poetry install --without doc,test,code_style
       - name: Build package.
         working-directory: ./python
         run: |

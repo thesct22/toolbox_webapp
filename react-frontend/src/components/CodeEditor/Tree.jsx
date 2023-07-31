@@ -233,8 +233,8 @@ export default function Tree() {
 	};
 
 	const handleDelete = async (node) => {
+		// eslint-disable-next-line no-alert
 		const confirmDelete = window.confirm(
-			// eslint-disable-line no-alert
 			`Are you sure you want to delete ${node.name}?`
 		);
 		if (!confirmDelete) {
@@ -262,9 +262,8 @@ export default function Tree() {
 			return;
 		}
 		if (data.deleted === 'get_confirmation') {
+			// eslint-disable-next-line no-alert
 			const confirmDeleteForced = window.confirm(
-				// eslint-disable-line no-alert
-
 				`Are you really sure you want to delete ${node.name} as it is not empty?` +
 					`\nThis will delete all files and folders inside it.`
 			);
