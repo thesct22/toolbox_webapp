@@ -63,6 +63,9 @@ jobs:
         run: |
           mkdir -p ./python/src/toolbox/build
           mkdir -p ./python/src/toolbox/build/static
+      - name: Copy ansible folder.
+        run: |
+          cp -r ./ansible ./python/src/toolbox/ansible
       - name: Install only test dependencies.
         working-directory: ./python
         run: |

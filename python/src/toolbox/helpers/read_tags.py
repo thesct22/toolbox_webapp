@@ -1,12 +1,12 @@
 """Helper function to read all the tags inside ansible/roles/xyz/tasks/main.yml and return them as a key-value pair."""
 
 from pathlib import Path
-from typing import Dict, List
+from typing import Dict, List, Union
 
 import yaml
 
 
-def read_tags_helper(install_tags: bool) -> List[Dict[str, str | List[str]]]:
+def read_tags_helper(install_tags: bool) -> List[Dict[str, Union[str, List[str]]]]:
     """
     Read all the tags inside ansible/roles/xyz/tasks/main.yml and return them as a key-value pair.
 
