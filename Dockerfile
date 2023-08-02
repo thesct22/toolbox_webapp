@@ -21,6 +21,7 @@ RUN poetry build
 # Production image
 FROM python:3.11-slim
 WORKDIR /app
+RUN apt update && apt install -y sshpass openssh-server
 COPY --from=fastapi-build-stage /app/dist/*.whl ./
 RUN pip install *.whl
 EXPOSE 8000

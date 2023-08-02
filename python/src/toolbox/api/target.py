@@ -182,7 +182,10 @@ def target_endpoints(app: FastAPI) -> FastAPI:
         except ValueError as e:
             raise HTTPException(status_code=400, detail=str(e))
         install_command = ansible.get_command()
-        result = ansible.run_command(install_command)
+        try:
+            result = ansible.run_command(install_command)
+        except ValueError as e:
+            raise HTTPException(status_code=400, detail=str(e))
         return result
 
     @app.put("/api/target/uninstall", response_model=str)
@@ -233,7 +236,10 @@ def target_endpoints(app: FastAPI) -> FastAPI:
         except ValueError as e:
             raise HTTPException(status_code=400, detail=str(e))
         uninstall_command = ansible.get_command()
-        result = ansible.run_command(uninstall_command)
+        try:
+            result = ansible.run_command(uninstall_command)
+        except ValueError as e:
+            raise HTTPException(status_code=400, detail=str(e))
         return result
 
     return app
