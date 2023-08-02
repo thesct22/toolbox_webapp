@@ -1,6 +1,6 @@
 """Uninstall API endpoints."""
 
-from typing import Dict, List
+from typing import Dict, List, Union
 
 from fastapi import FastAPI
 from fastapi.encoders import jsonable_encoder
@@ -17,8 +17,10 @@ def uninstall_endpoints(app: FastAPI) -> FastAPI:
         FastAPI: The FastAPI app.
     """
 
-    @app.get("/api/uninstall/tags", response_model=List[Dict[str, str | List[str]]])
-    def get_tags() -> List[Dict[str, str | List[str]]]:
+    @app.get(
+        "/api/uninstall/tags", response_model=List[Dict[str, Union[str, List[str]]]]
+    )
+    def get_tags() -> List[Dict[str, Union[str, List[str]]]]:
         """
         Return all the tags.
 

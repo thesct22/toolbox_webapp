@@ -16,7 +16,7 @@ def read_tags_helper(install_tags: bool) -> List[Dict[str, Union[str, List[str]]
         Dict[str, List[str]]: The tags as "software name": ["tag1", "tag2"] key-value pairs.
     """
     ansible_roles_dir = Path(__file__).parent.parent / "ansible" / "roles"
-    tagsList: List[Dict[str, str | List[str]]] = []
+    tagsList: List[Dict[str, Union[str, List[str]]]] = []
     if not ansible_roles_dir.exists():
         raise ValueError(
             f"Ansible roles directory '{ansible_roles_dir}' does not exist."
@@ -39,7 +39,7 @@ def read_tags_helper(install_tags: bool) -> List[Dict[str, Union[str, List[str]]
                         continue
                     if not isinstance(task["tags"], list):
                         continue
-                    software: Dict[str, str | List[str]] = {}
+                    software: Dict[str, Union[str, List[str]]] = {}
                     software["title"] = str(task["name"]).split("Install")[1].strip()
                     software["tags"] = task["tags"]
                     tagsList.append(software)
