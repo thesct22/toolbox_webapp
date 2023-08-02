@@ -1,7 +1,7 @@
 """Class for handling the list of installable software and their tags."""
 
 import re
-from typing import Dict, List
+from typing import Dict, List, Union
 
 from pydantic import BaseModel, Field, validator
 from toolbox.helpers.read_tags import read_tags_helper
@@ -15,7 +15,7 @@ class Tags(BaseModel):
         tags (Dict[str, List[str]]): The tags for the installable software.
     """
 
-    tags: List[Dict[str, str | List[str]]] = Field(
+    tags: List[Dict[str, Union[str, List[str]]]] = Field(
         [],
         description="The tags for the software.",
     )

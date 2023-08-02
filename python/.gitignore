@@ -14,3 +14,15 @@
 # Ansible folder
 
 **/ansible
+
+# Pytest cache
+
+**/.pytest_cache
+test_dir
+
+# Coverage
+
+**/.coverage
+**/.coverage.*
+**/.coverage-*
+**/coverage.*

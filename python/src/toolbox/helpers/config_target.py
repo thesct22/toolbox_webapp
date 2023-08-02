@@ -23,6 +23,9 @@ def config_target(host: str, user: str, password: str) -> None:
     command = (
         f"sshpass -p {password} ssh-copy-id -o StrictHostKeyChecking=no {user}@{host}"
     )
-    output = subprocess.run(command, shell=True, check=True)
+    try:
+        output = subprocess.run(command, shell=True, check=True)
+    except subprocess.CalledProcessError:
+        raise ValueError("Failed to configure target.")
     if output.returncode != 0:
         raise ValueError("Failed to configure target.")

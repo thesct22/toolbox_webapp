@@ -1,3 +1,19 @@
+- name: Add Python Repository
+  block:
+    - name: Add Python Repository on Debian
+      apt_repository:
+        repo: "ppa:deadsnakes/ppa"
+        state: present
+      become: true
+      when: ansible_os_family == "Debian"
+  tags:
+    - python
+    - python3
+    - python38
+    - python39
+    - python310
+    - python311
+
 - name: Install Python 3.8
   block:
     - name: Install Python 3.8 on Windows
@@ -141,4 +157,6 @@
       become: true
       when: ansible_os_family == "Alpine"
   tags:
+    - python
+    - python3
     - python311

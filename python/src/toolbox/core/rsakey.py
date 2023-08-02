@@ -53,3 +53,25 @@ class RSAKey(BaseModel):
             ),
         )
         return decrypted_message.decode("utf-8")
+
+
+def encrypt(message: str, encryption_key: bytes) -> str:
+    """
+    Encrypt the message.
+
+    Args:
+        message (str): The message to encrypt.
+        encryption_key (bytes): The encryption key.
+    Returns:
+        str: The encrypted message.
+    """
+    key = serialization.load_pem_public_key(encryption_key)
+    encrypted_message = key.encrypt(
+        message.encode("utf-8"),
+        padding=padding.OAEP(
+            mgf=padding.MGF1(algorithm=hashes.SHA256()),
+            algorithm=hashes.SHA256(),
+            label=None,
+        ),
+    )
+    return base64.b64encode(encrypted_message).decode("utf-8")
