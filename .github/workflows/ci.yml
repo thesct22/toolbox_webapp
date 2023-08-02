@@ -59,9 +59,10 @@ jobs:
       - name: Ensure Path
         run: |
           pipx ensurepath
-      - name: Add build folder to src
+      - name: Add build and build/static folders.
         run: |
           mkdir -p ./python/src/toolbox/build
+          mkdir -p ./python/src/toolbox/build/static
       - name: Install only test dependencies.
         working-directory: ./python
         run: |
