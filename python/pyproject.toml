@@ -30,6 +30,11 @@ ansible = "^8.0.0"
 cryptography = "^41.0.1"
 fastapi = "^0.97.0"
 uvicorn = {extras = ["standard"], version = "^0.22.0"}
+terminado = "^0.17.1"
+tornado-xstatic = "^0.3"
+xstatic = "^1.0.3"
+xstatic-term-js = "^0.0.7.0"
+tornado = "^6.3.2"
 
 [tool.poetry.group.test.dependencies]
 pytest = "^7.3.2"

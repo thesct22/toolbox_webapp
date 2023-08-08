@@ -1,5 +1,6 @@
 """Run the server."""
 import argparse
+import concurrent.futures
 from pathlib import Path
 
 from fastapi import FastAPI
@@ -7,6 +8,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from toolbox.server.main import run_server
 from toolbox.server.mount_api import mount_api
 from toolbox.server.mount_frontend import mount_frontend
+from toolbox.server.terminal import run_terminal
 
 app = FastAPI(title="Toolbox Webapp")
 app.add_middleware(
@@ -33,6 +35,27 @@ if __name__ == "__main__":
         default=8000,
         help="Port to run the server on.",
     )
+    parser.add_argument(
+        "--terminal_host",
+        type=str,
+        default="localhost",
+        help="Host to run the terminal on.",
+    )
+    parser.add_argument(
+        "--terminal_port",
+        type=int,
+        default=8765,
+        help="Port to run the terminal on.",
+    )
     args = parser.parse_args()
 
-    run_server(app=app, host=args.host, port=args.port)
+    # run both the servers in parallel
+
+    with concurrent.futures.ThreadPoolExecutor(max_workers=2) as executor:
+        server_thread = executor.submit(run_server, app, args.host, args.port)
+        terminal_thread = executor.submit(
+            run_terminal, args.terminal_host, args.terminal_port
+        )
+
+        # Wait for both threads to complete
+        concurrent.futures.wait([server_thread, terminal_thread])
