@@ -9,6 +9,7 @@ from toolbox.server.main import run_server
 from toolbox.server.mount_api import mount_api
 from toolbox.server.mount_frontend import mount_frontend
 from toolbox.server.terminal import run_terminal
+import webview
 
 app = FastAPI(title="Toolbox Webapp")
 app.add_middleware(
@@ -51,11 +52,26 @@ if __name__ == "__main__":
 
     # run both the servers in parallel
 
-    with concurrent.futures.ThreadPoolExecutor(max_workers=2) as executor:
-        server_thread = executor.submit(run_server, app, args.host, args.port)
-        terminal_thread = executor.submit(
-            run_terminal, args.terminal_host, args.terminal_port
-        )
+    with concurrent.futures.ThreadPoolExecutor(max_workers=3) as executor:
+        try:
+            server_thread = executor.submit(run_server, app, args.host, args.port)
+            terminal_thread = executor.submit(
+                run_terminal, args.terminal_host, args.terminal_port
+            )
+            webview_thread = executor.submit(
+                webview.create_window,
+                "Toolbox",
+                f"http://{args.host}:{args.port}",
+                width=800,
+                height=600,
+            )
 
-        # Wait for both threads to complete
-        concurrent.futures.wait([server_thread, terminal_thread])
+            # Wait for all threads to complete
+            threads = concurrent.futures.wait(
+                [server_thread, terminal_thread, webview_thread]
+            )
+
+        except KeyboardInterrupt:
+            print(" Shutting down on SIGINT")
+        finally:
+            executor.shutdown(wait=False)

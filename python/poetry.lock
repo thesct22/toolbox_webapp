@@ -144,6 +144,17 @@ webencodings = "*"
 css = ["tinycss2 (>=1.1.0,<1.2)"]
 
 [[package]]
+name = "bottle"
+version = "0.12.25"
+description = "Fast and simple WSGI-framework for small web-applications."
+optional = false
+python-versions = "*"
+files = [
+    {file = "bottle-0.12.25-py3-none-any.whl", hash = "sha256:d6f15f9d422670b7c073d63bd8d287b135388da187a0f3e3c19293626ce034ea"},
+    {file = "bottle-0.12.25.tar.gz", hash = "sha256:e1a9c94970ae6d710b3fb4526294dfeb86f2cb4a81eff3a4b98dc40fb0e5e021"},
+]
+
+[[package]]
 name = "build"
 version = "0.10.0"
 description = "A simple, correct Python build frontend"
@@ -1096,6 +1107,16 @@ pyyaml = ">=5.1"
 virtualenv = ">=20.10.0"
 
 [[package]]
+name = "proxy-tools"
+version = "0.1.0"
+description = "Proxy Implementation"
+optional = false
+python-versions = "*"
+files = [
+    {file = "proxy_tools-0.1.0.tar.gz", hash = "sha256:ccb3751f529c047e2d8a58440d86b205303cf0fe8146f784d1cbcd94f0a28010"},
+]
+
+[[package]]
 name = "ptyprocess"
 version = "0.7.0"
 description = "Run a subprocess in a pseudo terminal"
@@ -1223,6 +1244,81 @@ files = [
 plugins = ["importlib-metadata"]
 
 [[package]]
+name = "pyobjc-core"
+version = "9.2"
+description = "Python<->ObjC Interoperability Module"
+optional = false
+python-versions = ">=3.7"
+files = [
+    {file = "pyobjc-core-9.2.tar.gz", hash = "sha256:d734b9291fec91ff4e3ae38b9c6839debf02b79c07314476e87da8e90b2c68c3"},
+    {file = "pyobjc_core-9.2-cp310-cp310-macosx_10_9_universal2.whl", hash = "sha256:fa674a39949f5cde8e5c7bbcd24496446bfc67592b028aedbec7f81dc5fc4daa"},
+    {file = "pyobjc_core-9.2-cp311-cp311-macosx_10_9_universal2.whl", hash = "sha256:bbc8de304ee322a1ee530b4d2daca135a49b4a49aa3cedc6b2c26c43885f4842"},
+    {file = "pyobjc_core-9.2-cp312-cp312-macosx_10_9_universal2.whl", hash = "sha256:0fa950f092673883b8bd28bc18397415cabb457bf410920762109b411789ade9"},
+    {file = "pyobjc_core-9.2-cp37-cp37m-macosx_10_9_x86_64.whl", hash = "sha256:586e4cae966282eaa61b21cae66ccdcee9d69c036979def26eebdc08ddebe20f"},
+    {file = "pyobjc_core-9.2-cp38-cp38-macosx_10_9_x86_64.whl", hash = "sha256:41189c2c680931c0395a55691763c481fc681f454f21bb4f1644f98c24a45954"},
+    {file = "pyobjc_core-9.2-cp38-cp38-macosx_11_0_universal2.whl", hash = "sha256:2d23ee539f2ba5e9f5653d75a13f575c7e36586fc0086792739e69e4c2617eda"},
+    {file = "pyobjc_core-9.2-cp39-cp39-macosx_10_9_universal2.whl", hash = "sha256:b9809cf96678797acb72a758f34932fe8e2602d5ab7abec15c5ac68ddb481720"},
+]
+
+[[package]]
+name = "pyobjc-framework-cocoa"
+version = "9.2"
+description = "Wrappers for the Cocoa frameworks on macOS"
+optional = false
+python-versions = ">=3.7"
+files = [
+    {file = "pyobjc-framework-Cocoa-9.2.tar.gz", hash = "sha256:efd78080872d8c8de6c2b97e0e4eac99d6203a5d1637aa135d071d464eb2db53"},
+    {file = "pyobjc_framework_Cocoa-9.2-cp310-cp310-macosx_10_9_universal2.whl", hash = "sha256:9e02d8a7cc4eb7685377c50ba4f17345701acf4c05b1e7480d421bff9e2f62a4"},
+    {file = "pyobjc_framework_Cocoa-9.2-cp311-cp311-macosx_10_9_universal2.whl", hash = "sha256:3b1e6287b3149e4c6679cdbccd8e9ef6557a4e492a892e80a77df143f40026d2"},
+    {file = "pyobjc_framework_Cocoa-9.2-cp312-cp312-macosx_10_9_universal2.whl", hash = "sha256:312977ce2e3989073c6b324c69ba24283de206fe7acd6dbbbaf3e29238a22537"},
+    {file = "pyobjc_framework_Cocoa-9.2-cp37-cp37m-macosx_10_9_x86_64.whl", hash = "sha256:aae7841cf40c26dd915f4dd828f91c6616e6b7998630b72e704750c09e00f334"},
+    {file = "pyobjc_framework_Cocoa-9.2-cp38-cp38-macosx_10_9_x86_64.whl", hash = "sha256:739a421e14382a46cbeb9a883f192dceff368ad28ec34d895c48c0ad34cf2c1d"},
+    {file = "pyobjc_framework_Cocoa-9.2-cp38-cp38-macosx_11_0_universal2.whl", hash = "sha256:32d9ac1033fac1b821ddee8c68f972a7074ad8c50bec0bea9a719034c1c2fb94"},
+    {file = "pyobjc_framework_Cocoa-9.2-cp39-cp39-macosx_10_9_universal2.whl", hash = "sha256:b236bb965e41aeb2e215d4e98a5a230d4b63252c6d26e00924ea2e69540a59d6"},
+]
+
+[package.dependencies]
+pyobjc-core = ">=9.2"
+
+[[package]]
+name = "pyobjc-framework-security"
+version = "9.2"
+description = "Wrappers for the framework Security on macOS"
+optional = false
+python-versions = ">=3.7"
+files = [
+    {file = "pyobjc-framework-Security-9.2.tar.gz", hash = "sha256:8d4f7a22db2fe666c7bff4a5825b49d2345e9a8d96ea085f1a614ad9a559b4e5"},
+    {file = "pyobjc_framework_Security-9.2-cp310-cp310-macosx_10_9_universal2.whl", hash = "sha256:06137e1dd28af61f9966e1dfddba4ff7dc25d3d77f49f9af47bb4791492e58ce"},
+    {file = "pyobjc_framework_Security-9.2-cp311-cp311-macosx_10_9_universal2.whl", hash = "sha256:ca272397da447897d73e1b72ae0acddadfefbb575e452b85028b2d7ae13b0fc7"},
+    {file = "pyobjc_framework_Security-9.2-cp312-cp312-macosx_10_9_universal2.whl", hash = "sha256:f9cfb6c44cefe7d6456ddfdda569867254a271d8fef10500e86456a105e255b9"},
+    {file = "pyobjc_framework_Security-9.2-cp37-cp37m-macosx_10_9_x86_64.whl", hash = "sha256:3d627e92688dfb31a0399f12283256717e5a1bd05b2abfd8b470621f955995a3"},
+    {file = "pyobjc_framework_Security-9.2-cp38-cp38-macosx_10_9_x86_64.whl", hash = "sha256:0f9435986f7cf74d22a2920a5d85d922e24caa3b5b2911fb6d07c3b89f9973f9"},
+    {file = "pyobjc_framework_Security-9.2-cp38-cp38-macosx_11_0_universal2.whl", hash = "sha256:aa18fbb458edf04b0c34d13443a4665aeff4ae90ee644f008cd58146740f166d"},
+    {file = "pyobjc_framework_Security-9.2-cp39-cp39-macosx_10_9_universal2.whl", hash = "sha256:8be7f51fc483532100853a570d62570f553fce5d7e101a572ad70198acfc9a8e"},
+]
+
+[package.dependencies]
+pyobjc-core = ">=9.2"
+pyobjc-framework-Cocoa = ">=9.2"
+
+[[package]]
+name = "pyobjc-framework-webkit"
+version = "9.2"
+description = "Wrappers for the framework WebKit on macOS"
+optional = false
+python-versions = ">=3.7"
+files = [
+    {file = "pyobjc-framework-WebKit-9.2.tar.gz", hash = "sha256:86761cba8c18c3d2ecbd3ca7ab8b92c8b2eae8514741ec63527b536b671ab296"},
+    {file = "pyobjc_framework_WebKit-9.2-cp36-abi3-macosx_10_9_universal2.whl", hash = "sha256:4b8a340450dacfdd2152e5d8afcb1132b459cacb2e4b279a3509cafb26999d9e"},
+    {file = "pyobjc_framework_WebKit-9.2-cp36-abi3-macosx_10_9_x86_64.whl", hash = "sha256:8ab181e12ef0b13aa119fef8cdea1ac07197e4b111a2d315dd703258f7f63e04"},
+    {file = "pyobjc_framework_WebKit-9.2-cp36-abi3-macosx_11_0_universal2.whl", hash = "sha256:bc9e921962599d201197eaca21809b5e8057d9a0d64b55db53cac5f993a0b2c6"},
+]
+
+[package.dependencies]
+pyobjc-core = ">=9.2"
+pyobjc-framework-Cocoa = ">=9.2"
+
+[[package]]
 name = "pyproject-hooks"
 version = "1.0.0"
 description = "Wrappers to call pyproject.toml-based build backend hooks."
@@ -1289,6 +1385,58 @@ files = [
 
 [package.extras]
 cli = ["click (>=5.0)"]
+
+[[package]]
+name = "pythonnet"
+version = "2.5.2"
+description = ".Net and Mono integration for Python"
+optional = false
+python-versions = "*"
+files = [
+    {file = "pythonnet-2.5.2-cp27-cp27m-win32.whl", hash = "sha256:d519bbc7b1cd3999651efc594d91cb67c46d1d8466dad3d83b578102e58d05bd"},
+    {file = "pythonnet-2.5.2-cp27-cp27m-win_amd64.whl", hash = "sha256:c02f53d0e61b202cddf3198fac9553d5b4ee0ea0cc4fe658c2ed69ab24def276"},
+    {file = "pythonnet-2.5.2-cp35-cp35m-win32.whl", hash = "sha256:840bdef89b378663d73f74f18895b6d8630d1f5671457a1db5ffb68179d85582"},
+    {file = "pythonnet-2.5.2-cp35-cp35m-win_amd64.whl", hash = "sha256:d8e5b27de1e2cfb69b88782ac5cdf605b1a73598a85d86570e46961126628dbb"},
+    {file = "pythonnet-2.5.2-cp36-cp36m-win32.whl", hash = "sha256:62645c29840c4a877d66e047f3e065b2e5a1a66431a99bce8d42a5af3a093ee1"},
+    {file = "pythonnet-2.5.2-cp36-cp36m-win_amd64.whl", hash = "sha256:058e536062d1585d07ec5f2cf16aefcfc8eb8179faa90e5db0063d358469d025"},
+    {file = "pythonnet-2.5.2-cp37-cp37m-win32.whl", hash = "sha256:cc77fc63e2afb0a80199ab44ced4fdfb78c19d8030063c345c80740d15380dd9"},
+    {file = "pythonnet-2.5.2-cp37-cp37m-win_amd64.whl", hash = "sha256:80c8f5c9bd10440a73eb6aedbbacb2f3dd7701b474816f5ef7636f529d838d38"},
+    {file = "pythonnet-2.5.2-cp38-cp38-win32.whl", hash = "sha256:41a607b7304e9efc6d4d8db438d6018a17c6637e8b8998848ff5c2a7a1b4687c"},
+    {file = "pythonnet-2.5.2-cp38-cp38-win_amd64.whl", hash = "sha256:00a4fed9fc05b4efbe8947c79dc0799cffbca4c89e3e068e70b6618f20c906f2"},
+    {file = "pythonnet-2.5.2.tar.gz", hash = "sha256:b7287480a1f6ae4b6fc80d775446d8af00e051ca1646b6cc3d32c5d3a461ede3"},
+]
+
+[package.dependencies]
+pycparser = "*"
+
+[[package]]
+name = "pywebview"
+version = "4.2.2"
+description = "Build GUI for your Python program with JavaScript, HTML, and CSS"
+optional = false
+python-versions = ">=3.7"
+files = [
+    {file = "pywebview-4.2.2-py3-none-any.whl", hash = "sha256:1db26c0fcf9e856195467464b2a3e00189d231457189a102747d4a8694c974e4"},
+    {file = "pywebview-4.2.2.tar.gz", hash = "sha256:85be4215cd65ceacca5c7faef9d271e10bfe3ca25d2498c1c6d2e59a4d56e86c"},
+]
+
+[package.dependencies]
+bottle = "*"
+proxy-tools = "*"
+pyobjc-core = {version = "*", markers = "sys_platform == \"darwin\""}
+pyobjc-framework-Cocoa = {version = "*", markers = "sys_platform == \"darwin\""}
+pyobjc-framework-security = {version = "*", markers = "sys_platform == \"darwin\""}
+pyobjc-framework-WebKit = {version = "*", markers = "sys_platform == \"darwin\""}
+pythonnet = {version = "*", markers = "sys_platform == \"win32\""}
+QtPy = {version = "*", markers = "sys_platform == \"openbsd6\""}
+typing-extensions = "*"
+
+[package.extras]
+cef = ["cefpython3"]
+gtk = ["PyGObject", "PyGObject-stubs"]
+pyside2 = ["PySide2", "QtPy"]
+pyside6 = ["PySide6", "QtPy"]
+qt = ["PyQt5", "QtPy", "pyqtwebengine"]
 
 [[package]]
 name = "pywin32-ctypes"
@@ -1363,6 +1511,23 @@ files = [
     {file = "PyYAML-6.0-cp39-cp39-win_amd64.whl", hash = "sha256:b3d267842bf12586ba6c734f89d1f5b871df0273157918b0ccefa29deb05c21c"},
     {file = "PyYAML-6.0.tar.gz", hash = "sha256:68fb519c14306fec9720a2a5b45bc9f0c8d1b9c72adf45c37baedfcd949c35a2"},
 ]
+
+[[package]]
+name = "qtpy"
+version = "2.3.1"
+description = "Provides an abstraction layer on top of the various Qt bindings (PyQt5/6 and PySide2/6)."
+optional = false
+python-versions = ">=3.7"
+files = [
+    {file = "QtPy-2.3.1-py3-none-any.whl", hash = "sha256:5193d20e0b16e4d9d3bc2c642d04d9f4e2c892590bd1b9c92bfe38a95d5a2e12"},
+    {file = "QtPy-2.3.1.tar.gz", hash = "sha256:a8c74982d6d172ce124d80cafd39653df78989683f760f2281ba91a6e7b9de8b"},
+]
+
+[package.dependencies]
+packaging = "*"
+
+[package.extras]
+test = ["pytest (>=6,!=7.0.0,!=7.0.1)", "pytest-cov (>=3.0.0)", "pytest-qt"]
 
 [[package]]
 name = "readme-renderer"
@@ -2040,4 +2205,4 @@ testing = ["big-O", "flake8 (<5)", "jaraco.functools", "jaraco.itertools", "more
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.9"
-content-hash = "fff2fcf32dfb3f93f443be5889993ad32de3939996c99b8ade3861585de9ec8c"
+content-hash = "5c1f450dbe15bd57072323d1e8f8b2d4beb658685160e253baf9b12c37b572b9"
