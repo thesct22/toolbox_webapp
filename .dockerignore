@@ -5,5 +5,9 @@ react-frontend/build
 ##FastAPI stuff
 python/.venv
 python/.poetry_cache
+python/.pytest_cache
+python/dist
+python/.coverage
+python/coverage.xml
 python/src/toolbox/ansible
 python/src/toolbox/build

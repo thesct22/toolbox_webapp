@@ -3,7 +3,7 @@ requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
 
 [tool.poetry]
-name = "installer-toolbox"
+name = "toolbox-webapp"
 version = "0.0.dev0"
 description = "Toolbox webapp to install tools and software on remote and local target machines"
 license = "Proprietary"
