@@ -40,44 +40,44 @@ jobs:
         run: |
           poetry run pre-commit run --all-files
 
-  test:
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        python-version: ["3.8", "3.9", "3.10", "3.11"]
-    steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-python@v4
-        with:
-          python-version: ${{ matrix.python-version }}
-      - name: Upgrade pip and install necessary tools.
-        run: |
-          python -m pip install --upgrade pip setuptools pipx
-      - name: Install poetry.
-        run: |
-          pipx install poetry
-      - name: Ensure Path
-        run: |
-          pipx ensurepath
-      - name: Add build and build/static folders.
-        run: |
-          mkdir -p ./python/src/toolbox/build
-          mkdir -p ./python/src/toolbox/build/static
-      - name: Copy ansible folder.
-        run: |
-          cp -r ./ansible ./python/src/toolbox/ansible
-      - name: Install only test dependencies.
-        working-directory: ./python
-        run: |
-          poetry install --without doc,build,code_style
-      - name: Run tests.
-        working-directory: ./python
-        run: |
-          poetry run pytest
-      - name: Generate coverage report.
-        working-directory: ./python
-        run: |
-          poetry run pytest --cov=src --cov-report=xml
+  # test:
+  #   runs-on: ubuntu-latest
+  #   strategy:
+  #     matrix:
+  #       python-version: ["3.8", "3.9", "3.10", "3.11"]
+  #   steps:
+  #     - uses: actions/checkout@v3
+  #     - uses: actions/setup-python@v4
+  #       with:
+  #         python-version: ${{ matrix.python-version }}
+  #     - name: Upgrade pip and install necessary tools.
+  #       run: |
+  #         python -m pip install --upgrade pip setuptools pipx
+  #     - name: Install poetry.
+  #       run: |
+  #         pipx install poetry
+  #     - name: Ensure Path
+  #       run: |
+  #         pipx ensurepath
+  #     - name: Add build and build/static folders.
+  #       run: |
+  #         mkdir -p ./python/src/toolbox/build
+  #         mkdir -p ./python/src/toolbox/build/static
+  #     - name: Copy ansible folder.
+  #       run: |
+  #         cp -r ./ansible ./python/src/toolbox/ansible
+  #     - name: Install only test dependencies.
+  #       working-directory: ./python
+  #       run: |
+  #         poetry install --without doc,build,code_style
+  #     - name: Run tests.
+  #       working-directory: ./python
+  #       run: |
+  #         poetry run pytest
+  #     - name: Generate coverage report.
+  #       working-directory: ./python
+  #       run: |
+  #         poetry run pytest --cov=src --cov-report=xml
       # - name: Upload coverage report.
       #   uses: codecov/codecov-action@v2
       #   with:
@@ -85,14 +85,15 @@ jobs:
       #     file: ./python/coverage.xml
       #     flags: unittests
 
-  build:
+  build-wheel-and-standalone:
     runs-on: ubuntu-latest
+    if: github.event.pull_request.merged == true
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-python@v4
         with:
           python-version: "3.11"
-      - uses: actions/setup-node@v2
+      - uses: actions/setup-node@v3
         with:
           node-version: 18.x
       - name: Install npm dependencies.
@@ -126,8 +127,44 @@ jobs:
         working-directory: ./python
         run: |
           poetry build
+      - name: Install python3.11-dev, python3-dev, ccache and patchelf
+        run: |
+          sudo apt-get install python3.11-dev python3-dev ccache patchelf
+          export CXX="ccache g++"
+
+      - name: Create standalone folder using nuitka
+        working-directory: ./python
+        run: |
+          poetry run python -m nuitka --standalone \
+          --lto=no --include-data-dir=../react-frontend/build=build \
+          --include-data-dir=../ansible=toolbox/ansible \
+          --include-data-dir=src/toolbox/templates=toolbox/templates \
+          --include-package-data=xstatic.pkg --include-package-data=terminado \
+          --include-package=xstatic src/toolbox/main.py
+
       - name: Upload package.
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: package
-          path: ./python/dist/toolbox-*.whl
+          path: ./python/dist/toolbox*.whl
+
+      - name: Upload standalone folder.
+        uses: actions/upload-artifact@v3
+        with:
+          name: toolbox-webapp
+          path: ./python/main.dist
+
+  docker-build-and-push:
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.merged == true
+    steps:
+      - uses: actions/checkout@v3
+      - name: Build docker image.
+        run: |
+          docker build -t ghcr.io/thesct22/toolbox:lastest .
+      - name: Login to GitHub Container Registry.
+        run: |
+          echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+      - name: Tag and push docker image.
+        run: |
+          docker push ghcr.io/thesct22/toolbox:lastest

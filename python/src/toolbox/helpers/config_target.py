@@ -15,9 +15,18 @@ def config_target(host: str, user: str, password: str) -> None:
     # check if rsa key exists
     if not (Path.home() / ".ssh" / "id_rsa.pub").exists():
         print("Generating rsa key...")
-        # use ssh-keygen -t rsa -N '' -f id_rsa
+        # use ssh-keygen -t rsa -N '' -f /home/user/.ssh/id_rsa
         subprocess.run(
-            ["ssh-keygen", "-t", "rsa", "-N", "''", "-f", "id_rsa"], check=True
+            [
+                "ssh-keygen",
+                "-t",
+                "rsa",
+                "-N",
+                "",
+                "-q",
+                "-f",
+                f"{Path.home()}/.ssh/id_rsa",
+            ],
         )
 
     command = (

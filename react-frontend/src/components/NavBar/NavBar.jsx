@@ -20,7 +20,7 @@ export default function NavBar() {
 	const currentPage = useSelector((state) => state.currentPage);
 
 	return (
-		<Box sx={{ flexGrow: 1 }}>
+		<Box sx={{ flexGrow: 1 }} id="navbar">
 			<AppBar position="static">
 				<Toolbar>
 					<Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
