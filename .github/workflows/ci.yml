@@ -131,3 +131,18 @@ jobs:
         with:
           name: package
           path: ./python/dist/toolbox*.whl
+
+  docker-build-and-push:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Build docker image.
+        run: |
+          docker build -t thesc22/toolbox .
+      - name: Login to GitHub Container Registry.
+        run: |
+          echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+      - name: Tag and push docker image.
+        run: |
+          docker tag thesct22/toolbox ghcr.io/thesct22/toolbox:latest
+          docker push ghcr.io/thesct22/toolbox:latest
