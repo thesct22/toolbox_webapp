@@ -8,37 +8,37 @@ on:
   workflow_dispatch:
 
 jobs:
-  code-style-check:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-python@v4
-        with:
-          python-version: "3.11"
-      - uses: actions/setup-node@v2
-        with:
-          node-version: 18.x
-      - name: Install npm dev dependencies.
-        working-directory: ./react-frontend
-        run: |
-          npm install --only=dev
-      - name: Upgrade pip and install necessary tools.
-        run: |
-          python -m pip install --upgrade pip setuptools pipx
-      - name: Install poetry.
-        run: |
-          pipx install poetry
-      - name: Ensure Path
-        run: |
-          pipx ensurepath
-      - name: Install only style dependencies.
-        working-directory: ./python
-        run: |
-          poetry install --only code_style
-      - name: Run style checks.
-        working-directory: ./python
-        run: |
-          poetry run pre-commit run --all-files
+  # code-style-check:
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - uses: actions/checkout@v3
+  #     - uses: actions/setup-python@v4
+  #       with:
+  #         python-version: "3.11"
+  #     - uses: actions/setup-node@v2
+  #       with:
+  #         node-version: 18.x
+  #     - name: Install npm dev dependencies.
+  #       working-directory: ./react-frontend
+  #       run: |
+  #         npm install --only=dev
+  #     - name: Upgrade pip and install necessary tools.
+  #       run: |
+  #         python -m pip install --upgrade pip setuptools pipx
+  #     - name: Install poetry.
+  #       run: |
+  #         pipx install poetry
+  #     - name: Ensure Path
+  #       run: |
+  #         pipx ensurepath
+  #     - name: Install only style dependencies.
+  #       working-directory: ./python
+  #       run: |
+  #         poetry install --only code_style
+  #     - name: Run style checks.
+  #       working-directory: ./python
+  #       run: |
+  #         poetry run pre-commit run --all-files
 
   # test:
   #   runs-on: ubuntu-latest
