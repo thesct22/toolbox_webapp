@@ -19,7 +19,7 @@ COPY --from=react-build-stage /app/build ./src/toolbox/build
 RUN poetry build
 
 # Production image
-FROM python:3.11
+FROM python:3.11-slim
 ENV DEBIAN_FRONTEND=noninteractive
 # security best practice: create a non-root user with minimal permissions
 RUN useradd -ms /bin/bash ansible && \
