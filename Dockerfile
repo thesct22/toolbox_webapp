@@ -19,10 +19,27 @@ COPY --from=react-build-stage /app/build ./src/toolbox/build
 RUN poetry build
 
 # Production image
-FROM python:3.11-slim
+FROM python:3.11
+ENV DEBIAN_FRONTEND=noninteractive
+# security best practice: create a non-root user with minimal permissions
+RUN useradd -ms /bin/bash ansible && \
+    apt update && \
+    apt install -y sudo
+RUN echo "ansible-password\nansible-password" | passwd ansible
+RUN usermod -aG sudo ansible
+RUN echo "ansible ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
+USER ansible
 WORKDIR /app
-RUN apt update && apt install -y sshpass openssh-server
+RUN sudo apt update && sudo apt install -y sshpass openssh-server
 COPY --from=fastapi-build-stage /app/dist/*.whl ./
-RUN pip install *.whl
+RUN pip install *.whl --target .
+RUN rm *.whl
+# security best practice: remove sudo privileges from the ansible user
+RUN sudo deluser ansible sudo
+RUN sudo sed -i '/ansible ALL=(ALL) NOPASSWD:ALL/d' /etc/sudoers
+ENV PYTHONPATH "${PYTHONPATH}:/app"
+ENV PATH "${PATH}:/app:/app/bin"
 EXPOSE 8000
-ENTRYPOINT ["python", "-m", "toolbox.main", "--host", "0.0.0.0", "--port", "8000"]
+EXPOSE 8765
+WORKDIR /app/toolbox/ansible
+ENTRYPOINT ["python", "-m", "toolbox.main", "--host", "0.0.0.0", "--port", "8000", "--terminal_host", "0.0.0.0", "--terminal_port", "8765"]
