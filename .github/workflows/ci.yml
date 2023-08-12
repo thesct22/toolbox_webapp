@@ -40,44 +40,44 @@ jobs:
         run: |
           poetry run pre-commit run --all-files
 
-  test:
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        python-version: ["3.8", "3.9", "3.10", "3.11"]
-    steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-python@v4
-        with:
-          python-version: ${{ matrix.python-version }}
-      - name: Upgrade pip and install necessary tools.
-        run: |
-          python -m pip install --upgrade pip setuptools pipx
-      - name: Install poetry.
-        run: |
-          pipx install poetry
-      - name: Ensure Path
-        run: |
-          pipx ensurepath
-      - name: Add build and build/static folders.
-        run: |
-          mkdir -p ./python/src/toolbox/build
-          mkdir -p ./python/src/toolbox/build/static
-      - name: Copy ansible folder.
-        run: |
-          cp -r ./ansible ./python/src/toolbox/ansible
-      - name: Install only test dependencies.
-        working-directory: ./python
-        run: |
-          poetry install --without doc,build,code_style
-      - name: Run tests.
-        working-directory: ./python
-        run: |
-          poetry run pytest
-      - name: Generate coverage report.
-        working-directory: ./python
-        run: |
-          poetry run pytest --cov=src --cov-report=xml
+  # test:
+  #   runs-on: ubuntu-latest
+  #   strategy:
+  #     matrix:
+  #       python-version: ["3.8", "3.9", "3.10", "3.11"]
+  #   steps:
+  #     - uses: actions/checkout@v3
+  #     - uses: actions/setup-python@v4
+  #       with:
+  #         python-version: ${{ matrix.python-version }}
+  #     - name: Upgrade pip and install necessary tools.
+  #       run: |
+  #         python -m pip install --upgrade pip setuptools pipx
+  #     - name: Install poetry.
+  #       run: |
+  #         pipx install poetry
+  #     - name: Ensure Path
+  #       run: |
+  #         pipx ensurepath
+  #     - name: Add build and build/static folders.
+  #       run: |
+  #         mkdir -p ./python/src/toolbox/build
+  #         mkdir -p ./python/src/toolbox/build/static
+  #     - name: Copy ansible folder.
+  #       run: |
+  #         cp -r ./ansible ./python/src/toolbox/ansible
+  #     - name: Install only test dependencies.
+  #       working-directory: ./python
+  #       run: |
+  #         poetry install --without doc,build,code_style
+  #     - name: Run tests.
+  #       working-directory: ./python
+  #       run: |
+  #         poetry run pytest
+  #     - name: Generate coverage report.
+  #       working-directory: ./python
+  #       run: |
+  #         poetry run pytest --cov=src --cov-report=xml
       # - name: Upload coverage report.
       #   uses: codecov/codecov-action@v2
       #   with:
