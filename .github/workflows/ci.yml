@@ -85,14 +85,14 @@ jobs:
       #     file: ./python/coverage.xml
       #     flags: unittests
 
-  build:
+  build-wheel-and-standalone:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-python@v4
         with:
           python-version: "3.11"
-      - uses: actions/setup-node@v2
+      - uses: actions/setup-node@v3
         with:
           node-version: 18.x
       - name: Install npm dependencies.
@@ -126,11 +126,32 @@ jobs:
         working-directory: ./python
         run: |
           poetry build
+      - name: Install python3.11-dev, python3-dev, ccache and patchelf
+        run: |
+          sudo apt-get install python3.11-dev python3-dev ccache patchelf
+          export CXX="ccache g++"
+
+      - name: Create standalone folder using nuitka
+        working-directory: ./python
+        run: |
+          poetry run python -m nuitka --standalone \
+          --lto=no --include-data-dir=../react-frontend/build=build \
+          --include-data-dir=../ansible=toolbox/ansible \
+          --include-data-dir=src/toolbox/templates=toolbox/templates \
+          --include-package-data=xstatic.pkg --include-package-data=terminado \
+          --include-package=xstatic src/toolbox/main.py
+
       - name: Upload package.
         uses: actions/upload-artifact@v3
         with:
           name: package
           path: ./python/dist/toolbox*.whl
+
+      - name: Upload standalone folder.
+        uses: actions/upload-artifact@v3
+        with:
+          name: standalone
+          path: ./python/src/main.dist
 
   docker-build-and-push:
     runs-on: ubuntu-latest
@@ -138,11 +159,10 @@ jobs:
       - uses: actions/checkout@v3
       - name: Build docker image.
         run: |
-          docker build -t thesct22/toolbox .
+          docker build -t ghcr.io/thesct22/toolbox:lastest .
       - name: Login to GitHub Container Registry.
         run: |
           echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
       - name: Tag and push docker image.
         run: |
-          docker tag thesct22/toolbox ghcr.io/thesct22/toolbox:latest
-          docker push ghcr.io/thesct22/toolbox:latest
+          docker push ghcr.io/thesct22/toolbox:lastest
