@@ -28,6 +28,8 @@ To delete the container, run the following command:
 docker rm <container-id>
 ```
 
+To open the webapp go to: `http://localhost:8000`
+
 ## Executable
 
 To run the executable, run the following command:
@@ -38,6 +40,9 @@ cd toolbox-webapp
 ```
 
 Note: The executable is only available for Linux x86_64.
+
+
+To open the webapp go to: `http://localhost:8000`
 
 ## Backend
 
