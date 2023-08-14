@@ -2,6 +2,22 @@
 
 ## Docker Container
 
+Login to ghcr.io to be able to pull this image
+
+```bash
+docker login ghcr.io
+```
+
+Username is your GitHub username
+
+To generate password, go to:
+
+`https://github.com/settings/tokens/new` and check the "read:packages" box. Then click on Generate Token button in the end.
+
+Copy the token generated and paste this as the password. The token begins with `ghp_`.
+
+You should see a message saying login succeeded.
+
 To execute the docker container, run the following command:
 
 ```bash
