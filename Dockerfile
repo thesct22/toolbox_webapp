@@ -34,8 +34,6 @@ RUN sudo apt update && sudo apt install -y sshpass openssh-server
 COPY --from=fastapi-build-stage /app/dist/*.whl ./
 RUN pip install *.whl --target .
 RUN rm *.whl
-# security best practice: remove sudo privileges from the ansible user
-RUN sudo deluser ansible sudo
 RUN sudo sed -i '/ansible ALL=(ALL) NOPASSWD:ALL/d' /etc/sudoers
 ENV PYTHONPATH "${PYTHONPATH}:/app"
 ENV PATH "${PATH}:/app:/app/bin"
