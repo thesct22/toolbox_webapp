@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
+import Button from '@mui/material/Button';
 import IconButton from '@mui/material/IconButton';
 import InstallDesktopIcon from '@mui/icons-material/InstallDesktop';
 import AutoStoriesIcon from '@mui/icons-material/AutoStories';
@@ -17,6 +18,22 @@ import { useSelector } from 'react-redux';
 export default function NavBar() {
 	const navigate = useNavigate();
 
+	const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+
+	// Update window width state on window resize
+	const handleResize = () => {
+		setWindowWidth(window.innerWidth);
+	};
+
+	useEffect(() => {
+		window.addEventListener('resize', handleResize);
+
+		// Clean up the event listener when the component unmounts
+		return () => {
+			window.removeEventListener('resize', handleResize);
+		};
+	}, []);
+
 	const currentPage = useSelector((state) => state.currentPage);
 
 	return (
@@ -27,46 +44,106 @@ export default function NavBar() {
 						{currentPage.currentPage}
 					</Typography>
 					<Tooltip title="Installer">
-						<IconButton color="inherit" onClick={() => navigate('/')}>
-							<InstallDesktopIcon />
-						</IconButton>
+						{windowWidth < 1080 ? (
+							<IconButton color="inherit" onClick={() => navigate('/')}>
+								<InstallDesktopIcon />
+							</IconButton>
+						) : (
+							<Button
+								color="inherit"
+								startIcon={<InstallDesktopIcon />}
+								onClick={() => navigate('/')}
+							>
+								Installer
+							</Button>
+						)}
 					</Tooltip>
 					<Tooltip title="Custom Playbook">
-						<IconButton
-							color="inherit"
-							onClick={() => navigate('/custom-playbook')}
-						>
-							<AutoStoriesIcon />
-						</IconButton>
+						{windowWidth < 1080 ? (
+							<IconButton
+								color="inherit"
+								onClick={() => navigate('/custom-playbook')}
+							>
+								<AutoStoriesIcon />
+							</IconButton>
+						) : (
+							<Button
+								color="inherit"
+								startIcon={<AutoStoriesIcon />}
+								onClick={() => navigate('/custom-playbook')}
+							>
+								Custom Playbook
+							</Button>
+						)}
 					</Tooltip>
 					<Tooltip title="Configure Target">
-						<IconButton
-							color="inherit"
-							onClick={() => navigate('/configure-target')}
-						>
-							<SettingsIcon />
-						</IconButton>
+						{windowWidth < 1080 ? (
+							<IconButton
+								color="inherit"
+								onClick={() => navigate('/configure-target')}
+							>
+								<SettingsIcon />
+							</IconButton>
+						) : (
+							<Button
+								color="inherit"
+								startIcon={<SettingsIcon />}
+								onClick={() => navigate('/configure-target')}
+							>
+								Configure Target
+							</Button>
+						)}
 					</Tooltip>
 					<Tooltip title="Code Editor">
-						<IconButton
-							color="inherit"
-							onClick={() => navigate('/code-editor')}
-						>
-							<CodeIcon />
-						</IconButton>
+						{windowWidth < 1080 ? (
+							<IconButton
+								color="inherit"
+								onClick={() => navigate('/code-editor')}
+							>
+								<CodeIcon />
+							</IconButton>
+						) : (
+							<Button
+								color="inherit"
+								startIcon={<CodeIcon />}
+								onClick={() => navigate('/code-editor')}
+							>
+								Code Editor
+							</Button>
+						)}
 					</Tooltip>
 					<Tooltip title="Terminal">
-						<IconButton color="inherit" onClick={() => navigate('/terminal')}>
-							<TerminalIcon />
-						</IconButton>
+						{windowWidth < 1080 ? (
+							<IconButton color="inherit" onClick={() => navigate('/terminal')}>
+								<TerminalIcon />
+							</IconButton>
+						) : (
+							<Button
+								color="inherit"
+								startIcon={<TerminalIcon />}
+								onClick={() => navigate('/terminal')}
+							>
+								Terminal
+							</Button>
+						)}
 					</Tooltip>
 					<Tooltip title="Instructions">
-						<IconButton
-							color="inherit"
-							onClick={() => navigate('/instructions')}
-						>
-							<InfoIcon />
-						</IconButton>
+						{windowWidth < 1080 ? (
+							<IconButton
+								color="inherit"
+								onClick={() => navigate('/instructions')}
+							>
+								<InfoIcon />
+							</IconButton>
+						) : (
+							<Button
+								color="inherit"
+								startIcon={<InfoIcon />}
+								onClick={() => navigate('/instructions')}
+							>
+								Instructions
+							</Button>
+						)}
 					</Tooltip>
 				</Toolbar>
 			</AppBar>
