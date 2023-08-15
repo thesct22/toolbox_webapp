@@ -1,4 +1,4 @@
-"""Test python file."""
+"""Test python code to show capabilities of code editor."""
 import os
 
 

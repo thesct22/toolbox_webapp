@@ -84,29 +84,13 @@ def target_endpoints(app: FastAPI) -> FastAPI:
             "password": "password"
         }
         """
-        try:
-            data = await request.json()
-        except JSONDecodeError:
-            raise HTTPException(
-                status_code=400, detail="No data provided or malformed data."
-            )
+        data = await request.json()
         if data is None:
             raise HTTPException(status_code=400, detail="No data provided.")
-        try:
-            if data["hosts"] == "" or data["user"] == "" or data["password"] == "":
-                raise HTTPException(
-                    status_code=400, detail="Missing hosts, user or password."
-                )
-        except KeyError:
+        if data["hosts"] == "" or data["user"] == "" or data["password"] == "":
             raise HTTPException(
                 status_code=400, detail="Missing hosts, user or password."
             )
-        try:
-            verboisty = int(data["verbosity"])
-        except KeyError:
-            verboisty = 0
-        except ValueError:
-            verboisty = 0
         try:
             hosts = RSAKey().decrypt(data["hosts"])
             user = RSAKey().decrypt(data["user"])
@@ -121,15 +105,18 @@ def target_endpoints(app: FastAPI) -> FastAPI:
                 status_code=400, detail="Missing hosts, user or password."
             )
         ansible = Ansible(
-            inventory=hosts, user=user, password=password, verbosity=verboisty
+            inventory=hosts,
+            user=user,
+            password=password,
+            playbook="ping.yml",
         )
         try:
             ansible.verfiy_auth()
         except ValueError as e:
             raise HTTPException(status_code=400, detail=str(e))
-        ping_command = ansible.get_ping_command()
+        install_command = ansible.get_command()
         try:
-            result = ansible.run_command(ping_command)
+            result = ansible.run_command(install_command)
         except ValueError as e:
             raise HTTPException(status_code=400, detail=str(e))
         return result

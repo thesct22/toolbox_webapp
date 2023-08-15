@@ -5,6 +5,8 @@
   strategy: free
   roles:
     - browsers/uninstall
+    # - editors
     - version-control/uninstall
     - languages/uninstall
-    - utilities/uninstall
+
+  

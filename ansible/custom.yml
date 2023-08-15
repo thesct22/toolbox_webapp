@@ -4,4 +4,4 @@
   become: true
   strategy: free
   roles:
-    - version-control/install
+  - browsers/uninstall

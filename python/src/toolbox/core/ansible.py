@@ -204,7 +204,7 @@ class Ansible(BaseModel):
             "-e",
             f"ansible_become_pass={self.password}",
             "-e",
-            "ansible_ssh_pass={self.password}",
+            f"ansible_ssh_password={self.password}",
         ]
         if self.verbosity > 0:
             verbosity = "-" + ("v" * self.verbosity)
@@ -234,7 +234,7 @@ class Ansible(BaseModel):
             "-u",
             self.user,
             "-e",
-            f"ansible_ssh_pass={self.password}",
+            f"ansible_ssh_password={self.password}",
             "-m",
             "ping",
         ]
