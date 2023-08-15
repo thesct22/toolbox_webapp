@@ -162,12 +162,14 @@ jobs:
     if: github.event_name == 'workflow_dispatch' || github.event_name == 'release' || (github.event_name == 'push' && github.ref == 'refs/heads/main')
     steps:
       - uses: actions/checkout@v3
-      - name: Build docker image.
+      - name: Build docker images.
         run: |
           docker build -t ghcr.io/thesct22/toolbox:lastest .
+          docker build -f Dockerfile.testmachine -t ghcr.io/thesct22/toolbox-tester:latest .
       - name: Login to GitHub Container Registry.
         run: |
           echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
-      - name: Tag and push docker image.
+      - name: Tag and push docker images.
         run: |
           docker push ghcr.io/thesct22/toolbox:lastest
+          docker push ghcr.io/thesct22/toolbox-tester:latest
