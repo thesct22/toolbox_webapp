@@ -8,14 +8,6 @@
       become_method: runas
       become_user: "{{ admin_username }}"
       when: ansible_os_family == "Windows"
-    - name: Add golang repository to Debian
-      apt_repository:
-        repo: deb http://ppa.launchpad.net/longsleep/golang-backports/ubuntu $(lsb_release -cs) main
-        state: present
-        filename: longsleep-golang-backports
-        update_cache: yes
-      become: true
-      when: ansible_os_family == "Debian"
     - name: Install Golang on Debian
       apt:
         name: golang-go

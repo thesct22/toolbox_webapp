@@ -14,8 +14,6 @@ COPY python/src/ ./src/
 RUN pip install --upgrade pip setuptools wheel && \
     pip install poetry
 RUN poetry install --with build
-COPY ansible ./src/toolbox/ansible
-COPY --from=react-build-stage /app/build ./src/toolbox/build
 RUN poetry build
 
 # Production image
@@ -35,6 +33,8 @@ COPY --from=fastapi-build-stage /app/dist/*.whl ./
 RUN pip install *.whl --target .
 RUN rm *.whl
 RUN sudo sed -i '/ansible ALL=(ALL) NOPASSWD:ALL/d' /etc/sudoers
+COPY ansible /app/toolbox/ansible
+COPY --from=react-build-stage /app/build /app/toolbox/build
 ENV PYTHONPATH "${PYTHONPATH}:/app"
 ENV PATH "${PATH}:/app:/app/bin"
 EXPOSE 8000

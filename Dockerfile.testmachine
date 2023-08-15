@@ -1,0 +1,15 @@
+FROM ubuntu
+ENV DEBIAN_FRONTEND=noninteractive
+RUN useradd -ms /bin/bash ansible && \
+    apt update && \
+    apt install -y sudo
+RUN echo "ansible-password\nansible-password" | passwd ansible
+RUN usermod -aG sudo ansible
+RUN echo "ansible ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
+USER ansible
+RUN sudo apt update && sudo apt install -y sshpass openssh-server curl
+RUN sudo mkdir /var/run/sshd
+# make sure sshd is running
+CMD ["sudo", "service", "ssh", "start"]
+# entrypoint is used to stop the container from exiting
+ENTRYPOINT ["/bin/bash", "-c", "sudo service ssh start;while true; do sleep 30; done;"]
