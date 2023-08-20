@@ -42,6 +42,48 @@ jobs:
         working-directory: ./python
         run: |
           poetry run pre-commit run --all-files
+  
+  build-doc:
+    runs-on: ubuntu-latest
+    if: github.event.release == null
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v4
+        with:
+          python-version: "3.11"
+      - name: Upgrade pip and install necessary tools.
+        run: |
+          python -m pip install --upgrade pip setuptools pipx
+      - name: Install poetry.
+        run: |
+          pipx install poetry
+      - name: Ensure Path
+        run: |
+          pipx ensurepath
+      - name: Install only doc dependencies.
+        working-directory: ./python
+        run: |
+          poetry install --without test,code_style,build,dist
+      - name: Build documentation.
+        working-directory: ./python
+        run: |
+          poetry run sphinx-build -b html docs docs/_build
+      - name: Upload documentation.
+        uses: actions/upload-pages-artifact@v2
+        with:
+          path: ./python/docs/_build
+  publish-doc:
+    needs: build-doc
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: https://thesct22.github.io/toolbox/
+    if: github.event.release != null || (github.event_name == 'push' && github.ref == 'refs/heads/main')
+    steps:
+      - uses: actions/deploy-pages@v2
 
   # test:
   #   runs-on: ubuntu-latest
@@ -72,7 +114,7 @@ jobs:
   #     - name: Install only test dependencies.
   #       working-directory: ./python
   #       run: |
-  #         poetry install --without doc,build,code_style
+  #         poetry install --without doc,build,code_style,dist
   #     - name: Run tests.
   #       working-directory: ./python
   #       run: |

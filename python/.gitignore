@@ -17,6 +17,7 @@
 # Build folder
 
 **/build
+docs/_build
 
 # Ansible folder
 
