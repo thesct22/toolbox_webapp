@@ -18,7 +18,7 @@ jobs:
       - uses: actions/setup-python@v4
         with:
           python-version: "3.11"
-      - uses: actions/setup-node@v2
+      - uses: actions/setup-node@v3
         with:
           node-version: 18.x
       - name: Install npm dev dependencies.
@@ -67,23 +67,21 @@ jobs:
       - name: Build documentation.
         working-directory: ./python
         run: |
+          poetry run sphinx-apidoc -f -o docs src/toolbox
           poetry run sphinx-build -b html docs docs/_build
       - name: Upload documentation.
         uses: actions/upload-pages-artifact@v2
         with:
           path: ./python/docs/_build
   publish-doc:
-    needs: build-doc
-    runs-on: ubuntu-latest
-    permissions:
-      pages: write
-      id-token: write
     environment:
       name: github-pages
-      url: https://thesct22.github.io/toolbox/
-    if: github.event.release != null || (github.event_name == 'push' && github.ref == 'refs/heads/main')
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
     steps:
-      - uses: actions/deploy-pages@v2
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v2
 
   # test:
   #   runs-on: ubuntu-latest

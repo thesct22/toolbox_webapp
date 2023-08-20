@@ -12,6 +12,7 @@ Welcome to Toolbox Webapp's documentation!
 
    installation/index
    usage/index
+   modules
 
 
 Indices and tables
