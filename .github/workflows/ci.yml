@@ -81,7 +81,7 @@ jobs:
       id-token: write
     environment:
       name: github-pages
-      url: https://thesct22.github.io/toolbox/
+      url: https://thesct22.github.io/toolbox_webapp/
     if: github.event.release != null || (github.event_name == 'push' && github.ref == 'refs/heads/main')
     steps:
       - uses: actions/deploy-pages@v2
