@@ -1,3 +1,10 @@
+# This code was copied from the official documentation of terminado
+# https://github.com/jupyter/terminado
+# The code is licensed under the BSD 2-Clause License
+# This permits the user to redistribute, modify and use the code
+# in source and binary forms provided that the user
+# retain the copyright in source code and binary redistributions.
+
 """A single common terminal for all websockets."""
 from pathlib import Path
 
