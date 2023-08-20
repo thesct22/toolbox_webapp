@@ -17,6 +17,12 @@ class RSAKey(BaseModel):
         __public_key (rsa.RSAPublicKey): The public key.
     """
 
+    def __new__(cls) -> "RSAKey":
+        """Return the singleton instance."""
+        if not hasattr(cls, "instance"):
+            cls.instance = super().__new__(cls)
+        return cls.instance
+
     def __init__(self) -> None:
         """Initialize the rsa keys."""
         super().__init__()

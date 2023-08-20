@@ -21,6 +21,12 @@ class Ansible(BaseModel):
         verbosity (int): The verbosity level for ansible.
     """
 
+    def __new__(cls, **data) -> "Ansible":
+        """Return the singleton instance."""
+        if not hasattr(cls, "instance"):
+            cls.instance = super().__new__(cls)
+        return cls.instance
+
     def __init__(self, **data):
         """Initialize the ansible class."""
         super().__init__(**data)
