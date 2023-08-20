@@ -74,14 +74,17 @@ jobs:
         with:
           path: ./python/docs/_build
   publish-doc:
+    needs: build-doc
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
     environment:
       name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    runs-on: ubuntu-latest
+      url: https://thesct22.github.io/toolbox/
+    if: github.event.release != null || (github.event_name == 'push' && github.ref == 'refs/heads/main')
     steps:
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v2
+      - uses: actions/deploy-pages@v2
 
   # test:
   #   runs-on: ubuntu-latest
