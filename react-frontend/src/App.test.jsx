@@ -1,8 +1,12 @@
+/* global test, expect, jest */
 import React from 'react';
 import { render } from '@testing-library/react';
 import { Provider } from 'react-redux';
-import { store } from './app/store';
+import store from './app/store';
 import App from './App';
+
+// Mock react-router-dom
+jest.mock('react-router-dom');
 
 test('renders learn react link', () => {
 	const { getByText } = render(
@@ -11,5 +15,6 @@ test('renders learn react link', () => {
 		</Provider>
 	);
 
-	expect(getByText(/learn/i)).toBeInTheDocument();
+	// Your test assertions here
+	expect(getByText(/Home/i)).toBeInTheDocument();
 });

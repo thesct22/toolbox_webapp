@@ -1,11 +1,11 @@
 import React, { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
-import Navbar from './NavBar.jpg';
-import Installer from './Installer.jpg';
-import CustomPlaybook from './CustomPlaybook.jpg';
-import ConfigureTarget from './ConfigureTarget.jpg';
-import CodeEditor from './CodeEditor.jpg';
-import Terminal from './Terminal.jpg';
+import NavbarImage from './NavBar.jpg';
+import InstallerImage from './Installer.jpg';
+import CustomPlaybookImage from './CustomPlaybook.jpg';
+import ConfigureTargetImage from './ConfigureTarget.jpg';
+import CodeEditorImage from './CodeEditor.jpg';
+import TerminalImage from './Terminal.jpg';
 
 export default function Instructions() {
 	const dispatch = useDispatch();
@@ -19,7 +19,7 @@ export default function Instructions() {
 			<h2 id="navigation-bar">Navigation bar</h2>
 			<p>
 				<img
-					src={Navbar}
+					src={NavbarImage}
 					style={{ width: '75%', height: 'auto' }}
 					alt="Navbar"
 				/>
@@ -52,7 +52,7 @@ export default function Instructions() {
 			<h2 id="installer-page">Installer Page</h2>
 			<p>
 				<img
-					src={Installer}
+					src={InstallerImage}
 					style={{ width: '75%', height: 'auto' }}
 					alt="Installer Page"
 				/>
@@ -98,7 +98,7 @@ export default function Instructions() {
 			<h2 id="custom-playbook-page">Custom Playbook Page</h2>
 			<p>
 				<img
-					src={CustomPlaybook}
+					src={CustomPlaybookImage}
 					style={{ width: '75%', height: 'auto' }}
 					alt="Custom Playbook Page"
 				/>
@@ -145,7 +145,7 @@ export default function Instructions() {
 			<h2 id="configure-target-page">Configure Target Page</h2>
 			<p>
 				<img
-					src={ConfigureTarget}
+					src={ConfigureTargetImage}
 					style={{ width: '75%', height: 'auto' }}
 					alt="Configure Target Page"
 				/>
@@ -177,7 +177,7 @@ export default function Instructions() {
 			<h2 id="code-editor-page">Code Editor Page</h2>
 			<p>
 				<img
-					src={CodeEditor}
+					src={CodeEditorImage}
 					style={{ width: '75%', height: 'auto' }}
 					alt="Code Editor Page"
 				/>
@@ -220,7 +220,7 @@ export default function Instructions() {
 			<h2 id="terminal-page">Terminal page</h2>
 			<p>
 				<img
-					src={Terminal}
+					src={TerminalImage}
 					style={{ width: '75%', height: 'auto' }}
 					alt="Terminal"
 				/>
