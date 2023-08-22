@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import * as forge from 'node-forge';
-import Grid from '@mui/material/Grid';
+import Paper from '@mui/material/Paper';
+import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
+import { Typography } from '@mui/material';
 import Button from '@mui/material/Button';
 import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
@@ -10,6 +12,8 @@ import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
 import Backdrop from '@mui/material/Backdrop';
 import CircularProgress from '@mui/material/CircularProgress';
+
+import BackgroundImage from './BackgroundImage.jpg';
 
 export default function ConfigureTarget() {
 	const dispatch = useDispatch();
@@ -52,6 +56,7 @@ export default function ConfigureTarget() {
 			<Backdrop
 				sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
 				open
+				data-testid="loading-backdrop"
 			>
 				<CircularProgress color="inherit" />
 			</Backdrop>
@@ -72,7 +77,9 @@ export default function ConfigureTarget() {
 	const handleClick = () => {
 		const encryptedUsername = encrypt(username);
 		const encryptedPassword = encrypt(password);
-		const encryptedHosts = encrypt(hosts);
+		let hostsRaw = hosts.replace(/,|\s|\n/g, ',');
+		hostsRaw = hostsRaw.replace(/,{2,}/g, ',').replace(/,$/, '');
+		const encryptedHosts = encrypt(hostsRaw);
 
 		fetch(`${process.env.REACT_APP_API_URL}/target/configure`, {
 			method: 'PUT',
@@ -117,51 +124,99 @@ export default function ConfigureTarget() {
 	);
 
 	return (
-		<div>
-			<h1>Configure Target</h1>
-			<p>ConfigureTarget page content</p>
-			<Grid container spacing={3}>
-				<Grid item xs={12} md={6}>
-					<TextField
-						id="username"
-						required
-						label="Username"
-						variant="filled"
-						fullWidth
-						onChange={usernameChanged}
-						value={username}
-					/>
-				</Grid>
-				<Grid item xs={12} md={6}>
-					<TextField
-						id="password"
-						required
-						label="Password"
-						type="password"
-						variant="filled"
-						fullWidth
-						onChange={passwordChanged}
-						value={password}
-					/>
-				</Grid>
-				<Grid item xs={12}>
-					<TextField
-						id="hosts"
-						required
-						label="Hosts"
-						variant="filled"
-						fullWidth
-						placeholder="IP addresses or hostnames separated by commas"
-						onChange={hostsChanged}
-						value={hosts}
-					/>
-				</Grid>
-				<Grid item xs={12}>
-					<Button onClick={handleClick} variant="contained" color="warning">
-						Configure
-					</Button>
-				</Grid>
-			</Grid>
+		<div
+			// align the paper to the right middle of the screen
+			style={{
+				display: 'flex',
+				justifyContent: 'flex-end',
+				alignItems: 'center',
+				height: 'calc(100vh - 64px)',
+				background: `url(${BackgroundImage}) no-repeat center center fixed`,
+				backgroundSize: 'cover',
+			}}
+		>
+			<Paper
+				sx={{
+					p: 2,
+					display: 'flex',
+					justifyContent: 'center',
+					alignItems: 'center',
+					width: 'fit-content',
+					height: '100%',
+					alignContent: 'center',
+					backgroundColor: 'rgba(255, 255, 255, 0.7)',
+				}}
+				elevation={4}
+			>
+				<Paper
+					sx={{ p: 2, m: 2, height: 'fit-content', width: '100%' }}
+					elevation={4}
+				>
+					<Stack
+						direction="column"
+						justifyContent="center"
+						alignItems="center"
+						spacing={2}
+						sx={{ width: '100%' }}
+					>
+						<TextField
+							id="username"
+							required
+							label="Username"
+							size="small"
+							variant="filled"
+							fullWidth
+							sx={{ width: '25vw' }}
+							onChange={usernameChanged}
+							value={username}
+						/>
+						<TextField
+							id="password"
+							required
+							label="Password"
+							type="password"
+							size="small"
+							variant="filled"
+							fullWidth
+							sx={{ width: '25vw' }}
+							onChange={passwordChanged}
+							value={password}
+						/>
+						<TextField
+							id="hosts"
+							required
+							label="Hostnames/IP Addresses"
+							size="small"
+							variant="filled"
+							multiline
+							fullWidth
+							sx={{ width: '25vw' }}
+							maxRows={4}
+							placeholder="Separated by commas, spaces or newlines"
+							onChange={hostsChanged}
+							value={hosts}
+						/>
+						<Button onClick={handleClick} variant="contained" color="warning">
+							Configure
+						</Button>
+					</Stack>
+				</Paper>
+			</Paper>
+			<Typography
+				variant="caption"
+				sx={{
+					position: 'absolute',
+					bottom: 0,
+					right: 0,
+					m: 1,
+					color: 'white',
+				}}
+			>
+				<a href="https://www.freepik.com/free-vector/technical-support-guys-working-repairing-computer-hardware-software-troubleshooting-fixing-problems-problem-checking-concept-bright-vibrant-violet-isolated-illustration_10780432.htm#query=webapp%20toolbox%20configure%20remote%20machines&position=24&from_view=search&track=ais">
+					Image by vectorjuice
+				</a>{' '}
+				on Freepik
+			</Typography>
 			<Snackbar
 				open={snackbarOpen}
 				autoHideDuration={6000}
@@ -174,6 +229,7 @@ export default function ConfigureTarget() {
 					severity={messageColor}
 					sx={{ width: '100%' }}
 					action={snackbaraction}
+					data-testid="snackbar"
 				>
 					{snackbarMessage}
 				</Alert>

@@ -51,6 +51,7 @@ def target_endpoints(app: FastAPI) -> FastAPI:
             hosts = RSAKey().decrypt(data["hosts"])
             user = RSAKey().decrypt(data["user"])
             password = RSAKey().decrypt(data["password"])
+            print(hosts, user, password)
         except ValueError:
             raise HTTPException(
                 status_code=400,

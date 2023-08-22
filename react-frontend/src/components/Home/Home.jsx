@@ -2,8 +2,11 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import * as forge from 'node-forge';
 import Grid from '@mui/material/Grid';
+import Paper from '@mui/material/Paper';
+import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
+import Typography from '@mui/material/Typography';
 import Alert from '@mui/material/Alert';
 import Button from '@mui/material/Button';
 import Backdrop from '@mui/material/Backdrop';
@@ -16,9 +19,13 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
+import { useNavigate } from 'react-router-dom';
+
+import BackgroundImage from './BackgroundImage.jpg';
 
 export default function Home() {
 	const dispatch = useDispatch();
+	const navigate = useNavigate();
 	const [rsaKey, setRsaKey] = useState('');
 	const [username, setUsername] = useState('');
 	const [password, setPassword] = useState('');
@@ -33,6 +40,7 @@ export default function Home() {
 	const [messageColor, setMessageColor] = useState('success');
 	const [dialogOpen, setDialogOpen] = useState(false);
 	const [dialogMessage, setDialogMessage] = useState('');
+	const [showNavigateButton, setShowNavigateButton] = useState(false);
 
 	const fetchTags = async () => {
 		const installResponse = await fetch(
@@ -73,6 +81,15 @@ export default function Home() {
 	useEffect(() => {
 		fetchTags();
 		fetchRSAKey();
+		setMessageColor('warning');
+		setShowNavigateButton(true);
+		setDialogMessage(
+			'Go to the Configure Target page to configure your target machine(s).\nThis needs to be done only once for each target machine.\nIf you are running this webapp using a docker container you will have to configure the target machine(s) again if you are using a new container.\nOnce configured, you can run the installer and uninstaller from this page as many times as you wish without having to reconfigure.'
+		);
+		setSnackbarMessage(
+			"Don't forget to configure your target machine(s) first if you are connecting to them for the first time using this machine."
+		);
+		setSnackbarOpen(true);
 	}, []);
 
 	useEffect(() => {
@@ -140,7 +157,9 @@ export default function Home() {
 		setBackdropOpen(true);
 		const encryptedUsername = encrypt(username);
 		const encryptedPassword = encrypt(password);
-		const encryptedHosts = encrypt(hosts);
+		let hostsRaw = hosts.replace(/,|\s|\n/g, ',');
+		hostsRaw = hostsRaw.replace(/,{2,}/g, ',').replace(/,$/, '');
+		const encryptedHosts = encrypt(hostsRaw);
 
 		fetch(`${process.env.REACT_APP_API_URL}/target/ping`, {
 			method: 'PUT',
@@ -160,6 +179,7 @@ export default function Home() {
 				if (!status) {
 					throw new Error(data.detail);
 				}
+				setShowNavigateButton(false);
 				setSnackbarOpen(true);
 				setSnackbarMessage('Ping successful');
 				setBackdropOpen(false);
@@ -167,6 +187,11 @@ export default function Home() {
 				setDialogMessage(data);
 			})
 			.catch((error) => {
+				if (error.message.includes('Failed to fetch')) {
+					setShowNavigateButton(true);
+				} else {
+					setShowNavigateButton(false);
+				}
 				setSnackbarOpen(true);
 				setSnackbarMessage('Ping failed');
 				setBackdropOpen(false);
@@ -201,6 +226,7 @@ export default function Home() {
 				if (!status) {
 					throw new Error(data.detail);
 				}
+				setShowNavigateButton(false);
 				setSnackbarOpen(true);
 				if (install) setSnackbarMessage('Install successful');
 				else setSnackbarMessage('Uninstall successful');
@@ -209,6 +235,7 @@ export default function Home() {
 				setDialogMessage(data);
 			})
 			.catch((error) => {
+				setShowNavigateButton(false);
 				setSnackbarOpen(true);
 				if (install) setSnackbarMessage('Install failed');
 				else setSnackbarMessage('Uninstall failed');
@@ -243,109 +270,153 @@ export default function Home() {
 	);
 
 	return (
-		<div>
-			<h1>Quick Installer</h1>
-			<p>
-				Page for installing and uninstalling software on multiple hosts with
-				minimal configuration
-			</p>
-			<Grid container spacing={4} padding={4}>
-				<Grid item xs={12} md={6}>
-					<TextField
-						id="username"
-						required
-						label="Username"
-						variant="filled"
-						fullWidth
-						onChange={(event) => {
-							setUsername(event.target.value);
-						}}
-						value={username}
-					/>
-				</Grid>
-				<Grid item xs={12} md={6}>
-					<TextField
-						id="password"
-						required
-						label="Password"
-						type="password"
-						variant="filled"
-						fullWidth
-						onChange={(event) => {
-							setPassword(event.target.value);
-						}}
-						value={password}
-					/>
-				</Grid>
-				<Grid item xs={12}>
-					<TextField
-						id="hosts"
-						required
-						label="Hosts"
-						variant="filled"
-						fullWidth
-						placeholder="IP addresses or hostnames separated by commas"
-						onChange={(event) => {
-							handleHostsChange(event.target.value);
-						}}
-						value={hosts}
-					/>
-				</Grid>
-				<Grid item xs={12}>
-					<Autocomplete
-						multiple
-						id="tags-outlined"
-						options={tags}
-						getOptionLabel={(option) => option.title}
-						filterSelectedOptions
-						renderInput={(params) => (
-							<TextField
-								{...params} // eslint-disable-line react/jsx-props-no-spreading
-								label="Select Software"
-								placeholder="Select Software"
-							/>
-						)}
-						onChange={(event, value) => {
-							handleSoftwareListChange(value);
-						}}
-					/>
-				</Grid>
-				<Grid item container>
-					<Grid item margin={2} marginLeft={0}>
-						<Button
-							variant="contained"
-							onClick={() => {
-								handleInstallUninstall(true);
+		<div
+			style={{
+				display: 'flex',
+				justifyContent: 'flex-end',
+				alignItems: 'center',
+				height: 'calc(100vh - 64px)',
+				background: `url(${BackgroundImage}) no-repeat center center fixed`,
+				backgroundSize: 'cover',
+			}}
+		>
+			<Paper
+				sx={{
+					p: 2,
+					display: 'flex',
+					justifyContent: 'center',
+					alignItems: 'center',
+					width: 'fit-content',
+					height: '100%',
+					alignContent: 'center',
+					backgroundColor: 'rgba(255, 255, 255, 0.7)',
+				}}
+				elevation={4}
+			>
+				<Paper
+					sx={{ p: 2, m: 2, height: 'fit-content', width: '100%' }}
+					elevation={4}
+				>
+					<Stack
+						direction="column"
+						justifyContent="center"
+						alignItems="center"
+						spacing={2}
+						sx={{ width: '100%' }}
+					>
+						<TextField
+							id="username"
+							required
+							label="Username"
+							size="small"
+							variant="filled"
+							fullWidth
+							onChange={(event) => {
+								setUsername(event.target.value);
 							}}
-							color="success"
-						>
-							Install
-						</Button>
-					</Grid>
-					<Grid item margin={2}>
-						<Button
-							variant="contained"
-							onClick={() => {
-								handleInstallUninstall(false);
+							value={username}
+						/>
+						<TextField
+							id="password"
+							required
+							label="Password"
+							size="small"
+							type="password"
+							variant="filled"
+							fullWidth
+							onChange={(event) => {
+								setPassword(event.target.value);
 							}}
-							color="error"
-						>
-							Uninstall
-						</Button>
-					</Grid>
-					<Grid item margin={2}>
-						<Button
-							variant="contained"
-							onClick={() => {
-								handlePing();
+							value={password}
+						/>
+						<TextField
+							id="hosts"
+							required
+							label="Hostnames/IP Addresses"
+							size="small"
+							variant="filled"
+							multiline
+							fullWidth
+							sx={{ width: '100%' }}
+							maxRows={4}
+							placeholder="Separated by commas, spaces or newlines"
+							onChange={(event) => {
+								handleHostsChange(event.target.value);
 							}}
-							color="warning"
-						>
-							Ping
-						</Button>
-					</Grid>
-				</Grid>
-			</Grid>
+							value={hosts}
+						/>
+						<Autocomplete
+							multiple
+							id="tags-outlined"
+							options={tags}
+							getOptionLabel={(option) => option.title}
+							filterSelectedOptions
+							sx={{ maxWidth: '28vw', width: '100%' }}
+							renderInput={(params) => (
+								<TextField
+									{...params} // eslint-disable-line react/jsx-props-no-spreading
+									label="Select Software"
+									placeholder="Select Software"
+								/>
+							)}
+							onChange={(event, value) => {
+								handleSoftwareListChange(value);
+							}}
+						/>
+						<Grid item container>
+							<Grid item margin={2} marginLeft={0}>
+								<Button
+									variant="contained"
+									onClick={() => {
+										handleInstallUninstall(true);
+									}}
+									color="success"
+								>
+									Install
+								</Button>
+							</Grid>
+							<Grid item margin={2}>
+								<Button
+									variant="contained"
+									onClick={() => {
+										handleInstallUninstall(false);
+									}}
+									color="error"
+								>
+									Uninstall
+								</Button>
+							</Grid>
+							<Grid item margin={2}>
+								<Button
+									variant="contained"
+									onClick={() => {
+										handlePing();
+									}}
+									color="warning"
+								>
+									Ping
+								</Button>
+							</Grid>
+						</Grid>
+					</Stack>
+				</Paper>
+			</Paper>
+
+			<Typography
+				variant="caption"
+				sx={{
+					position: 'absolute',
+					bottom: 0,
+					right: 0,
+					m: 1,
+					color: 'white',
+				}}
+			>
+				<a href="https://www.freepik.com/free-vector/it-professionals-are-creating-web-site-laptop-screen-illustration_10780362.htm?query=quick%20install%20webapp%20toolbox%20remote%20machine#from_view=detail_alsolike">
+					Image by vectorjuice
+				</a>{' '}
+				on Freepik
+			</Typography>
 			<Backdrop
 				sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
 				open={backdropOpen}
@@ -379,7 +450,7 @@ export default function Home() {
 				aria-labelledby="scroll-dialog-title"
 				aria-describedby="scroll-dialog-description"
 			>
-				<DialogTitle id="scroll-dialog-title">Ping Results</DialogTitle>
+				<DialogTitle id="scroll-dialog-title">More Details</DialogTitle>
 				<DialogContent dividers>
 					<DialogContentText
 						id="scroll-dialog-description"
@@ -403,6 +474,16 @@ export default function Home() {
 					</DialogContentText>
 				</DialogContent>
 				<DialogActions>
+					{showNavigateButton ? (
+						<Button
+							onClick={() => {
+								navigate('/configure-target');
+							}}
+							color="warning"
+						>
+							Configure Target
+						</Button>
+					) : null}
 					<Button
 						onClick={() => {
 							setDialogOpen(false);
