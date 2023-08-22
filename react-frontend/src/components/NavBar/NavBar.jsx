@@ -43,7 +43,7 @@ export default function NavBar() {
 					<Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
 						{currentPage.currentPage}
 					</Typography>
-					<Tooltip title="Installer">
+					<Tooltip title="Installer: Use this page to quickly install the tools on your machine">
 						{windowWidth < 1080 ? (
 							<IconButton color="inherit" onClick={() => navigate('/')}>
 								<InstallDesktopIcon />
@@ -58,7 +58,7 @@ export default function NavBar() {
 							</Button>
 						)}
 					</Tooltip>
-					<Tooltip title="Custom Playbook">
+					<Tooltip title="Custom Playbook: Use this page to run custom playbooks">
 						{windowWidth < 1080 ? (
 							<IconButton
 								color="inherit"
@@ -76,7 +76,7 @@ export default function NavBar() {
 							</Button>
 						)}
 					</Tooltip>
-					<Tooltip title="Configure Target">
+					<Tooltip title="Configure Target: Use this page to configure the target(s) to be targeted by ansible">
 						{windowWidth < 1080 ? (
 							<IconButton
 								color="inherit"
@@ -94,7 +94,7 @@ export default function NavBar() {
 							</Button>
 						)}
 					</Tooltip>
-					<Tooltip title="Code Editor">
+					<Tooltip title="Code Editor: Use this page to edit the files you want to run ansible with">
 						{windowWidth < 1080 ? (
 							<IconButton
 								color="inherit"
@@ -112,7 +112,7 @@ export default function NavBar() {
 							</Button>
 						)}
 					</Tooltip>
-					<Tooltip title="Terminal">
+					<Tooltip title="Terminal: Use this page to run bash commands on your machine/docker container">
 						{windowWidth < 1080 ? (
 							<IconButton color="inherit" onClick={() => navigate('/terminal')}>
 								<TerminalIcon />
@@ -127,7 +127,7 @@ export default function NavBar() {
 							</Button>
 						)}
 					</Tooltip>
-					<Tooltip title="Instructions">
+					<Tooltip title="Instructions: Use this page to learn how to use the tools">
 						{windowWidth < 1080 ? (
 							<IconButton
 								color="inherit"
