@@ -126,16 +126,17 @@ class File(FileBase):
         with open(self.path, "r") as f:
             return f.read()
 
-    def write_content(self, content: str) -> bool:
+    def write_content(self, content: str) -> str:
         """Write content to the file."""
         self.check_if_file()
         self.check_if_not_in_custom_roles_folder()
         try:
             with open(self.path, "w") as f:
                 f.write(content)
-            return True
+            with open(self.path, "r") as f:
+                return f.read()
         except Exception:
-            return False
+            raise ValueError("Could not write to file.")
 
     def create(self) -> None:
         """Create the file."""

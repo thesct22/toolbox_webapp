@@ -1,5 +1,6 @@
 """File editor API endpoints."""
 
+from json import JSONDecodeError
 from pathlib import Path
 from typing import Dict, List, Union
 
@@ -79,13 +80,19 @@ def editor_endpoints(app: FastAPI) -> FastAPI:
         Returns:
             Dict[str, str]: The file content.
         """
-        data = await request.json()
-        if data is None:
+        try:
+            data = await request.json()
+        except JSONDecodeError:
             raise HTTPException(status_code=400, detail="No data provided.")
-        if data["path"] == "" or data["content"] == "":
+        if data is None or data == {}:
+            raise HTTPException(status_code=400, detail="No data provided.")
+        try:
+            if data["path"] == "":
+                raise HTTPException(status_code=400, detail="Missing path or content.")
+            path = data["path"]
+            content = data["content"]
+        except KeyError:
             raise HTTPException(status_code=400, detail="Missing path or content.")
-        path = data["path"]
-        content = data["content"]
         try:
             file = File(path)
             written = file.write_content(content)
@@ -103,12 +110,18 @@ def editor_endpoints(app: FastAPI) -> FastAPI:
         Returns:
             Dict[str, str]: The file content.
         """
-        data = await request.json()
-        if data is None:
+        try:
+            data = await request.json()
+        except JSONDecodeError:
             raise HTTPException(status_code=400, detail="No data provided.")
-        if data["path"] == "":
+        if data is None or data == {}:
+            raise HTTPException(status_code=400, detail="No data provided.")
+        try:
+            if data["path"] == "":
+                raise HTTPException(status_code=400, detail="Missing path.")
+            path = data["path"]
+        except KeyError:
             raise HTTPException(status_code=400, detail="Missing path.")
-        path = data["path"]
         try:
             file = File(path)
             file.create()
@@ -130,12 +143,18 @@ def editor_endpoints(app: FastAPI) -> FastAPI:
         Returns:
             Dict[str, str]: The file content.
         """
-        data = await request.json()
-        if data is None:
+        try:
+            data = await request.json()
+        except JSONDecodeError:
             raise HTTPException(status_code=400, detail="No data provided.")
-        if data["path"] == "":
+        if data is None or data == {}:
+            raise HTTPException(status_code=400, detail="No data provided.")
+        try:
+            if data["path"] == "":
+                raise HTTPException(status_code=400, detail="Missing path.")
+            path = data["path"]
+        except KeyError:
             raise HTTPException(status_code=400, detail="Missing path.")
-        path = data["path"]
         try:
             file = File(path)
             file.delete()
@@ -153,13 +172,19 @@ def editor_endpoints(app: FastAPI) -> FastAPI:
         Returns:
             Dict[str, str]: The file content.
         """
-        data = await request.json()
-        if data is None:
+        try:
+            data = await request.json()
+        except JSONDecodeError:
             raise HTTPException(status_code=400, detail="No data provided.")
-        if data["path"] == "" or data["new_path"] == "":
+        if data is None or data == {}:
+            raise HTTPException(status_code=400, detail="No data provided.")
+        try:
+            if data["path"] == "" or data["new_path"] == "":
+                raise HTTPException(status_code=400, detail="Missing path or new_path.")
+            path = data["path"]
+            new_path = data["new_path"]
+        except KeyError:
             raise HTTPException(status_code=400, detail="Missing path or new_path.")
-        path = data["path"]
-        new_path = data["new_path"]
         try:
             file = File(path)
             new_name = file.rename(new_path)
@@ -177,12 +202,18 @@ def editor_endpoints(app: FastAPI) -> FastAPI:
         Returns:
             Dict[str, str]: The file content.
         """
-        data = await request.json()
-        if data is None:
+        try:
+            data = await request.json()
+        except JSONDecodeError:
             raise HTTPException(status_code=400, detail="No data provided.")
-        if data["path"] == "":
+        if data is None or data == {}:
+            raise HTTPException(status_code=400, detail="No data provided.")
+        try:
+            if data["path"] == "":
+                raise HTTPException(status_code=400, detail="Missing path.")
+            path = data["path"]
+        except KeyError:
             raise HTTPException(status_code=400, detail="Missing path.")
-        path = data["path"]
         try:
             folder = Folder(path)
             folder.create()
@@ -204,12 +235,18 @@ def editor_endpoints(app: FastAPI) -> FastAPI:
         Returns:
             Dict[str, str]: The file content.
         """
-        data = await request.json()
-        if data is None:
+        try:
+            data = await request.json()
+        except JSONDecodeError:
             raise HTTPException(status_code=400, detail="No data provided.")
-        if data["path"] == "":
+        if data is None or data == {}:
+            raise HTTPException(status_code=400, detail="No data provided.")
+        try:
+            if data["path"] == "":
+                raise HTTPException(status_code=400, detail="Missing path.")
+            path = data["path"]
+        except KeyError:
             raise HTTPException(status_code=400, detail="Missing path.")
-        path = data["path"]
         try:
             folder = Folder(path)
             folder.delete()
@@ -218,6 +255,7 @@ def editor_endpoints(app: FastAPI) -> FastAPI:
         except ValueError as e:
             if "is not empty" in str(e):
                 return {"deleted": "get_confirmation"}
+            raise HTTPException(status_code=404, detail=str(e))
         return {"deleted": "true"}
 
     @app.post("/api/editor/folder/delete/confirmed", response_model=Dict[str, str])
@@ -230,12 +268,18 @@ def editor_endpoints(app: FastAPI) -> FastAPI:
         Returns:
             Dict[str, str]: The file content.
         """
-        data = await request.json()
-        if data is None:
+        try:
+            data = await request.json()
+        except JSONDecodeError:
             raise HTTPException(status_code=400, detail="No data provided.")
-        if data["path"] == "":
+        if data is None or data == {}:
+            raise HTTPException(status_code=400, detail="No data provided.")
+        try:
+            if data["path"] == "":
+                raise HTTPException(status_code=400, detail="Missing path.")
+            path = data["path"]
+        except KeyError:
             raise HTTPException(status_code=400, detail="Missing path.")
-        path = data["path"]
         try:
             folder = Folder(path)
             folder.force_delete()
@@ -253,13 +297,19 @@ def editor_endpoints(app: FastAPI) -> FastAPI:
         Returns:
             Dict[str, str]: The file content.
         """
-        data = await request.json()
+        try:
+            data = await request.json()
+        except JSONDecodeError:
+            raise HTTPException(status_code=400, detail="No data provided.")
         if data is None:
             raise HTTPException(status_code=400, detail="No data provided.")
-        if data["path"] == "" or data["new_path"] == "":
+        try:
+            if data["path"] == "" or data["new_path"] == "":
+                raise HTTPException(status_code=400, detail="Missing path or new_path.")
+            path = data["path"]
+            new_path = data["new_path"]
+        except KeyError:
             raise HTTPException(status_code=400, detail="Missing path or new_path.")
-        path = data["path"]
-        new_path = data["new_path"]
         try:
             folder = Folder(path)
             new_name = folder.rename(new_path)

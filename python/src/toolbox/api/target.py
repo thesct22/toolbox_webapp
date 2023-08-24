@@ -85,10 +85,22 @@ def target_endpoints(app: FastAPI) -> FastAPI:
             "password": "password"
         }
         """
-        data = await request.json()
+        try:
+            data = await request.json()
+        except JSONDecodeError:
+            raise HTTPException(
+                status_code=400, detail="No data provided or malformed data."
+            )
         if data is None:
             raise HTTPException(status_code=400, detail="No data provided.")
-        if data["hosts"] == "" or data["user"] == "" or data["password"] == "":
+        if data == {}:
+            raise HTTPException(status_code=400, detail="No data provided.")
+        try:
+            if data["hosts"] == "" or data["user"] == "" or data["password"] == "":
+                raise HTTPException(
+                    status_code=400, detail="Missing hosts, user or password."
+                )
+        except KeyError:
             raise HTTPException(
                 status_code=400, detail="Missing hosts, user or password."
             )
@@ -135,14 +147,29 @@ def target_endpoints(app: FastAPI) -> FastAPI:
             "tags": ["tag1", "tag2", ...]
         }
         """
-        data = await request.json()
+        try:
+            data = await request.json()
+        except JSONDecodeError:
+            raise HTTPException(
+                status_code=400, detail="No data provided or malformed data."
+            )
         if data is None:
             raise HTTPException(status_code=400, detail="No data provided.")
-        if data["hosts"] == "" or data["user"] == "" or data["password"] == "":
+        if data == {}:
+            raise HTTPException(status_code=400, detail="No data provided.")
+        try:
+            if data["hosts"] == "" or data["user"] == "" or data["password"] == "":
+                raise HTTPException(
+                    status_code=400, detail="Missing hosts, user or password."
+                )
+        except KeyError:
             raise HTTPException(
                 status_code=400, detail="Missing hosts, user or password."
             )
-        if data["tags"] == []:
+        try:
+            if data["tags"] == []:
+                raise HTTPException(status_code=400, detail="No tags provided.")
+        except KeyError:
             raise HTTPException(status_code=400, detail="No tags provided.")
         try:
             hosts = RSAKey().decrypt(data["hosts"])
@@ -189,14 +216,29 @@ def target_endpoints(app: FastAPI) -> FastAPI:
             "tags": ["tag1", "tag2", ...]
         }
         """
-        data = await request.json()
+        try:
+            data = await request.json()
+        except JSONDecodeError:
+            raise HTTPException(
+                status_code=400, detail="No data provided or malformed data."
+            )
         if data is None:
             raise HTTPException(status_code=400, detail="No data provided.")
-        if data["hosts"] == "" or data["user"] == "" or data["password"] == "":
+        if data == {}:
+            raise HTTPException(status_code=400, detail="No data provided.")
+        try:
+            if data["hosts"] == "" or data["user"] == "" or data["password"] == "":
+                raise HTTPException(
+                    status_code=400, detail="Missing hosts, user or password."
+                )
+        except KeyError:
             raise HTTPException(
                 status_code=400, detail="Missing hosts, user or password."
             )
-        if data["tags"] == []:
+        try:
+            if data["tags"] == []:
+                raise HTTPException(status_code=400, detail="No tags provided.")
+        except KeyError:
             raise HTTPException(status_code=400, detail="No tags provided.")
         try:
             hosts = RSAKey().decrypt(data["hosts"])
