@@ -5,19 +5,19 @@
 To execute the docker container, run the following command:
 
 ```bash
-docker run -d -p 8000:8000 -p 8765:8765 ghcr.io/thesct22/toolbox:lastest --name toolbox
+docker run -d -p 8000:8000 -p 8765:8765 --name toolbox ghcr.io/thesct22/toolbox:lastest
 ```
 
 To execute the docker container for testing the toolbox, run the following command:
 
 ```bash
-docker run -d ghcr.io/thesct22/toolbox-tester:lastest --name test1
+docker run -d --name test1 ghcr.io/thesct22/toolbox-tester:lastest
 ```
 
 If you wish to run 1 more testing container, run the following command:
 
 ```bash
-docker run -d ghcr.io/thesct22/toolbox-tester:lastest --name test2
+docker run -d --name test2 ghcr.io/thesct22/toolbox-tester:lastest
 ```
 
 To find the IP address of the container, run the following command:
