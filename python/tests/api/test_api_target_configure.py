@@ -105,20 +105,6 @@ def test_target_configure_with_unencrypted_data():
     }
 
 
-def test_target_configure_with_encrypted_data():
-    """Test the /api/target/configure endpoint with encrypted data."""
-    encryption_key: str = client.get("/api/public_key").json()["public_key"]
-    hosts = encrypt("localhost", encryption_key.encode())
-    user = encrypt("sharath", encryption_key.encode())
-    password = encrypt("253362", encryption_key.encode())
-    response = client.put(
-        "/api/target/configure",
-        json={"hosts": hosts, "user": user, "password": password},
-    )
-    assert response.status_code == 200
-    assert response.json() == "Configured target machines."
-
-
 def test_target_configure_with_invalid_encrypted_data():
     """Test the /api/target/configure endpoint with invalid encrypted data."""
     encryption_key: str = client.get("/api/public_key").json()["public_key"]

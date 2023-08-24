@@ -82,20 +82,32 @@ def custom_endpoints(app: FastAPI) -> FastAPI:
             "playbook": "playbook"
         }
         """
-        data = await request.json()
+        try:
+            data = await request.json()
+        except json.JSONDecodeError:
+            raise HTTPException(
+                status_code=400, detail="No data provided or malformed data."
+            )
         if data is None:
             raise HTTPException(status_code=400, detail="No data provided.")
-        if (
-            data["hosts"] == ""
-            or data["user"] == ""
-            or data["password"] == ""
-            or data["playbook"] == ""
-        ):
+        try:
+            if (
+                data["hosts"] == ""
+                or data["user"] == ""
+                or data["password"] == ""
+                or data["playbook"] == ""
+            ):
+                raise HTTPException(
+                    status_code=400, detail="Missing hosts, user, password or playbook."
+                )
+        except KeyError:
             raise HTTPException(
                 status_code=400, detail="Missing hosts, user, password or playbook."
             )
         try:
             verbosity = int(data["verbosity"])
+        except KeyError:
+            verbosity = 0
         except ValueError:
             verbosity = 0
         try:
@@ -103,9 +115,14 @@ def custom_endpoints(app: FastAPI) -> FastAPI:
             user = RSAKey().decrypt(data["user"])
             password = RSAKey().decrypt(data["password"])
             playbook = RSAKey().decrypt(data["playbook"])
-            extra_vars = RSAKey().decrypt(data["extra_vars"])
-            tags = RSAKey().decrypt(data["tags"])
-            extra_args = RSAKey().decrypt(data["extra_args"])
+            try:
+                extra_vars = RSAKey().decrypt(data["extra_vars"])
+                tags = RSAKey().decrypt(data["tags"])
+                extra_args = RSAKey().decrypt(data["extra_args"])
+            except KeyError:
+                extra_vars = json.dumps([])
+                tags = ""
+                extra_args = ""
         except ValueError:
             raise HTTPException(
                 status_code=400,
