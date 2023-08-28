@@ -2,6 +2,7 @@
 
 [![CI](https://github.com/thesct22/toolbox_webapp/actions/workflows/ci.yml/badge.svg)](https://github.com/thesct22/toolbox_webapp/actions/workflows/ci.yml)
 [![Docker-Container](https://img.shields.io/badge/docker-container-blue)](https://github.com/thesct22/toolbox_webapp/pkgs/container/toolbox)
+[![Documentation](https://img.shields.io/badge/docs-gh--pages-blue)](https://thesct22.github.io/toolbox_webapp/)
 
 [![Python Versions](https://img.shields.io/badge/python-3.8%20|%203.9%20|%203.10%20|%203.11-blue)](https://www.python.org/)
 [![React Versions](https://img.shields.io/badge/react-17.0.2-blue)](https://reactjs.org/)
