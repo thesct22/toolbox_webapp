@@ -144,27 +144,27 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: coverage-report-${{ matrix.python-version }}.xml
-          path: coverage.xml
+          path: ./python/coverage.xml
           retention-days: 7
       
       - name: Upload code coverage report to CI session
         uses: actions/upload-artifact@v3
         with:
           name: coverage-report-${{ matrix.python-version }}.md
-          path: coverage-${{ matrix.python-version }}.md
+          path: ./python/coverage-${{ matrix.python-version }}.md
           retention-days: 7
       
       - name: Upload html code coverage report to CI session
         uses: actions/upload-artifact@v3
         with:
           name: coverage-report-${{ matrix.python-version }}
-          path: htmlcov
+          path: ./python/htmlcov
           retention-days: 7
 
       - name: Check code coverage ratio
         uses: bigmeech/gha-simple-coverage@master
         with:
-          lcov-file-path: coverage.lcov
+          lcov-file-path: ./python/coverage.lcov
           fail-if-below: 85
       
 
