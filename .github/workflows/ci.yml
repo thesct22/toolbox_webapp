@@ -128,11 +128,7 @@ jobs:
         working-directory: ./python
         run: |
           poetry install --without doc,build,code_style,dist
-      - name: Run tests.
-        working-directory: ./python
-        run: |
-          poetry run pytest
-      - name: Generate coverage report.
+      - name: Run tests and generate coverage report.
         working-directory: ./python
         run: |
           poetry run pytest \
@@ -143,7 +139,7 @@ jobs:
           --cov-report=html \
           --md=coverage-${{ matrix.python-version }}.md \
 
-          coverage lcov
+          poetry run coverage lcov
       - name: Upload code coverage report to CI session
         uses: actions/upload-artifact@v3
         with:

@@ -228,7 +228,9 @@ def test_AnsibleRootFolder_get_items(root_folder: Path):
         }
     ]
     actual_result = ansible_root_folder.get_items()
-    assert sorted(actual_result, key=lambda x: x['name']) == sorted(expected_result, key=lambda x: x['name'])
+    assert sorted(actual_result, key=lambda x: x["name"]) == sorted(
+        expected_result, key=lambda x: x["name"]
+    )
 
 
 def test_CustomFiles_get_inventory(root_folder: Path):
@@ -254,7 +256,9 @@ def test_CustomFiles_get_inventory(root_folder: Path):
         },
     ]
     actual_result = custom_files.get_inventory()
-    assert sorted(actual_result, key=lambda x: x['name']) == sorted(expected_result, key=lambda x: x['name'])
+    assert sorted(actual_result, key=lambda x: x["name"]) == sorted(
+        expected_result, key=lambda x: x["name"]
+    )
 
 
 def test_CustomFiles_get_playbooks(root_folder: Path):
@@ -279,4 +283,6 @@ def test_CustomFiles_get_playbooks(root_folder: Path):
         },
     ]
     actual_result = custom_files.get_playbooks()
-    assert sorted(actual_result, key=lambda x: x['name']) == sorted(expected_result, key=lambda x: x['name'])
+    assert sorted(actual_result, key=lambda x: x["name"]) == sorted(
+        expected_result, key=lambda x: x["name"]
+    )
