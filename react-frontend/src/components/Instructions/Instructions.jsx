@@ -170,6 +170,12 @@ export default function Instructions() {
 					to connect to the machines.
 				</li>
 				<li>
+					You can only configure Windows or Linux machines at a time.
+					If you have a mix of both, run the process twice, once for all Windows
+					machines and once for all Linux machines.
+					Choose the OS type you wish to configure from the button group.
+				</li>
+				<li>
 					Click the <code>Configure</code> button to configure the target
 					machines.
 				</li>

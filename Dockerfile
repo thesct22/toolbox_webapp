@@ -13,6 +13,8 @@ COPY python/pyproject.toml python/poetry.lock python/poetry.toml python/README.m
 COPY python/src/ ./src/
 RUN pip install --upgrade pip setuptools wheel && \
     pip install poetry
+COPY ansible ./src/toolbox/ansible
+COPY --from=react-build-stage /app/build ./src/toolbox/build
 RUN poetry install --with build
 RUN poetry build
 
@@ -30,11 +32,9 @@ USER ansible
 WORKDIR /app
 RUN sudo apt update && sudo apt install -y sshpass openssh-server
 COPY --from=fastapi-build-stage /app/dist/*.whl ./
-RUN pip install *.whl --target .
-RUN rm *.whl
+RUN sudo pip install *.whl --target .
+RUN sudo rm *.whl
 RUN sudo sed -i '/ansible ALL=(ALL) NOPASSWD:ALL/d' /etc/sudoers
-COPY ansible /app/toolbox/ansible
-COPY --from=react-build-stage /app/build /app/toolbox/build
 ENV PYTHONPATH "${PYTHONPATH}:/app"
 ENV PATH "${PATH}:/app:/app/bin"
 EXPOSE 8000

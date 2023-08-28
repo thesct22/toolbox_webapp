@@ -1,5 +1,26 @@
 # Toolbox Webapp
 
+[![CI](https://github.com/thesct22/toolbox_webapp/actions/workflows/ci.yml/badge.svg)](https://github.com/thesct22/toolbox_webapp/actions/workflows/ci.yml)
+[![Docker-Container](https://img.shields.io/badge/docker-container-blue)](https://github.com/thesct22/toolbox_webapp/pkgs/container/toolbox)
+
+[![Python Versions](https://img.shields.io/badge/python-3.8%20|%203.9%20|%203.10%20|%203.11-blue)](https://www.python.org/)
+[![React Versions](https://img.shields.io/badge/react-17.0.2-blue)](https://reactjs.org/)
+[![FastAPI](https://img.shields.io/badge/backend-fastapi-009688)](https://fastapi.tiangolo.com/)
+[![Material UI](https://img.shields.io/badge/frontend-materialui-0081cb)](https://material-ui.com/)
+
+[![Pre-commit](https://img.shields.io/badge/pre--commit-enabled-brightgreen)](https://pre-commit.com/)
+
+[![Black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
+[![Flake8](https://img.shields.io/badge/lint-flake8-blue)](https://flake8.pycqa.org/)
+[![isort](https://img.shields.io/badge/code%20style-isort-4c1)](https://pycqa.github.io/isort/)
+[![codespell](https://img.shields.io/badge/spelling-codespell-lightgrey)](https://github.com/codespell-project/codespell)
+[![pydocstyle](https://img.shields.io/badge/style-pydocstyle-blue)](https://www.pydocstyle.org/)
+[![ESLint](https://img.shields.io/badge/frontend-eslint-blue)](https://eslint.org/)
+[![Prettier](https://img.shields.io/badge/frontend-prettier-ff69b4)](https://prettier.io/)
+
+[![Pytest](https://img.shields.io/badge/tests-pytest-green)](https://pytest.org)
+[![Jest](https://img.shields.io/badge/frontend-jest-c21325)](https://jestjs.io/)
+
 ## Docker Container
 
 To execute the docker container, run the following command:
