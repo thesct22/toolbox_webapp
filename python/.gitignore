@@ -34,3 +34,4 @@ test_dir
 **/.coverage.*
 **/.coverage-*
 **/coverage.*
+**/cov.*

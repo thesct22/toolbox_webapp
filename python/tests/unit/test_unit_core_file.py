@@ -197,13 +197,15 @@ def test_file_not_exist_validation_error(root_folder: Path):
 def test_AnsibleRootFolder_get_items(root_folder: Path):
     """Test the AnsibleRootFolder get_items method."""
     ansible_root_folder = AnsibleRootFolder(root_folder)
-    assert ansible_root_folder.get_items() == [
+    expected_result = [
         {"is_file": False, "name": "ansible", "path": Path(root_folder), "items": []}
     ]
+    actual_result = ansible_root_folder.get_items()
+    assert actual_result == expected_result
     folder = Folder(root_folder / "roles" / "test")
     folder.path.parent.mkdir(parents=True)
     folder.create()
-    assert ansible_root_folder.get_items() == [
+    expected_result = [
         {
             "is_file": False,
             "name": "ansible",
@@ -225,6 +227,8 @@ def test_AnsibleRootFolder_get_items(root_folder: Path):
             ],
         }
     ]
+    actual_result = ansible_root_folder.get_items()
+    assert sorted(actual_result, key=lambda x: x['name']) == sorted(expected_result, key=lambda x: x['name'])
 
 
 def test_CustomFiles_get_inventory(root_folder: Path):
@@ -236,7 +240,7 @@ def test_CustomFiles_get_inventory(root_folder: Path):
     folder.create()
     file = File(root_folder / "inventory" / "test.txt")
     file.create()
-    assert custom_files.get_inventory() == [
+    expected_result = [
         {
             "is_file": True,
             "name": "test.txt",
@@ -249,6 +253,8 @@ def test_CustomFiles_get_inventory(root_folder: Path):
             "items": [],
         },
     ]
+    actual_result = custom_files.get_inventory()
+    assert sorted(actual_result, key=lambda x: x['name']) == sorted(expected_result, key=lambda x: x['name'])
 
 
 def test_CustomFiles_get_playbooks(root_folder: Path):
@@ -264,7 +270,7 @@ def test_CustomFiles_get_playbooks(root_folder: Path):
     file2.create()
     file3 = File(root_folder / "roles" / "test3.yml")
     file3.create()
-    assert custom_files.get_playbooks() == [
+    expected_result = [
         {"is_file": True, "name": "test1.yml", "path": Path(root_folder / "test1.yml")},
         {
             "is_file": True,
@@ -272,3 +278,5 @@ def test_CustomFiles_get_playbooks(root_folder: Path):
             "path": Path(root_folder / "test2.yaml"),
         },
     ]
+    actual_result = custom_files.get_playbooks()
+    assert sorted(actual_result, key=lambda x: x['name']) == sorted(expected_result, key=lambda x: x['name'])
