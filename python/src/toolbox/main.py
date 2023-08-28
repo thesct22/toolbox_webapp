@@ -1,6 +1,6 @@
-"""Run the server."""
+"""Main entrypoint for the toolbox webapp."""
 import argparse
-import concurrent.futures
+import multiprocessing
 from pathlib import Path
 
 from fastapi import FastAPI
@@ -21,8 +21,9 @@ app.add_middleware(
 app = mount_api(app)
 app = mount_frontend(app, react_build_dir=Path(__file__).parent / "build")
 
-if __name__ == "__main__":
-    """Run the server."""
+
+def arg_parser():
+    """Parse the arguments."""
     parser = argparse.ArgumentParser(description="Run the server.")
     parser.add_argument(
         "--host",
@@ -49,29 +50,51 @@ if __name__ == "__main__":
         help="Port to run the terminal on.",
     )
     args = parser.parse_args()
+    return args
 
-    # run both the servers in parallel
 
-    with concurrent.futures.ThreadPoolExecutor(max_workers=3) as executor:
-        try:
-            server_thread = executor.submit(run_server, app, args.host, args.port)
-            terminal_thread = executor.submit(
-                run_terminal, args.terminal_host, args.terminal_port
-            )
-            webview_thread = executor.submit(
-                webview.create_window,
-                "Toolbox",
-                f"http://{args.host}:{args.port}",
-                width=800,
-                height=600,
-            )
+def run_server_app(app, host, port):
+    """Run the FastAPI server."""
+    run_server(app, host, port)
 
-            # Wait for all threads to complete
-            threads = concurrent.futures.wait(
-                [server_thread, terminal_thread, webview_thread]
-            )
 
-        except KeyboardInterrupt:
-            print(" Shutting down on SIGINT")
-        finally:
-            executor.shutdown(wait=False)
+def run_terminal_app(terminal_host, terminal_port):
+    """Run the terminal server."""
+    run_terminal(terminal_host, terminal_port)
+
+
+def run_webapp(args):
+    """Run the webapp."""
+    server_process = multiprocessing.Process(
+        target=run_server_app, args=(app, args.host, args.port)
+    )
+    terminal_process = multiprocessing.Process(
+        target=run_terminal_app, args=(args.terminal_host, args.terminal_port)
+    )
+
+    processes = [server_process, terminal_process]
+
+    try:
+        for process in processes:
+            process.start()
+
+        webview.create_window(
+            "Toolbox",
+            f"http://{args.host}:{args.port}",
+            width=800,
+            height=600,
+        )
+
+        for process in processes:
+            process.join()
+
+    except KeyboardInterrupt:
+        print("\nShutting down gracefully...")
+        for process in processes:
+            process.terminate()
+            process.join()
+
+
+if __name__ == "__main__":
+    args = arg_parser()
+    run_webapp(args)

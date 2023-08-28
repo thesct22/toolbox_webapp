@@ -121,7 +121,7 @@ class Ansible(BaseModel):
             raise ValueError("Verbosity must be between 0 and 4.")
         return verbosity
 
-    def verfiy_auth(self) -> bool:
+    def verify_auth(self) -> bool:
         """Verify the username, password and inventory are correct."""
         if not Path(self.inventory).is_file():
             inventory = self.inventory.split(",")
@@ -208,7 +208,9 @@ class Ansible(BaseModel):
             "-u",
             self.user,
             "-e",
-            f"ansible_become_pass={self.password}",
+            f"ansible_password={self.password}",
+            "-e",
+            f"ansible_become_password={self.password}",
             "-e",
             f"ansible_ssh_password={self.password}",
         ]

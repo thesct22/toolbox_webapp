@@ -3,7 +3,7 @@ requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
 
 [tool.poetry]
-name = "toolbox-webapp"
+name = "toolbox"
 version = "0.0.dev0"
 description = "Toolbox webapp to install tools and software on remote and local target machines"
 license = "Proprietary"
@@ -22,6 +22,16 @@ classifiers = [
 ]
 packages = [
     { include = "toolbox", from = "src" },
+    { include = "toolbox/api", from = "src" },
+    { include = "toolbox/ansible", from = "src" },
+    { include = "toolbox/core", from = "src"},
+    { include = "toolbox/helpers", from = "src"},
+    { include = "toolbox/server", from = "src"},
+]
+include = [
+    "src/toolbox/ansible/**/*",
+    "src/toolbox/build/**/*",
+    "src/toolbox/templates/**/*",
 ]
 
 [tool.poetry.dependencies]
@@ -36,12 +46,18 @@ xstatic = "^1.0.3"
 xstatic-term-js = "^0.0.7.0"
 tornado = "^6.3.2"
 pywebview = "^4.2.2"
+pywinrm = "^0.4.3"
+requests-credssp = "^2.0.0"
 
 [tool.poetry.group.test.dependencies]
 pytest = "^7.3.2"
 httpx = "^0.24.1"
 pytest-cov = "^4.1.0"
 requests = "^2.31.0"
+pytest-mock = "^3.11.1"
+coverage = "^7.3.0"
+pytest-html = "^3.2.0"
+pytest-md = "^0.2.0"
 
 [tool.poetry.group.doc.dependencies]
 sphinx = "^7.0.1"

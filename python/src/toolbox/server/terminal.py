@@ -21,14 +21,18 @@ TEMPLATE_DIR = Path(__file__).parent.parent / "templates"
 
 
 def run_loop(url: str, term_manager: SingleTermManager):
-    """Run the app and open a browser window pointing to the given URL."""
-    loop = tornado.ioloop.IOLoop.instance()
+    """Run the tornado loop."""
+    loop = tornado.ioloop.IOLoop.current()
+
+    async def shutdown():
+        await term_manager.shutdown()
+
     try:
         loop.start()
     except KeyboardInterrupt:
         print(" Shutting down on SIGINT")
+        loop.run_sync(shutdown)
     finally:
-        term_manager.shutdown()
         loop.close()
 
 
@@ -45,7 +49,7 @@ class TerminalPageHandler(tornado.web.RequestHandler):
         )
 
 
-def run_terminal(host: str, port: int):
+def run_terminal(host: str = "localhost", port: int = 8765):
     """Run the terminal server."""
     term_manager = SingleTermManager(shell_command=["bash"])
     handlers = [
@@ -65,3 +69,7 @@ def run_terminal(host: str, port: int):
     )
     app.listen(port, host)
     run_loop(f"http://{host}:{port}", term_manager)
+
+
+if __name__ == "__main__":
+    run_terminal("localhost", 8765)

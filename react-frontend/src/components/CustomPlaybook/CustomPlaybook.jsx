@@ -101,6 +101,9 @@ export default function CustomPlaybook() {
 	};
 
 	const onInventorySelect = (value) => {
+		if (value.is_file === false) {
+			return;
+		}
 		if (value.path === inventory.path) {
 			setInventory('');
 			dispatch({ type: 'inventory/setInventory', payload: '' });
@@ -112,6 +115,21 @@ export default function CustomPlaybook() {
 		dispatch({ type: 'inventory/setInventory', payload: value });
 		fetchFile(value);
 	};
+
+	const renderTree = (nodes) => (
+		<TreeItem
+			id={nodes.path}
+			key={nodes.path}
+			nodeId={nodes.path}
+			label={nodes.name}
+			onClick={() => onInventorySelect(nodes)}
+			endIcon={nodes.is_file === true ? null : <ChevronRightIcon />}
+		>
+			{nodes.is_file === true
+				? null
+				: nodes.items.map((node) => renderTree(node))}
+		</TreeItem>
+	);
 
 	return (
 		<div>
@@ -138,14 +156,7 @@ export default function CustomPlaybook() {
 						defaultCollapseIcon={<ExpandMoreIcon />}
 						defaultExpandIcon={<ChevronRightIcon />}
 					>
-						{inventories.map((inventoryOption) => (
-							<TreeItem
-								key={inventoryOption.path}
-								nodeId={inventoryOption.path}
-								label={inventoryOption.name}
-								onClick={() => onInventorySelect(inventoryOption)}
-							/>
-						))}
+						{inventories.map((inventoryOption) => renderTree(inventoryOption))}
 					</TreeView>
 				</Grid>
 				<Grid container item xs={12} md={9}>
