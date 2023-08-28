@@ -158,7 +158,7 @@ def custom_endpoints(app: FastAPI) -> FastAPI:
             extra_args=extra_args,
         )
         try:
-            ansible.verfiy_auth()
+            ansible.verify_auth()
         except ValueError as e:
             raise HTTPException(status_code=400, detail=str(e))
         install_command = ansible.get_command()

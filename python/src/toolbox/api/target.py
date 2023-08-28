@@ -27,7 +27,8 @@ def target_endpoints(app: FastAPI) -> FastAPI:
         {
             "hosts": "hosts",
             "user": "user",
-            "password": "password"
+            "password": "password",
+            "os": "os"
         }
         """
         try:
@@ -39,34 +40,39 @@ def target_endpoints(app: FastAPI) -> FastAPI:
         if data is None:
             raise HTTPException(status_code=400, detail="No data provided.")
         try:
-            if data["hosts"] == "" or data["user"] == "" or data["password"] == "":
+            if (
+                data["hosts"] == ""
+                or data["user"] == ""
+                or data["password"] == ""
+                or data["os"] == ""
+            ):
                 raise HTTPException(
-                    status_code=400, detail="Missing hosts, user or password."
+                    status_code=400, detail="Missing hosts, user, password or OS."
                 )
         except KeyError:
             raise HTTPException(
-                status_code=400, detail="Missing hosts, user or password."
+                status_code=400, detail="Missing hosts, user, password or OS."
             )
         try:
             hosts = RSAKey().decrypt(data["hosts"])
             user = RSAKey().decrypt(data["user"])
             password = RSAKey().decrypt(data["password"])
-            print(hosts, user, password)
+            operating_system = RSAKey().decrypt(data["os"])
         except ValueError:
             raise HTTPException(
                 status_code=400,
-                detail=str("Missing hosts, user or password, or malformed data."),
+                detail=str("Missing hosts, user, password, OS, or malformed data."),
             )
-        if hosts == "" or user == "" or password == "":
+        if hosts == "" or user == "" or password == "" or operating_system == "":
             raise HTTPException(
-                status_code=400, detail="Missing hosts, user or password."
+                status_code=400, detail="Missing hosts, user, password or OS."
             )
         hosts = hosts.split(",")
         try:
             current_host = hosts[0]
             for host in hosts:
                 current_host = host
-                config_target(host, user, password)
+                config_target(host, user, password, operating_system)
         except ValueError as e:
             raise HTTPException(
                 status_code=400, detail=f'Error: "{str(e)}" on {current_host}.'
@@ -124,7 +130,7 @@ def target_endpoints(app: FastAPI) -> FastAPI:
             playbook="ping.yml",
         )
         try:
-            ansible.verfiy_auth()
+            ansible.verify_auth()
         except ValueError as e:
             raise HTTPException(status_code=400, detail=str(e))
         install_command = ansible.get_command()
@@ -193,7 +199,7 @@ def target_endpoints(app: FastAPI) -> FastAPI:
             playbook="install.yml",
         )
         try:
-            ansible.verfiy_auth()
+            ansible.verify_auth()
         except ValueError as e:
             raise HTTPException(status_code=400, detail=str(e))
         install_command = ansible.get_command()
@@ -262,7 +268,7 @@ def target_endpoints(app: FastAPI) -> FastAPI:
             playbook="uninstall.yml",
         )
         try:
-            ansible.verfiy_auth()
+            ansible.verify_auth()
         except ValueError as e:
             raise HTTPException(status_code=400, detail=str(e))
         uninstall_command = ansible.get_command()

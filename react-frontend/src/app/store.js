@@ -43,6 +43,14 @@ const store = configureStore({
 					return state;
 			}
 		},
+		os: (state = { os: '' }, action) => {
+			switch (action.type) {
+				case 'os/setOS':
+					return { os: action.payload };
+				default:
+					return state;
+			}
+		},
 		fileList: (state = { fileList: [] }, action) => {
 			switch (action.type) {
 				case 'fileList/setFileList':

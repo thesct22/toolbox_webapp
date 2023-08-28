@@ -347,9 +347,7 @@ class CustomFiles(FileBase):
         items = []
         for item in self.path.iterdir():
             if item.is_file() and (item.suffix == ".yml" or item.suffix == ".yaml"):
-                items.append(
-                    {"is_file": True, "path": item.as_posix(), "name": item.name}
-                )
+                items.append({"is_file": True, "path": item, "name": item.name})
         return items
 
     def get_inventory(self) -> List[Dict[str, Union[bool, str, list]]]:
@@ -363,7 +361,7 @@ class CustomFiles(FileBase):
         for item in (self.path / "inventory").iterdir():
             if item.is_file():
                 items.append({"is_file": True, "path": item, "name": item.name})
-            elif item.name == "inventory":
+            else:
                 items.append(
                     {
                         "is_file": False,
@@ -372,6 +370,4 @@ class CustomFiles(FileBase):
                         "items": get_items_recursive(item),
                     }
                 )
-            else:
-                continue
         return items

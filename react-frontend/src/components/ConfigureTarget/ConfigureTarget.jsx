@@ -3,17 +3,24 @@ import { useDispatch, useSelector } from 'react-redux';
 import * as forge from 'node-forge';
 import Paper from '@mui/material/Paper';
 import Stack from '@mui/material/Stack';
+import Grid from '@mui/material/Grid';
 import TextField from '@mui/material/TextField';
-import { Typography } from '@mui/material';
+import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
+import ToggleButton from '@mui/material/ToggleButton';
+import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
 import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
 import Backdrop from '@mui/material/Backdrop';
 import CircularProgress from '@mui/material/CircularProgress';
+import SvgIcon from '@mui/material/SvgIcon';
 
 import BackgroundImage from './BackgroundImage.jpg';
+
+import { ReactComponent as LinuxImage } from './linux.svg';
+import { ReactComponent as WindowsImage } from './windows.svg';
 
 export default function ConfigureTarget() {
 	const dispatch = useDispatch();
@@ -23,6 +30,7 @@ export default function ConfigureTarget() {
 	const [hosts, setHosts] = useState(useSelector((state) => state.hosts.hosts));
 	const [snackbarOpen, setSnackbarOpen] = useState(false);
 	const [snackbarMessage, setSnackbarMessage] = useState('');
+	const [os, setOs] = useState('Linux');
 	const [messageColor, setMessageColor] = useState('success');
 
 	const fetchRSAKey = async () => {
@@ -49,6 +57,11 @@ export default function ConfigureTarget() {
 	const hostsChanged = (event) => {
 		setHosts(event.target.value);
 		dispatch({ type: 'hosts/setHosts', payload: event.target.value });
+	};
+
+	const osChanged = (event, osValue) => {
+		setOs(osValue);
+		dispatch({ type: 'os/setOs', payload: osValue });
 	};
 
 	if (rsaKey === '') {
@@ -80,6 +93,7 @@ export default function ConfigureTarget() {
 		let hostsRaw = hosts.replace(/,|\s|\n/g, ',');
 		hostsRaw = hostsRaw.replace(/,{2,}/g, ',').replace(/,$/, '');
 		const encryptedHosts = encrypt(hostsRaw);
+		const encryptedOs = encrypt(os);
 
 		fetch(`${process.env.REACT_APP_API_URL}/target/configure`, {
 			method: 'PUT',
@@ -90,6 +104,7 @@ export default function ConfigureTarget() {
 				user: encryptedUsername,
 				password: encryptedPassword,
 				hosts: encryptedHosts,
+				os: encryptedOs,
 			}),
 		})
 			.then((response) => [response.json(), response.ok])
@@ -196,9 +211,34 @@ export default function ConfigureTarget() {
 							onChange={hostsChanged}
 							value={hosts}
 						/>
-						<Button onClick={handleClick} variant="contained" color="warning">
-							Configure
-						</Button>
+						<Grid container spacing={2}>
+							<Grid item>
+								<ToggleButtonGroup
+									exclusive
+									aria-label="os"
+									id="os"
+									size="small"
+									value={os}
+									onChange={osChanged}
+								>
+									<ToggleButton value="Linux">
+										<SvgIcon component={LinuxImage} viewBox="0 0 14 14" />
+									</ToggleButton>
+									<ToggleButton value="Windows">
+										<SvgIcon component={WindowsImage} viewBox="0 0 1920 1920" />
+									</ToggleButton>
+								</ToggleButtonGroup>
+							</Grid>
+							<Grid item>
+								<Button
+									onClick={handleClick}
+									variant="contained"
+									color="warning"
+								>
+									Configure
+								</Button>
+							</Grid>
+						</Grid>
 					</Stack>
 				</Paper>
 			</Paper>
