@@ -22,6 +22,10 @@
 [![Pytest](https://img.shields.io/badge/tests-pytest-green)](https://pytest.org)
 [![Jest](https://img.shields.io/badge/frontend-jest-c21325)](https://jestjs.io/)
 
+## About
+
+Toolbox to install software on remote machines
+
 ## Docker Container
 
 To execute the docker container, run the following command:
