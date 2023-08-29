@@ -210,7 +210,7 @@ export default function CustomForm({ playbookPath, inventoryPath }) {
 
 	return (
 		<div>
-			<Grid container spacing={1} marginTop={2} paddingRight={2}>
+			<Grid container spacing={1} marginTop={2}>
 				<Grid item xs={12} md={6}>
 					<TextField
 						id="username"
@@ -305,12 +305,13 @@ export default function CustomForm({ playbookPath, inventoryPath }) {
 						size="small"
 					/>
 				</Grid>
-				<Grid item xs={12} alignItems="center">
-					<Typography variant="h6" gutterBottom align="left">
-						Extra Variables:
-					</Typography>
-				</Grid>
-				<Grid item xs={12}>
+				<Grid container item xs={12} alignItems="center">
+					<Grid item xs={3}>
+						<Typography variant="h6" gutterBottom align="left">
+							Extra Variables:
+						</Typography>
+					</Grid>
+					<Grid item xs={9}>
 					{extraVars.map((extraVar, index) => (
 						<Grid
 							container
@@ -381,6 +382,7 @@ export default function CustomForm({ playbookPath, inventoryPath }) {
 							</Grid>
 						</Grid>
 					))}
+					</Grid>
 				</Grid>
 				<Grid item container>
 					<Grid item margin={2} marginLeft={0}>

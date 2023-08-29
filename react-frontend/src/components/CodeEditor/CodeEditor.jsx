@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 
-import { Alert, Button, Grid, Select, Snackbar } from '@mui/material';
+import { Alert, Button, Grid, Select, Snackbar, Paper, Typography } from '@mui/material';
 import Tree from './Tree';
 import EditorWindow from './EditorWindow';
 
@@ -65,7 +65,9 @@ export default function CodeEditor() {
 				</Grid>
 				<Grid container item xs={12} md={9}>
 					<Grid item xs={12}>
-						<EditorWindow />
+						<Paper elevation={16}>
+							<EditorWindow />
+						</Paper>
 					</Grid>
 					<Grid
 						container
@@ -76,6 +78,11 @@ export default function CodeEditor() {
 						justifyContent="flex-end"
 						alignItems="baseline"
 					>
+						<Grid item xs={4} m={1}>
+							<Typography variant="subtitle1" component="div">
+								{selectedFile.path!==undefined?selectedFile.path.substring(selectedFile.path.lastIndexOf('/ansible/') + 9):''}
+							</Typography>
+						</Grid>
 						<Grid item>
 							<Select
 								native

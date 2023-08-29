@@ -13,12 +13,27 @@ export default function EditorWindow() {
 			defaultLanguage="yaml"
 			language={language}
 			value={fileContent}
-			theme="vs-dark"
+			theme={localStorage.getItem('theme') === 'dark' ? 'vs-dark' : 'light'}
 			options={{
 				readOnly: false,
 				minimap: {
 					enabled: true,
 				},
+				automaticLayout: true,
+				wrappingIndent: 'indent',
+				wordWrap: 'on',
+				wordWrapColumn: 80,
+				wordWrapMinified: true,
+				scrollBeyondLastLine: false,
+				scrollbar: {
+					alwaysConsumeMouseWheel: false,
+				},
+				quickSuggestions: true,
+				quickSuggestionsDelay: 100,
+				parameterHints: true,
+				links: true,
+				contextmenu: true,
+				roundedSelection: true,
 			}}
 			onChange={(value) => {
 				dispatch({
@@ -26,6 +41,7 @@ export default function EditorWindow() {
 					payload: value,
 				});
 			}}
+			
 		/>
 	);
 }

@@ -305,7 +305,6 @@ export default function Tree() {
 			return;
 		}
 		filePath = filePath.substring(filePath.lastIndexOf('/ansible/') + 9);
-		dispatch({ type: 'currentPage/setCurrentPage', payload: filePath });
 	}, [selectedFile]);
 
 	if (fileList.length === 0) {

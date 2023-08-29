@@ -1,23 +1,31 @@
-"""Mount the frontend static files to the FastAPI app."""
-
+from fastapi import FastAPI, Request
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
 from pathlib import Path
 
-from fastapi import FastAPI
-from fastapi.staticfiles import StaticFiles
 
+def mount_frontend(app: FastAPI, react_build_dir: Path)-> FastAPI:
 
-def mount_frontend(app: FastAPI, react_build_dir: Path):
-    """
-    Mount the frontend static files to the FastAPI app.
+    @app.get("/custom-playbook")
+    async def custom_playbook(request: Request):
+        return FileResponse(react_build_dir / "index.html")
+    
+    @app.get("/configure-target")
+    async def configure_target(request: Request):
+        return FileResponse(react_build_dir / "index.html")
+    
+    @app.get("/code-editor")
+    async def code_editor(request: Request):
+        return FileResponse(react_build_dir / "index.html")
+    
+    @app.get("/terminal")
+    async def terminal(request: Request):
+        return FileResponse(react_build_dir / "index.html")
+    
+    @app.get("/instructions")
+    async def instructions(request: Request):
+        return FileResponse(react_build_dir / "index.html")
 
-    Args:
-        app (FastAPI): The FastAPI app.
-        react_build_dir (Path): Path to the react build directory.
-    Returns:
-        FastAPI: The FastAPI app.
-    """
     app.mount("/", StaticFiles(directory=react_build_dir, html=True), name="static")
-    app.mount(
-        "/static", StaticFiles(directory=(react_build_dir / "static")), name="static"
-    )
+    
     return app

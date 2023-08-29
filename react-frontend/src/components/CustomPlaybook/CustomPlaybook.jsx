@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Backdrop, Grid, Typography, Snackbar, Alert } from '@mui/material';
+import { Backdrop, Grid, Typography, Snackbar, Alert, Paper } from '@mui/material';
 import { TreeView, TreeItem } from '@mui/lab';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
@@ -161,22 +161,38 @@ export default function CustomPlaybook() {
 				</Grid>
 				<Grid container item xs={12} md={9}>
 					<Grid item xs={12}>
-						<Editor
-							height="50vh"
-							defaultLanguage="yaml"
-							language={language}
-							value={fileContent}
-							theme="vs-dark"
-							options={{
-								readOnly: true,
-							}}
-						/>
+						<Paper elevation={16}>
+							<Editor
+								height="50vh"
+								defaultLanguage="yaml"
+								language={language}
+								value={fileContent}
+								theme={localStorage.getItem('theme') === 'dark' ? 'vs-dark' : 'light'}
+								options={{
+									readOnly: true,
+									minimap: {
+										enabled: true,
+									},
+									automaticLayout: true,
+									wrappingIndent: 'indent',
+									wordWrap: 'on',
+									wordWrapColumn: 80,
+									wordWrapMinified: true,
+									scrollBeyondLastLine: false,
+									scrollbar: {
+										alwaysConsumeMouseWheel: false,
+									},
+								}}
+							/>
+						</Paper>
 					</Grid>
 					<Grid item xs={12}>
-						<CustomForm
-							playbookPath={playbook.path}
-							inventoryPath={inventory.path}
-						/>
+						<Paper elevation={16} sx={{p:2}}>
+							<CustomForm
+								playbookPath={playbook.path}
+								inventoryPath={inventory.path}
+							/>
+						</Paper>
 					</Grid>
 				</Grid>
 			</Grid>
