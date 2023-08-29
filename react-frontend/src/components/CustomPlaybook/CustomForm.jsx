@@ -312,76 +312,76 @@ export default function CustomForm({ playbookPath, inventoryPath }) {
 						</Typography>
 					</Grid>
 					<Grid item xs={9}>
-					{extraVars.map((extraVar, index) => (
-						<Grid
-							container
-							spacing={1}
-							key={`extra-var-${index}`} // eslint-disable-line
-							alignItems="center"
-						>
-							<Grid item xs={5}>
-								<TextField
-									id={`extra-var-key-${index}`}
-									label="Key"
-									variant="filled"
-									fullWidth
-									value={extraVar.key}
-									onChange={(event) => {
-										const newExtraVars = [...extraVars];
-										newExtraVars[index].key = event.target.value;
-										setExtraVars(newExtraVars);
-										if (
-											index === extraVars.length - 1 &&
-											event.target.value !== ''
-										) {
-											setExtraVars([...extraVars, { key: '', value: '' }]);
-										}
-										if (
-											index === extraVars.length - 2 &&
-											event.target.value === '' &&
-											extraVars.length > 1 &&
-											extraVars[index].value === ''
-										) {
-											setExtraVars(extraVars.slice(0, -1));
-										}
-									}}
-									size="small"
-								/>
+						{extraVars.map((extraVar, index) => (
+							<Grid
+								container
+								spacing={1}
+								key={`extra-var-${index}`} // eslint-disable-line
+								alignItems="center"
+							>
+								<Grid item xs={5}>
+									<TextField
+										id={`extra-var-key-${index}`}
+										label="Key"
+										variant="filled"
+										fullWidth
+										value={extraVar.key}
+										onChange={(event) => {
+											const newExtraVars = [...extraVars];
+											newExtraVars[index].key = event.target.value;
+											setExtraVars(newExtraVars);
+											if (
+												index === extraVars.length - 1 &&
+												event.target.value !== ''
+											) {
+												setExtraVars([...extraVars, { key: '', value: '' }]);
+											}
+											if (
+												index === extraVars.length - 2 &&
+												event.target.value === '' &&
+												extraVars.length > 1 &&
+												extraVars[index].value === ''
+											) {
+												setExtraVars(extraVars.slice(0, -1));
+											}
+										}}
+										size="small"
+									/>
+								</Grid>
+								<Typography variant="h4" gutterBottom align="center">
+									{' :'}
+								</Typography>
+								<Grid item xs={5}>
+									<TextField
+										id={`extra-var-value-${index}`}
+										label="Value"
+										variant="filled"
+										fullWidth
+										value={extraVar.value}
+										onChange={(event) => {
+											const newExtraVars = [...extraVars];
+											newExtraVars[index].value = event.target.value;
+											setExtraVars(newExtraVars);
+											if (
+												index === extraVars.length - 1 &&
+												event.target.value !== ''
+											) {
+												setExtraVars([...extraVars, { key: '', value: '' }]);
+											}
+											if (
+												index === extraVars.length - 2 &&
+												event.target.value === '' &&
+												extraVars.length > 1 &&
+												extraVars[index].key === ''
+											) {
+												setExtraVars(extraVars.slice(0, -1));
+											}
+										}}
+										size="small"
+									/>
+								</Grid>
 							</Grid>
-							<Typography variant="h4" gutterBottom align="center">
-								{' :'}
-							</Typography>
-							<Grid item xs={5}>
-								<TextField
-									id={`extra-var-value-${index}`}
-									label="Value"
-									variant="filled"
-									fullWidth
-									value={extraVar.value}
-									onChange={(event) => {
-										const newExtraVars = [...extraVars];
-										newExtraVars[index].value = event.target.value;
-										setExtraVars(newExtraVars);
-										if (
-											index === extraVars.length - 1 &&
-											event.target.value !== ''
-										) {
-											setExtraVars([...extraVars, { key: '', value: '' }]);
-										}
-										if (
-											index === extraVars.length - 2 &&
-											event.target.value === '' &&
-											extraVars.length > 1 &&
-											extraVars[index].key === ''
-										) {
-											setExtraVars(extraVars.slice(0, -1));
-										}
-									}}
-									size="small"
-								/>
-							</Grid>
-						</Grid>
-					))}
+						))}
 					</Grid>
 				</Grid>
 				<Grid item container>

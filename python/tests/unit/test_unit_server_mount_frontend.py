@@ -28,4 +28,3 @@ def test_mount_frontend(mock_app, mock_react_build_dir):
     assert mock_app.mount.call_args_list[0][0][0] == "/"
     assert isinstance(mock_app.mount.call_args_list[0][0][1], StaticFiles)
     assert mock_app.mount.call_args_list[0][1] == {"name": "static"}
-

@@ -1,6 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Backdrop, Grid, Typography, Snackbar, Alert, Paper } from '@mui/material';
+import {
+	Backdrop,
+	Grid,
+	Typography,
+	Snackbar,
+	Alert,
+	Paper,
+} from '@mui/material';
 import { TreeView, TreeItem } from '@mui/lab';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
@@ -167,7 +174,9 @@ export default function CustomPlaybook() {
 								defaultLanguage="yaml"
 								language={language}
 								value={fileContent}
-								theme={localStorage.getItem('theme') === 'dark' ? 'vs-dark' : 'light'}
+								theme={
+									localStorage.getItem('theme') === 'dark' ? 'vs-dark' : 'light'
+								}
 								options={{
 									readOnly: true,
 									minimap: {
@@ -187,7 +196,7 @@ export default function CustomPlaybook() {
 						</Paper>
 					</Grid>
 					<Grid item xs={12}>
-						<Paper elevation={16} sx={{p:2}}>
+						<Paper elevation={16} sx={{ p: 2 }}>
 							<CustomForm
 								playbookPath={playbook.path}
 								inventoryPath={inventory.path}

@@ -1,7 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 
-import { Alert, Button, Grid, Select, Snackbar, Paper, Typography } from '@mui/material';
+import {
+	Alert,
+	Button,
+	Grid,
+	Select,
+	Snackbar,
+	Paper,
+	Typography,
+} from '@mui/material';
 import Tree from './Tree';
 import EditorWindow from './EditorWindow';
 
@@ -80,7 +88,11 @@ export default function CodeEditor() {
 					>
 						<Grid item xs={4} m={1}>
 							<Typography variant="subtitle1" component="div">
-								{selectedFile.path!==undefined?selectedFile.path.substring(selectedFile.path.lastIndexOf('/ansible/') + 9):''}
+								{selectedFile.path !== undefined
+									? selectedFile.path.substring(
+											selectedFile.path.lastIndexOf('/ansible/') + 9
+									  )
+									: ''}
 							</Typography>
 						</Grid>
 						<Grid item>

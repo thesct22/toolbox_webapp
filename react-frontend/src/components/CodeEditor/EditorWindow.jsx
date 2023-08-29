@@ -41,7 +41,6 @@ export default function EditorWindow() {
 					payload: value,
 				});
 			}}
-			
 		/>
 	);
 }
