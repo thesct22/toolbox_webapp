@@ -204,7 +204,9 @@ export default function Home() {
 		setBackdropOpen(true);
 		const encryptedUsername = encrypt(username);
 		const encryptedPassword = encrypt(password);
-		const encryptedHosts = encrypt(hosts);
+		let hostsRaw = hosts.replace(/,|\s|\n/g, ',');
+		hostsRaw = hostsRaw.replace(/,{2,}/g, ',').replace(/,$/, '');
+		const encryptedHosts = encrypt(hostsRaw);
 
 		const apiUrl = install ? '/target/install' : '/target/uninstall';
 		fetch(process.env.REACT_APP_API_URL + apiUrl, {
