@@ -166,6 +166,12 @@ jobs:
         with:
           lcov-file-path: ./python/coverage.lcov
           fail-if-below: 85
+
+      - name: Upload coverage reports to Codecov
+        uses: codecov/codecov-action@v3
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+          files: ./python/coverage.xml
       
 
   build-wheel-and-standalone:
