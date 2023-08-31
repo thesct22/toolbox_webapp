@@ -1,6 +1,7 @@
 # Toolbox Webapp
 
 [![CI](https://github.com/thesct22/toolbox_webapp/actions/workflows/ci.yml/badge.svg)](https://github.com/thesct22/toolbox_webapp/actions/workflows/ci.yml)
+[![codecov](https://codecov.io/gh/thesct22/toolbox_webapp/graph/badge.svg?token=GYBFWGO7T0)](https://codecov.io/gh/thesct22/toolbox_webapp)
 [![Docker-Container](https://img.shields.io/badge/docker-container-blue)](https://github.com/thesct22/toolbox_webapp/pkgs/container/toolbox)
 [![Documentation](https://img.shields.io/badge/docs-gh--pages-blue)](https://thesct22.github.io/toolbox_webapp/)
 
