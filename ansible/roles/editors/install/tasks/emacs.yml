@@ -1,0 +1,36 @@
+- name: Install Emacs
+  block:
+    - name: Install Emacs on Windows
+      win_chocolatey:
+        name: emacs
+        state: latest
+      become: true
+      become_method: runas
+      become_user: "{{ admin_username }}"
+      when: ansible_os_family == "Windows"
+    - name: Install Emacs on Debian
+      apt:
+        name: emacs
+        state: latest
+      become: true
+      when: ansible_os_family == "Debian"
+    - name: Install Emacs on RedHat
+      yum:
+        name: emacs
+        state: latest
+      become: true
+      when: ansible_os_family == "RedHat"
+    - name: Install Emacs on MacOS
+      homebrew:
+        name: emacs
+        state: latest
+      become: true
+      when: ansible_os_family == "Darwin"
+    - name: Install Emacs on Alpine
+      apk:
+        name: emacs
+        state: latest
+      become: true
+      when: ansible_os_family == "Alpine"
+  tags:
+    - emacs

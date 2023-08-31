@@ -1,0 +1,39 @@
+- name: Install 7Zip
+  block:
+    - name: Install 7Zip on Windows
+      win_chocolatey:
+        name: 7zip
+        state: latest
+      become: true
+      become_method: runas
+      become_user: "{{ admin_username }}"
+      when: ansible_os_family == "Windows"
+    - name: Install 7Zip on Debian
+      apt:
+        name: p7zip-full
+        state: latest
+      become: true
+      when: ansible_os_family == "Debian"
+    - name: Install 7Zip on RedHat
+      yum:
+        name: p7zip
+        state: latest
+      become: true
+      when: ansible_os_family == "RedHat"
+    - name: Install 7Zip on MacOS
+      homebrew:
+        name: p7zip
+        state: latest
+      become: true
+      when: ansible_os_family == "Darwin"
+    - name: Install 7Zip on Alpine
+      apk:
+        name: p7zip
+        state: latest
+      become: true
+      when: ansible_os_family == "Alpine"
+  tags:
+    - 7zip
+    - 7-zip
+    - p7zip
+    - p7zip-full

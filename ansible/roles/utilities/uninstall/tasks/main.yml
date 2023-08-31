@@ -18,3 +18,11 @@
   include_tasks: libreoffice.yml
   tags:
   - libreoffice
+
+- name: Uninstall 7Zip
+  include_tasks: 7zip.yml
+  tags:
+  - 7zip
+  - 7-zip
+  - p7zip
+  - p7zip-full

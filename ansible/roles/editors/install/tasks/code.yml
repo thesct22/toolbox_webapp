@@ -1,0 +1,44 @@
+- name: Install Visual Studio Code
+  block:
+    - name: Install Visual Studio Code on Windows
+      win_chocolatey:
+        name: vscode
+        state: latest
+      become: true
+      become_method: runas
+      become_user: "{{ admin_username }}"
+      when: ansible_os_family == "Windows"
+    - name: Add Visual Studio Code repository on Debian
+      apt_repository:
+        repo: deb [arch=amd64] http://packages.microsoft.com/repos/vscode stable main
+        state: present
+        filename: vscode
+      become: true
+      when: ansible_os_family == "Debian"
+    - name: Install Visual Studio Code on Debian
+      apt:
+        name: code
+        state: latest
+      become: true
+      when: ansible_os_family == "Debian"
+    - name: Install Visual Studio Code on RedHat
+      yum:
+        name: code
+        state: latest
+      become: true
+      when: ansible_os_family == "RedHat"
+    - name: Install Visual Studio Code on MacOS
+      homebrew:
+        name: visual-studio-code
+        state: latest
+      become: true
+      when: ansible_os_family == "Darwin"
+    - name: Install Visual Studio Code on Alpine
+      apk:
+        name: code
+        state: latest
+      become: true
+      when: ansible_os_family == "Alpine"
+  tags:
+    - vscode
+    - visual-studio-code

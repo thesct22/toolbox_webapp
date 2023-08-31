@@ -1,0 +1,37 @@
+- name: Uninstall Visual Studio Code
+  block:
+    - name: Uninstall Visual Studio Code on Windows
+      win_chocolatey:
+        name: vscode
+        state: absent
+      become: true
+      become_method: runas
+      become_user: "{{ admin_username }}"
+      when: ansible_os_family == "Windows"
+    - name: Uninstall Visual Studio Code on Debian
+      apt:
+        name: code
+        state: absent
+      become: true
+      when: ansible_os_family == "Debian"
+    - name: Uninstall Visual Studio Code on RedHat
+      yum:
+        name: code
+        state: absent
+      become: true
+      when: ansible_os_family == "RedHat"
+    - name: Uninstall Visual Studio Code on MacOS
+      homebrew:
+        name: visual-studio-code
+        state: absent
+      become: true
+      when: ansible_os_family == "Darwin"
+    - name: Uninstall Visual Studio Code on Alpine
+      apk:
+        name: code
+        state: absent
+      become: true
+      when: ansible_os_family == "Alpine"
+  tags:
+    - vscode
+    - visual-studio-code

@@ -1,0 +1,36 @@
+- name: Uninstall Emacs
+  block:
+    - name: Uninstall Emacs on Windows
+      win_chocolatey:
+        name: emacs
+        state: absent
+      become: true
+      become_method: runas
+      become_user: "{{ admin_username }}"
+      when: ansible_os_family == "Windows"
+    - name: Uninstall Emacs on Debian
+      apt:
+        name: emacs
+        state: absent
+      become: true
+      when: ansible_os_family == "Debian"
+    - name: Uninstall Emacs on RedHat
+      yum:
+        name: emacs
+        state: absent
+      become: true
+      when: ansible_os_family == "RedHat"
+    - name: Uninstall Emacs on MacOS
+      homebrew:
+        name: emacs
+        state: absent
+      become: true
+      when: ansible_os_family == "Darwin"
+    - name: Uninstall Emacs on Alpine
+      apk:
+        name: emacs
+        state: absent
+      become: true
+      when: ansible_os_family == "Alpine"
+  tags:
+    - emacs
