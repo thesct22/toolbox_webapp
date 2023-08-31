@@ -12,12 +12,14 @@
       apt:
         name: subversion, libapache2-mod-svn, libsvn-dev, subversion-tools
         state: absent
+        autoremove: yes
       become: true
       when: ansible_os_family == "Debian"
     - name: Uninstall svn on RedHat
       yum:
         name: subversion
         state: absent
+        autoremove: yes
       become: true
       when: ansible_os_family == "RedHat"
     - name: Uninstall svn on MacOS
@@ -30,6 +32,7 @@
       apk:
         name: subversion, apache2, apache2-utils, apache2-webdav, mod_dav_svn
         state: absent
+        autoremove: yes
       become: true
       when: ansible_os_family == "Alpine"
   tags: svn

@@ -12,12 +12,14 @@
       apt:
         name: python3.8
         state: absent
+        autoremove: yes
       become: true
       when: ansible_os_family == "Debian"
     - name: Uninstall Python 3.8 on RedHat
       yum:
         name: python38
         state: absent
+        autoremove: yes
       become: true
       when: ansible_os_family == "RedHat"
     - name: Uninstall Python 3.8 on MacOS
@@ -30,6 +32,7 @@
       apk:
         name: python3.8
         state: absent
+        autoremove: yes
       become: true
       when: ansible_os_family == "Alpine"
   tags:
@@ -48,12 +51,14 @@
       apt:
         name: python3.9
         state: absent
+        autoremove: yes
       become: true
       when: ansible_os_family == "Debian"
     - name: Uninstall Python 3.9 on RedHat
       yum:
         name: python39
         state: absent
+        autoremove: yes
       become: true
       when: ansible_os_family == "RedHat"
     - name: Uninstall Python 3.9 on MacOS
@@ -66,6 +71,7 @@
       apk:
         name: python3.9
         state: absent
+        autoremove: yes
       become: true
       when: ansible_os_family == "Alpine"
   tags:
@@ -84,12 +90,14 @@
       apt:
         name: python3.10
         state: absent
+        autoremove: yes
       become: true
       when: ansible_os_family == "Debian"
     - name: Uninstall Python 3.10 on RedHat
       yum:
         name: python310
         state: absent
+        autoremove: yes
       become: true
       when: ansible_os_family == "RedHat"
     - name: Uninstall Python 3.10 on MacOS
@@ -102,6 +110,7 @@
       apk:
         name: python3.10
         state: absent
+        autoremove: yes
       become: true
       when: ansible_os_family == "Alpine"
   tags:
@@ -120,12 +129,14 @@
       apt:
         name: python3.11
         state: absent
+        autoremove: yes
       become: true
       when: ansible_os_family == "Debian"
     - name: Uninstall Python 3.11 on RedHat
       yum:
         name: python311
         state: absent
+        autoremove: yes
       become: true
       when: ansible_os_family == "RedHat"
     - name: Uninstall Python 3.11 on MacOS
@@ -138,6 +149,7 @@
       apk:
         name: python3.11
         state: absent
+        autoremove: yes
       become: true
       when: ansible_os_family == "Alpine"
   tags:

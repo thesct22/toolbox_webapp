@@ -12,12 +12,14 @@
       apt:
         name: emacs
         state: absent
+        autoremove: yes
       become: true
       when: ansible_os_family == "Debian"
     - name: Uninstall Emacs on RedHat
       yum:
         name: emacs
         state: absent
+        autoremove: yes
       become: true
       when: ansible_os_family == "RedHat"
     - name: Uninstall Emacs on MacOS
@@ -30,6 +32,7 @@
       apk:
         name: emacs
         state: absent
+        autoremove: yes
       become: true
       when: ansible_os_family == "Alpine"
   tags:

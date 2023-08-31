@@ -1,6 +1,6 @@
 - name: Uninstall Java Development Kit
   block:
-    - name: Install Java on Windows
+    - name: Uninstall Java on Windows
       win_chocolatey:
         name: openjdk
         state: absent
@@ -8,28 +8,31 @@
       become_method: runas
       become_user: "{{ admin_username }}"
       when: ansible_os_family == "Windows"
-    - name: Install Java on Debian
+    - name: Uninstall Java on Debian
       apt:
         name: openjdk-11-jdk
-        state: absent
+        state: absent#
+        autoremove: yes
       become: true
       when: ansible_os_family == "Debian"
-    - name: Install Java on RedHat
+    - name: Uninstall Java on RedHat
       yum:
         name: java-11-openjdk-devel
         state: absent
+        autoremove: yes
       become: true
       when: ansible_os_family == "RedHat"
-    - name: Install Java on MacOS
+    - name: Uninstall Java on MacOS
       homebrew:
         name: openjdk@11
         state: absent
       become: true
       when: ansible_os_family == "Darwin"
-    - name: Install Java on Alpine
+    - name: Uninstall Java on Alpine
       apk:
         name: openjdk11
         state: absent
+        autoremove: yes
       become: true
       when: ansible_os_family == "Alpine"
   tags:

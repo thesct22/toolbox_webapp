@@ -12,12 +12,14 @@
       apt:
         name: p7zip-full
         state: absent
+        autoremove: yes
       become: true
       when: ansible_os_family == "Debian"
     - name: Uninstall 7Zip on RedHat
       yum:
         name: p7zip
         state: absent
+        autoremove: yes
       become: true
       when: ansible_os_family == "RedHat"
     - name: Uninstall 7Zip on MacOS
@@ -30,6 +32,7 @@
       apk:
         name: p7zip
         state: absent
+        autoremove: yes
       become: true
       when: ansible_os_family == "Alpine"
   tags:

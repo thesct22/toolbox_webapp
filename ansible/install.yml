@@ -7,3 +7,5 @@
     - browsers/install
     - version-control/install
     - languages/install
+    - utilities/install
+    - editors/install

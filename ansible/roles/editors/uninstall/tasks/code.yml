@@ -12,12 +12,14 @@
       apt:
         name: code
         state: absent
+        autoremove: yes
       become: true
       when: ansible_os_family == "Debian"
     - name: Uninstall Visual Studio Code on RedHat
       yum:
         name: code
         state: absent
+        autoremove: yes
       become: true
       when: ansible_os_family == "RedHat"
     - name: Uninstall Visual Studio Code on MacOS
@@ -30,6 +32,7 @@
       apk:
         name: code
         state: absent
+        autoremove: yes
       become: true
       when: ansible_os_family == "Alpine"
   tags:

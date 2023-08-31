@@ -12,12 +12,14 @@
       apt:
         name: golang-go
         state: absent
+        autoremove: yes
       become: true
       when: ansible_os_family == "Debian"
     - name: Uninstall Golang on RedHat
       yum:
         name: golang
         state: absent
+        autoremove: yes
       become: true
       when: ansible_os_family == "RedHat"
     - name: Uninstall Golang on MacOS
@@ -30,6 +32,7 @@
       apk:
         name: go
         state: absent
+        autoremove: yes
       become: true
       when: ansible_os_family == "Alpine"
     - name: Remove Golang variables from Alpine

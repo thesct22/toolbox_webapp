@@ -8,6 +8,21 @@
       become_method: runas
       become_user: "{{ admin_username }}"
       when: ansible_os_family == "Windows"
+    - name: Add necessary packages for Visual Studio Code on Debian
+      apt:
+        name:
+          - wget
+          - apt-transport-https
+          - gpg
+        state: latest
+      become: true
+      when: ansible_os_family == "Debian"
+    - name: Add Microsoft GPG key on Debian
+      apt_key:
+        url: https://packages.microsoft.com/keys/microsoft.asc
+        state: present
+      become: true
+      when: ansible_os_family == "Debian"
     - name: Add Visual Studio Code repository on Debian
       apt_repository:
         repo: deb [arch=amd64] http://packages.microsoft.com/repos/vscode stable main
@@ -21,6 +36,17 @@
         state: latest
       become: true
       when: ansible_os_family == "Debian"
+    - name: Add Visual Studio Code repository on RedHat
+      yum_repository:
+        name: vscode
+        description: Visual Studio Code
+        baseurl: https://packages.microsoft.com/yumrepos/vscode
+        gpgcheck: yes
+        gpgkey: https://packages.microsoft.com/keys/microsoft.asc
+        enabled: yes
+        state: present
+      become: true
+      when: ansible_os_family == "RedHat"
     - name: Install Visual Studio Code on RedHat
       yum:
         name: code
