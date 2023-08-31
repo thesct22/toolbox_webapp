@@ -12,6 +12,7 @@
       apt:
         name: docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
         state: absent
+        autoremove: yes
       become: true
       when: ansible_os_family == "Debian"
     - name: Download Docker Desktop deb package on Debian
@@ -25,6 +26,7 @@
       apt:
         deb: /tmp/docker-desktop.deb
         state: absent
+        autoremove: yes
       become: true
       when: ansible_os_family == "Debian"
     - name: Uninstall Docker Desktop on MacOS
@@ -50,12 +52,14 @@
       apt:
         name: docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
         state: absent
+        autoremove: yes
       become: true
       when: ansible_os_family == "Debian"
     - name: Uninstall Docker on RedHat
       yum:
         name: docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
         state: absent
+        autoremove: yes
       become: true
       when: ansible_os_family == "RedHat"
     - name: Uninstall Docker on MacOS
@@ -68,6 +72,7 @@
       apk:
         name: docker
         state: absent
+        autoremove: yes
       become: true
       when: ansible_os_family == "Alpine"
   tags:

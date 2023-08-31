@@ -1,3 +1,44 @@
+- name: Install necessary packages for Python
+  block:
+    - name: Install necessary packages for Python on Debian
+      apt:
+        name:
+          - build-essential
+          - libffi-dev
+          - libssl-dev
+          - gnupg
+        state: latest
+      become: true
+      when: ansible_os_family == "Debian"
+    - name: Install necessary packages for Python on RedHat
+      yum:
+        name:
+          - gcc
+          - openssl-devel
+          - bzip2-devel
+          - libffi-devel
+          - gnupg
+        state: latest
+      become: true
+      when: ansible_os_family == "RedHat"
+    - name: Install necessary packages for Python on Alpine
+      apk:
+        name:
+          - build-base
+          - libffi-dev
+          - openssl-dev
+          - gnupg
+        state: latest
+      become: true
+      when: ansible_os_family == "Alpine"
+  tags:
+    - python
+    - python3
+    - python38
+    - python39
+    - python310
+    - python311
+
 - name: Add Python Repository
   block:
     - name: Add Python Repository on Debian

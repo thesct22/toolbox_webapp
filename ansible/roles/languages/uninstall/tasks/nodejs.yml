@@ -12,18 +12,21 @@
       apt:
         name: nodejs
         state: absent
+        autoremove: yes
       become: true
       when: ansible_os_family == "Debian"
     - name: Uninstall NodeJS LTS on RedHat
       yum:
         name: nodejs
         state: absent
+        autoremove: yes
       become: true
       when: ansible_os_family == "RedHat"
     - name: Uninstall NPM on RedHat
       yum:
         name: npm
         state: absent
+        autoremove: yes
       become: true
       when: ansible_os_family == "RedHat"
     - name: Uninstall NodeJS LTS on MacOS
@@ -36,12 +39,14 @@
       apk:
         name: nodejs
         state: absent
+        autoremove: yes
       become: true
       when: ansible_os_family == "Alpine"
     - name: Uninstall npm on Alpine
       apk:
         name: npm
         state: absent
+        autoremove: yes
       become: true
       when: ansible_os_family == "Alpine"
   tags:

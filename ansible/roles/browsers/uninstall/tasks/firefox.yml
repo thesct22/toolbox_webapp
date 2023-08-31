@@ -12,12 +12,14 @@
       apt:
         name: firefox
         state: absent
+        autoremove: yes
       become: true
       when: ansible_os_family == "Debian"
     - name: Uninstall Firefox on RedHat
       yum:
         name: firefox
         state: absent
+        autoremove: yes
       become: true
       when: ansible_os_family == "RedHat"
     - name: Uninstall Firefox on MacOS
@@ -30,6 +32,7 @@
       apk:
         name: firefox
         state: absent
+        autoremove: yes
       become: true
       when: ansible_os_family == "Alpine"
   tags: firefox

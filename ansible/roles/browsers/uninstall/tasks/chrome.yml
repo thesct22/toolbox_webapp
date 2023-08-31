@@ -12,6 +12,7 @@
       apt:
         name: google-chrome-stable
         state: absent
+        autoremove: yes
       become: true
       when: ansible_os_family == "Debian"
     - name: Remove Chrome repository on Debian
@@ -22,21 +23,11 @@
         update_cache: yes
       become: true
       when: ansible_os_family == "Debian"
-    - name: Remove Chrome repository on RedHat
-      yum_repository:
-        name: google-chrome
-        description: Google Chrome
-        baseurl: http://dl.google.com/linux/chrome/rpm/stable/$basearch
-        gpgkey: https://dl.google.com/linux/linux_signing_key.pub
-        enabled: yes
-        gpgcheck: yes
-        state: absent
-      become: true
-      when: ansible_os_family == "RedHat"
     - name: Uninstall Chrome on RedHat
       yum:
         name: google-chrome-stable
         state: absent
+        autoremove: yes
       become: true
       when: ansible_os_family == "RedHat"
     - name: Remove Chrome repository on RedHat
@@ -71,6 +62,7 @@
       apk:
         name: chromium
         state: absent
+        autoremove: yes
       become: true
       when: ansible_os_family == "Alpine"
   tags: chrome

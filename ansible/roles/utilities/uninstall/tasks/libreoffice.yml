@@ -12,12 +12,14 @@
       apt:
         name: libreoffice
         state: absent
+        autoremove: yes
       become: true
       when: ansible_os_family == "Debian"
     - name: Uninstall Libre Office Suite on RedHat
       yum:
         name: libreoffice
         state: absent
+        autoremove: yes
       become: true
       when: ansible_os_family == "RedHat"
     - name: Uninstall Libre Office Suite on MacOS
@@ -30,6 +32,7 @@
       apk:
         name: libreoffice
         state: absent
+        autoremove: yes
       become: true
       when: ansible_os_family == "Alpine"
   tags:

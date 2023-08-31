@@ -160,39 +160,6 @@ class Ansible(BaseModel):
                     ) from e
             return True
         else:
-            # verify the credentials against the host machine
-            command = [
-                "sshpass",
-                "-p",
-                self.password,
-                "ssh",
-                "-o",
-                "PreferredAuthentications=password",
-                f"{self.user}@localhost",
-                "echo",
-                "success",
-            ]
-            try:
-                output = subprocess.run(
-                    command,
-                    cwd=self.run_folder,
-                    check=True,
-                    stdout=subprocess.PIPE,
-                    stderr=subprocess.PIPE,
-                )
-                if output.returncode != 0:
-                    raise ValueError(
-                        "Username and/or password is incorrect for the user on the host machine."
-                    )
-                if output.stdout:
-                    if output.stdout.decode("utf-8") != "success\n":
-                        raise ValueError(
-                            "Username and/or password is incorrect for the user on the host machine."
-                        )
-            except subprocess.CalledProcessError as e:
-                raise ValueError(
-                    "Username and/or password is incorrect for the user on the host machine."
-                ) from e
             return True
 
     def get_command(self):

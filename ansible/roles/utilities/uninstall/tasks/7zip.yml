@@ -1,39 +1,42 @@
-- name: Uninstall Java Development Kit
+- name: Uninstall 7Zip
   block:
-    - name: Uninstall Java on Windows
+    - name: Uninstall 7Zip on Windows
       win_chocolatey:
-        name: openjdk
+        name: 7zip
         state: absent
       become: true
       become_method: runas
       become_user: "{{ admin_username }}"
       when: ansible_os_family == "Windows"
-    - name: Uninstall Java on Debian
+    - name: Uninstall 7Zip on Debian
       apt:
-        name: openjdk-11-jdk
-        state: absent#
+        name: p7zip-full
+        state: absent
         autoremove: yes
       become: true
       when: ansible_os_family == "Debian"
-    - name: Uninstall Java on RedHat
+    - name: Uninstall 7Zip on RedHat
       yum:
-        name: java-11-openjdk-devel
+        name: p7zip
         state: absent
         autoremove: yes
       become: true
       when: ansible_os_family == "RedHat"
-    - name: Uninstall Java on MacOS
+    - name: Uninstall 7Zip on MacOS
       homebrew:
-        name: openjdk@11
+        name: p7zip
         state: absent
       become: true
       when: ansible_os_family == "Darwin"
-    - name: Uninstall Java on Alpine
+    - name: Uninstall 7Zip on Alpine
       apk:
-        name: openjdk11
+        name: p7zip
         state: absent
         autoremove: yes
       become: true
       when: ansible_os_family == "Alpine"
   tags:
-    - jdk
+    - 7zip
+    - 7-zip
+    - p7zip
+    - p7zip-full

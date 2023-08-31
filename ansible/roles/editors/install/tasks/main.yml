@@ -1,0 +1,10 @@
+- name: Install Visual Studio Code
+  include_tasks: code.yml
+  tags:
+  - vscode
+  - visual-studio-code
+
+- name: Install Emacs
+  include_tasks: emacs.yml
+  tags:
+  - emacs

@@ -1,39 +1,40 @@
-- name: Uninstall Java Development Kit
+- name: Uninstall Visual Studio Code
   block:
-    - name: Uninstall Java on Windows
+    - name: Uninstall Visual Studio Code on Windows
       win_chocolatey:
-        name: openjdk
+        name: vscode
         state: absent
       become: true
       become_method: runas
       become_user: "{{ admin_username }}"
       when: ansible_os_family == "Windows"
-    - name: Uninstall Java on Debian
+    - name: Uninstall Visual Studio Code on Debian
       apt:
-        name: openjdk-11-jdk
-        state: absent#
+        name: code
+        state: absent
         autoremove: yes
       become: true
       when: ansible_os_family == "Debian"
-    - name: Uninstall Java on RedHat
+    - name: Uninstall Visual Studio Code on RedHat
       yum:
-        name: java-11-openjdk-devel
+        name: code
         state: absent
         autoremove: yes
       become: true
       when: ansible_os_family == "RedHat"
-    - name: Uninstall Java on MacOS
+    - name: Uninstall Visual Studio Code on MacOS
       homebrew:
-        name: openjdk@11
+        name: visual-studio-code
         state: absent
       become: true
       when: ansible_os_family == "Darwin"
-    - name: Uninstall Java on Alpine
+    - name: Uninstall Visual Studio Code on Alpine
       apk:
-        name: openjdk11
+        name: code
         state: absent
         autoremove: yes
       become: true
       when: ansible_os_family == "Alpine"
   tags:
-    - jdk
+    - vscode
+    - visual-studio-code
