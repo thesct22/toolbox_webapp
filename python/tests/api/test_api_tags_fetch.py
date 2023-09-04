@@ -1,7 +1,7 @@
 from fastapi.testclient import TestClient
-from toolbox.main import app
+from toolbox.main import build_app
 
-client = TestClient(app)
+client = TestClient(build_app())
 
 
 def test_install_tags():

@@ -11,15 +11,19 @@ from toolbox.server.mount_frontend import mount_frontend
 from toolbox.server.terminal import run_terminal
 import webview
 
-app = FastAPI(title="Toolbox Webapp")
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
-app = mount_api(app)
-app = mount_frontend(app, react_build_dir=Path(__file__).parent / "build")
+
+def build_app(terminal_host: str = "localhost", terminal_port: int = 8765) -> FastAPI:
+    """Build the FastAPI app."""
+    app = FastAPI(title="Toolbox Webapp")
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=["*"],
+        allow_methods=["*"],
+        allow_headers=["*"],
+    )
+    app = mount_api(app, terminal_host, terminal_port)
+    app = mount_frontend(app, react_build_dir=Path(__file__).parent / "build")
+    return app
 
 
 def arg_parser():
@@ -65,6 +69,7 @@ def run_terminal_app(terminal_host, terminal_port):
 
 def run_webapp(args):
     """Run the webapp."""
+    app = build_app(args.terminal_host, args.terminal_port)
     server_process = multiprocessing.Process(
         target=run_server_app, args=(app, args.host, args.port)
     )

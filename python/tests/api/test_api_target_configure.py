@@ -4,9 +4,9 @@ from unittest.mock import patch
 from fastapi.testclient import TestClient
 import pytest
 from toolbox.core.rsakey import encrypt
-from toolbox.main import app
+from toolbox.main import build_app
 
-client = TestClient(app)
+client = TestClient(build_app())
 
 
 @pytest.fixture

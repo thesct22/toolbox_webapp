@@ -36,7 +36,7 @@ export default function CustomForm({ playbookPath, inventoryPath }) {
 	const [dialogOpen, setDialogOpen] = useState(false);
 
 	const fetchRSAKey = async () => {
-		const response = await fetch(`${process.env.REACT_APP_API_URL}/public_key`);
+		const response = await fetch(`${window.location.origin}/api/public_key`);
 		const data = await response.json();
 		setRsaKey(data.public_key);
 	};
@@ -87,7 +87,7 @@ export default function CustomForm({ playbookPath, inventoryPath }) {
 		const encryptedPassword = encrypt(password);
 		const encryptedHosts = encrypt(inventoryPath);
 
-		fetch(`${process.env.REACT_APP_API_URL}/target/ping`, {
+		fetch(`${window.location.origin}/api/target/ping`, {
 			method: 'PUT',
 			headers: {
 				'Content-Type': 'application/json',
@@ -138,7 +138,7 @@ export default function CustomForm({ playbookPath, inventoryPath }) {
 			)
 		);
 
-		fetch(`${process.env.REACT_APP_API_URL}/custom/run`, {
+		fetch(`${window.location.origin}/api/custom/run`, {
 			method: 'PUT',
 			headers: {
 				'Content-Type': 'application/json',

@@ -50,16 +50,6 @@
         state: latest
       become: true
       when: ansible_os_family == "Darwin"
-    - name: Add Chrome repo on Alpine
-      apk_repository:
-        name: google-chrome
-        description: Google Chrome
-        baseurl: http://dl.google.com/linux/chrome/rpm/stable/$basearch
-        gpgkey: https://dl.google.com/linux/linux_signing_key.pub
-        enabled: yes
-        gpgcheck: yes
-      become: true
-      when: ansible_os_family == "Alpine"
     - name: Install Chrome on Alpine
       apk:
         name: chromium

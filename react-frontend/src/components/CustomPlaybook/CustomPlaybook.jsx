@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import useMediaQuery from '@mui/material/useMediaQuery';
 import {
 	Backdrop,
 	Grid,
@@ -17,6 +18,7 @@ import CustomForm from './CustomForm';
 
 export default function CustomPlaybook() {
 	const dispatch = useDispatch();
+	const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
 	const [fileContent, setFileContent] = useState(
 		useSelector((state) => state.fileContent.fileContent)
 	);
@@ -36,7 +38,7 @@ export default function CustomPlaybook() {
 	const [snackBarSeverity, setSnackBarSeverity] = useState('success');
 
 	useEffect(() => {
-		fetch(`${process.env.REACT_APP_API_URL}/custom/playbooks`)
+		fetch(`${window.location.origin}/api/custom/playbooks`)
 			.then((res) => res.json())
 			.then((data) => setPlaybooks(data))
 			.catch((err) => {
@@ -45,7 +47,7 @@ export default function CustomPlaybook() {
 				setSnackBarSeverity('error');
 			});
 
-		fetch(`${process.env.REACT_APP_API_URL}/custom/inventories`)
+		fetch(`${window.location.origin}/api/custom/inventories`)
 			.then((res) => res.json())
 			.then((data) => setInventories(data))
 			.catch((err) => {
@@ -73,9 +75,9 @@ export default function CustomPlaybook() {
 	const fetchFile = async (node) => {
 		dispatch({ type: 'selectedFile/setSelectedFile', payload: node });
 		const response = await fetch(
-			`${
-				process.env.REACT_APP_API_URL
-			}/editor/file/read?path=${encodeURIComponent(node.path)}`,
+			`${window.location.origin}/api/editor/file/read?path=${encodeURIComponent(
+				node.path
+			)}`,
 			{
 				method: 'GET',
 				headers: {
@@ -174,9 +176,7 @@ export default function CustomPlaybook() {
 								defaultLanguage="yaml"
 								language={language}
 								value={fileContent}
-								theme={
-									localStorage.getItem('theme') === 'dark' ? 'vs-dark' : 'light'
-								}
+								theme={prefersDarkMode ? 'vs-dark' : 'light'}
 								options={{
 									readOnly: true,
 									minimap: {
