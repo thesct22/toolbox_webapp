@@ -162,7 +162,7 @@ class Ansible(BaseModel):
         else:
             return True
 
-    def get_command(self):
+    def get_command(self) -> List[str]:
         """Get the ansible command."""
         if not Path(self.inventory).is_file():
             if self.inventory[-1] != ",":
@@ -196,7 +196,7 @@ class Ansible(BaseModel):
             command.append(self.extra_args)
         return command
 
-    def get_ping_command(self):
+    def get_ping_command(self) -> List[str]:
         """Get the ansible ping command."""
         if not Path(self.inventory).is_file():
             if self.inventory[-1] != ",":
@@ -219,7 +219,7 @@ class Ansible(BaseModel):
 
         return command
 
-    def run_command(self, command):
+    def run_command(self, command) -> str:
         """Run the ansible command."""
         try:
             output = subprocess.run(

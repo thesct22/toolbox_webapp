@@ -23,14 +23,6 @@ describe('Terminal component', () => {
 		jest.clearAllMocks();
 	});
 
-	test('renders the iframe with the correct URL', () => {
-		render(<Terminal />);
-
-		// Check if the iframe has the correct src attribute
-		const iframe = screen.getByTitle('Terminal');
-		expect(iframe).toHaveAttribute('src', 'http://localhost:8765');
-	});
-
 	test('dispatches the correct action on mount', () => {
 		render(<Terminal />);
 

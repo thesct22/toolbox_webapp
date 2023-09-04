@@ -26,7 +26,7 @@ export default function Tree() {
 	const [snackBarSeverity, setSnackBarSeverity] = useState('success');
 
 	const fetchFiles = () => {
-		fetch(`${process.env.REACT_APP_API_URL}/editor/files`)
+		fetch(`${window.location.origin}/api/editor/files`)
 			.then((response) => [response.json(), response.ok])
 			.then(async (dataParam) => {
 				const data = await dataParam[0];
@@ -96,9 +96,9 @@ export default function Tree() {
 		}
 
 		const response = await fetch(
-			`${
-				process.env.REACT_APP_API_URL
-			}/editor/file/read?path=${encodeURIComponent(node.path)}`,
+			`${window.location.origin}/api/editor/file/read?path=${encodeURIComponent(
+				node.path
+			)}`,
 			{
 				method: 'GET',
 				headers: {
@@ -145,7 +145,7 @@ export default function Tree() {
 			return;
 		}
 		const response = await fetch(
-			`${process.env.REACT_APP_API_URL}/editor/file/create`,
+			`${window.location.origin}/api/editor/file/create`,
 			{
 				method: 'POST',
 				headers: {
@@ -175,7 +175,7 @@ export default function Tree() {
 			return;
 		}
 		const response = await fetch(
-			`${process.env.REACT_APP_API_URL}/editor/folder/create`,
+			`${window.location.origin}/api/editor/folder/create`,
 			{
 				method: 'POST',
 				headers: {
@@ -205,7 +205,7 @@ export default function Tree() {
 			return;
 		}
 		const repsonse = await fetch(
-			`${process.env.REACT_APP_API_URL}/editor/${
+			`${window.location.origin}/api/editor/${
 				node.is_file ? 'file' : 'folder'
 			}/rename`,
 			{
@@ -241,7 +241,7 @@ export default function Tree() {
 			return;
 		}
 		const response = await fetch(
-			`${process.env.REACT_APP_API_URL}/editor/${
+			`${window.location.origin}/api/editor/${
 				node.is_file ? 'file' : 'folder'
 			}/delete`,
 			{
@@ -271,7 +271,7 @@ export default function Tree() {
 				return;
 			}
 			const confirmResponse = await fetch(
-				`${process.env.REACT_APP_API_URL}/editor/${
+				`${window.location.origin}/api/editor/${
 					node.is_file ? 'file' : 'folder'
 				}/delete/confirmed`,
 				{

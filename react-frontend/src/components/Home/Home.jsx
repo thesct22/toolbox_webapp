@@ -44,11 +44,11 @@ export default function Home() {
 
 	const fetchTags = async () => {
 		const installResponse = await fetch(
-			`${process.env.REACT_APP_API_URL}/install/tags`
+			`${window.location.origin}/api/install/tags`
 		);
 		const installData = await installResponse.json();
 		const uninstallResponse = await fetch(
-			`${process.env.REACT_APP_API_URL}/uninstall/tags`
+			`${window.location.origin}/api/uninstall/tags`
 		);
 		const uninstallData = await uninstallResponse.json();
 		const data = [...installData];
@@ -73,7 +73,7 @@ export default function Home() {
 	};
 
 	const fetchRSAKey = async () => {
-		const response = await fetch(`${process.env.REACT_APP_API_URL}/public_key`);
+		const response = await fetch(`${window.location.origin}/api/public_key`);
 		const data = await response.json();
 		setRsaKey(data.public_key);
 	};
@@ -161,7 +161,7 @@ export default function Home() {
 		hostsRaw = hostsRaw.replace(/,{2,}/g, ',').replace(/,$/, '');
 		const encryptedHosts = encrypt(hostsRaw);
 
-		fetch(`${process.env.REACT_APP_API_URL}/target/ping`, {
+		fetch(`${window.location.origin}/api/target/ping`, {
 			method: 'PUT',
 			headers: {
 				'Content-Type': 'application/json',
@@ -208,8 +208,8 @@ export default function Home() {
 		hostsRaw = hostsRaw.replace(/,{2,}/g, ',').replace(/,$/, '');
 		const encryptedHosts = encrypt(hostsRaw);
 
-		const apiUrl = install ? '/target/install' : '/target/uninstall';
-		fetch(process.env.REACT_APP_API_URL + apiUrl, {
+		const apiUrl = install ? '/api/target/install' : '/api/target/uninstall';
+		fetch(window.location.origin + apiUrl, {
 			method: 'PUT',
 			headers: {
 				'Content-Type': 'application/json',

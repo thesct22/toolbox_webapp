@@ -10,7 +10,9 @@ from toolbox.api.uninstall import uninstall_endpoints
 from toolbox.core.rsakey import RSAKey
 
 
-def mount_api(app: FastAPI) -> FastAPI:
+def mount_api(
+    app: FastAPI, terminal_host: str = "localhost", terminal_port: int = 8765
+) -> FastAPI:
     """
     Mount the API endpoints.
 
@@ -35,6 +37,11 @@ def mount_api(app: FastAPI) -> FastAPI:
         """Return the public key."""
         public_key = RSAKey().get_public_key()
         return {"public_key": public_key}
+
+    @app.get("/api/terminal/url", response_model=Dict[str, str])
+    def get_terminal_url() -> Dict[str, str]:
+        """Return the terminal url."""
+        return {"url": f"http://{terminal_host}:{terminal_port}"}
 
     install_endpoint = install_endpoints(app)
     app.mount("/api/install", install_endpoint, name="install")

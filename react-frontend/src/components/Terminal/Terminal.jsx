@@ -5,6 +5,13 @@ export default function Terminal() {
 	const dispatch = useDispatch();
 	const [navbarHeight, setNavbarHeight] = useState(0);
 	const [height, setHeight] = useState(window.innerHeight - navbarHeight);
+	const [iframeSrc, setIframeSrc] = useState('');
+
+	const getIframeSrc = async () => {
+		const response = await fetch(`${window.location.origin}/api/terminal/url`);
+		const data = await response.json();
+		setIframeSrc(data.url);
+	};
 
 	// Function to calculate the height of the terminal iframe based on navbarHeight
 	const calcHeight = (navbarHeightParam) =>
@@ -12,7 +19,7 @@ export default function Terminal() {
 
 	useEffect(() => {
 		dispatch({ type: 'currentPage/setCurrentPage', payload: 'Terminal' });
-
+		getIframeSrc();
 		// Update the navbarHeight state when it becomes available
 		const navbarElement = document.getElementById('navbar');
 		if (navbarElement) {
@@ -39,11 +46,16 @@ export default function Terminal() {
 
 	return (
 		<div style={{ height, padding: 0 }}>
+			{/* if iframeSrc is an Object, show loading else show iframe */}
+			{/* {iframeSrc.substring(0,6)!=='http://'? 
+				<div>Loading...</div>
+				: */}
 			<iframe
-				src="http://localhost:8765"
+				src={iframeSrc}
 				title="Terminal"
 				style={{ width: '100%', height }}
 			/>
+			{/* } */}
 		</div>
 	);
 }

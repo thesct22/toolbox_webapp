@@ -16,12 +16,8 @@
       when: ansible_os_family == "Debian"
     - name: Setup Docker repository on Debian
       apt_repository:
-        code-name: "{{ ansible_distribution_release }}"
-        repo: deb [arch=$(dpkg --print-architecture)] signed-by=/usr/share/keyrings/docker-archive-keyring.gpg https://download.docker.com/linux/debian $(lsb_release -cs) stable
-        signed-by: /usr/share/keyrings/docker-archive-keyring.gpg
+        repo: "deb https://download.docker.com/linux/debian $(lsb_release -cs) stable"
         state: present
-        filename: docker
-        update_cache: yes
       become: true
       when: ansible_os_family == "Debian"
     - name: Install Docker on Debian
@@ -70,9 +66,8 @@
       when: ansible_os_family == "Debian"
     - name: Setup Docker repository on Debian
       apt_repository:
-        code-name: "{{ ansible_distribution_release }}"
+        codename: "{{ ansible_distribution_release }}"
         repo: deb [arch=$(dpkg --print-architecture)] signed-by=/usr/share/keyrings/docker-archive-keyring.gpg https://download.docker.com/linux/debian $(lsb_release -cs) stable
-        signed-by: /usr/share/keyrings/docker-archive-keyring.gpg
         state: present
         filename: docker
         update_cache: yes

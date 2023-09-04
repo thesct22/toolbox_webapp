@@ -2,9 +2,9 @@ from unittest.mock import patch
 
 from fastapi.testclient import TestClient
 from toolbox.core.rsakey import encrypt
-from toolbox.main import app
+from toolbox.main import build_app
 
-client = TestClient(app)
+client = TestClient(build_app())
 
 
 def test_target_ping_with_no_data():

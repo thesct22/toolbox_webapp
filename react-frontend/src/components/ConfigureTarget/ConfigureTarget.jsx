@@ -34,7 +34,7 @@ export default function ConfigureTarget() {
 	const [messageColor, setMessageColor] = useState('success');
 
 	const fetchRSAKey = async () => {
-		const response = await fetch(`${process.env.REACT_APP_API_URL}/public_key`);
+		const response = await fetch(`${window.location.origin}/api/public_key`);
 		const data = await response.json();
 		setRsaKey(data.public_key);
 	};
@@ -95,7 +95,7 @@ export default function ConfigureTarget() {
 		const encryptedHosts = encrypt(hostsRaw);
 		const encryptedOs = encrypt(os);
 
-		fetch(`${process.env.REACT_APP_API_URL}/target/configure`, {
+		fetch(`${window.location.origin}/api/target/configure`, {
 			method: 'PUT',
 			headers: {
 				'Content-Type': 'application/json',

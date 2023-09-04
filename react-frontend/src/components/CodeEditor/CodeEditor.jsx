@@ -26,7 +26,7 @@ export default function CodeEditor() {
 
 	const onSave = async () => {
 		const response = await fetch(
-			`${process.env.REACT_APP_API_URL}/editor/file/write`,
+			`${window.location.origin}/api/editor/file/write`,
 			{
 				method: 'POST',
 				headers: {
@@ -51,9 +51,9 @@ export default function CodeEditor() {
 
 	const onReset = async () => {
 		const response = await fetch(
-			`${
-				process.env.REACT_APP_API_URL
-			}/editor/file/read?path=${encodeURIComponent(selectedFile.path)}`,
+			`${window.location.origin}/api/editor/file/read?path=${encodeURIComponent(
+				selectedFile.path
+			)}`,
 			{
 				method: 'GET',
 				headers: {
