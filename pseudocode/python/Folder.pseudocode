@@ -1,0 +1,28 @@
+class Folder(pydantic.BaseModel):
+    // class to handle folders inside Ansible root directory
+    path = pathlib.Path
+    constructor(cls,path: pathlib.Path||string){
+        cls.path = path
+    }
+
+    fucntion get_items(cls){
+        return cls.path.iteratively_find_all_files_and_folders()
+    }
+    fucntion create(cls, content: string){
+        cls.path.create_file()
+    }
+    fucntion delete(cls){
+        if cls.path.is_empty():
+            cls.path.delete_file()
+        else:
+            throwError("Folder is not empty")
+    }
+    fucntion force_delete(cls){
+        cls.path.force_delete_file()
+    }
+    fucntion rename(cls, new_name: string){
+        cls.path.rename(new_name)
+    }
+    fucntion get_name(cls){
+        return cls.path.name
+    }

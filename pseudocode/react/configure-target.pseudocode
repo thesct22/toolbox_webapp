@@ -1,0 +1,16 @@
+function configuretarget(){
+    onRender{
+        rsa_key=fetch("/api/rsa_key")
+        user_credentials={}
+        configure_result=""
+    }
+
+    onUserClickConfigure(){
+        encrypted_user_credentials=encrypt(rsa_key, user_credentials)
+        configure_result=fetch("/api/configure", encrypted_user_credentials)
+    }
+
+    onUserInput(user_input){user_credentials=user_input}
+    onSuccess() {show_success_snackbar()}
+    onFailure() {show_failure_snackbar()}
+}

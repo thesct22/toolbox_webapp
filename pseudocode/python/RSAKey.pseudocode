@@ -1,0 +1,23 @@
+class RSAKey(pydantic.BaseModel):
+  // Singleton class to manage the RSA key.
+
+  private_key = None
+  public_key = None
+
+  def __init__(cls){
+    // Generate the RSA key pair.
+    cls.private_key, cls.public_key = rsa.newkeys(2048)
+  }
+
+  def get_rsa_public_key(cls){
+    // Return the RSA public key.
+    return cls.public_key
+  }
+
+  def decrypt(cls, encrypted_data){
+    // Decrypt the data using the RSA private key.
+
+    rsa_private_key = cls.private_key
+    decrypted_data = rsa.decrypt(encrypted_data, rsa_private_key)
+    return decrypted_data
+  }

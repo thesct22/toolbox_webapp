@@ -1,0 +1,39 @@
+function customplaybook(){
+    onRender{
+        playbooks=fetch("/api/custom/playbooks")
+        inventories=fetch("/api/custom/inventories")
+        populate_tree_view(playbooks, inventories)
+        rsa_key=fetch("/api/rsa_key")
+        playbook_to_run=""
+        inventory_to_run=""
+        user_inputs={}
+        run_result=""
+    }
+    onFileSelect(file){
+        file_content=fetch("/api/editor/file/read?path={file_name}")
+        populate_preview_editor(file_content)
+        if file is playbook{playbook_to_run=file}
+        if file is inventory{inventory_to_run=file}
+    }
+    onUserClickRun{
+        if playbook_to_run and inventory_to_run{
+            encrypted_user_inputs=encrypt(user_inputs, rsa_key)
+            run_result=fetch("/api/custom/run", {playbook: playbook,
+                inventory: inventory_to_run,
+                user_inputs: encrypted_user_inputs})
+        }
+    }
+    onUserClickPing() {
+        encrypted_user_credentials=encrypt(rsa_key, user_credentials)
+        run_result=send_to_server(
+            "/api/target/ping", 
+            {encrypted_user_credentials}
+        )
+    }
+    onUserInput(user_input){
+        user_inputs[user_input.key]=user_input.value
+    }
+    onUserClickMoreDetails() {showDialogBox(run_result)}
+    onSuccess() {show_success_snackbar()}
+    onFailure() {show_failure_snackbar()}
+}

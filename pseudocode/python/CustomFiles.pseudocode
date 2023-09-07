@@ -1,0 +1,27 @@
+class CustomFiles(pydantic.BaseModel):
+    // class to fetch files inside roles and inventory folders
+    // in the ansible root folder used by the 
+    // "Custom Playbooks" page's tree view.
+    
+    path = pathlib.Path
+    constructor(cls,path: pathlib.Path||string){
+        cls.path = path
+    }
+
+    @validator('path')
+    function check_if_path_is_ansible(cls,v){
+        if v.name == "ansible" && v.is_folder():
+            return v
+        else:
+            makeError("Path is not Ansible root directory")
+    }
+
+    function get_inventories(cls){
+        toReturn = cls.path.all_files_and_folders_in_inventory()
+        return toReturn
+    }
+
+    function get_playbooks(cls){
+        toReturn = cls.path.all_files_inside_root_folder()
+        return toReturn
+    }

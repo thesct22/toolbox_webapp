@@ -1,0 +1,39 @@
+function quickinstall() {
+    onRender{
+        install_tags=fetch("/api/install/tags")
+        uninstall_tags=fetch("/api/uninstall/tags")
+        populate_dropdown_list(install_tags+uninstall_tags)
+        rsa_key=fetch("/api/rsa_key")
+        run_result=""
+        user_credentials={}
+    }
+
+    onUserClickInstall() {
+        encrypted_user_credentials=encrypt(rsa_key, user_credentials)
+        run_result=send_to_server(
+            "/api/target/install", 
+            {encrypted_user_credentials,selected_tags}
+        )
+    }
+
+    onUserClickUninstall() {
+        encrypted_user_credentials=encrypt(rsa_key, user_credentials)
+        run_result=send_to_server(
+            "/api/target/uninstall", 
+            {encrypted_user_credentials,selected_tags}
+        )
+    }
+
+    onUserClickPing() {
+        encrypted_user_credentials=encrypt(rsa_key, user_credentials)
+        run_result=send_to_server(
+            "/api/target/ping", 
+            {encrypted_user_credentials}
+        )
+    }
+
+    onUserCredentialsInput(user_input){user_credentials=user_input}
+    onUserClickMoreDetails() {showDialogBox(run_result)}
+    onSuccess() {show_success_snackbar()}
+    onFailure() {show_failure_snackbar()}
+}
