@@ -25,7 +25,27 @@
 
 ## About
 
-Toolbox to install software on remote machines
+Toolbox to install software on remote machines.
+
+Works as UI wrapper for Ansible.
+
+## Backend
+
+The readme for the backend can be found [here](./python/README.md).
+
+API documentation is publsihed on [github pages](https://thesct22.github.io/toolbox_webapp/).
+
+## Frontend
+
+The readme for the frontend can be found [here](./react-frontend/README.md).
+
+## Pre-requisite
+
+You need to have any one of the following:
+
+* Docker
+* Linux-based OS
+* WSL2
 
 ## Docker Container
 
@@ -101,23 +121,24 @@ To open the webapp go to: `http://localhost:8000`
 
 > Note: The executable is only available for Linux x86_64 and differnt from the above docker container.
 > This can be used if you wish to not use docker.
-> Contact me if you wish to receive the link to download the executable.
+
+To create the binary executable, run the following shell script in the root folder:
+
+> assuming you the project is inside a Linux based OS.
+
+```bash
+./build_standalone.sh
+```
+
+> This might take a while, as nuitka needs to compile the whole project to form the executable.
 
 To run the executable, run the following command:
 
 ```bash
-cd toolbox-webapp
+cd toolbox
 ./main.bin
 ```
 
 Note: The executable is only available for Linux x86_64.
 
 To open the webapp go to: `http://localhost:8000`
-
-## Backend
-
-The readme for the backend can be found [here](./python/README.md).
-
-## Frontend
-
-The readme for the frontend can be found [here](./react-frontend/README.md).
