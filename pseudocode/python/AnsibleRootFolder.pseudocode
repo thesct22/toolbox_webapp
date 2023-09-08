@@ -1,0 +1,22 @@
+class AnsibleRootFolder(pydantic.BaseModel):
+    // class to handle files inside Ansible root directory
+    path = pathlib.Path
+
+    constructor(cls,path: pathlib.Path||string){
+        cls.path = path
+    }
+
+    @validator('path')
+    function check_if_path_is_ansible(cls,v){
+        if v.name == "ansible" && v.is_folder():
+            return v
+        else:
+            makeError("Path is not Ansible root directory")
+    }
+
+    function get_items(cls){
+        toReturn = cls.path.all_files_in_root_folder()
+        toReturn += cls.path.all_files_and_folders_in_inventory()
+        toReturn += cls.path.all_files_and_folders_in_roles()
+        return toReturn
+    }

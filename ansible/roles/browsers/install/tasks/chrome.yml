@@ -8,6 +8,12 @@
       become_method: runas
       become_user: "{{ admin_username }}"
       when: ansible_os_family == "Windows"
+    - name: Add necessary packages for Chrome on Debian
+      apt:
+        name: gnupg
+        state: latest
+      become: true
+      when: ansible_os_family == "Debian"
     - name: Add apt key for Chrome on Debian
       apt_key:
         url: https://dl.google.com/linux/linux_signing_key.pub

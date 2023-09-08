@@ -1,0 +1,36 @@
+class Tags(pydantic.BaseModel):
+    // base class used by InstallTags and UninstallTags
+    tags = []
+    constructor(tags) {this.tags = tags}
+    get_tags() {return this.tags}
+
+class InstallTags(Tags):
+    // InstallTags is a list of tags to install on a target machine
+    constructor(tags) {super(tags)}
+    function read_tags_from_playbooks(){this.tags = read_tags_helper()}
+
+class UninstallTags(Tags):
+    // UninstallTags is a list of tags to uninstall on a target machine
+    constructor(tags) {super(tags)}
+    function read_tags_from_playbooks(){this.tags = read_tags_helper()}
+
+function read_tags_helper(install_tags: boolean){
+    tagsList = []
+    for role_dir in ansible_roles_dir{
+        task_type = "Install" if install_tags else "Uninstall"
+        task_file = role_dir / f"{task_type.lower()}/tasks/main.yml"
+        if role_dir.is_directory() and task_file.exists(){
+            main_yml = yaml.safe_load(open(task_file))
+            // extract tags and title from main.yml and add to tagsList
+            for task in main_yml{
+                software = {
+                    "title": Extract software title from task name,
+                    "tags": task["tags"]
+                }
+                tagsList.append(software)
+            }
+        }
+
+    }
+    return tagsList
+}

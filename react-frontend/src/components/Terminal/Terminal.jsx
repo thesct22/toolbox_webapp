@@ -10,7 +10,9 @@ export default function Terminal() {
 	const getIframeSrc = async () => {
 		const response = await fetch(`${window.location.origin}/api/terminal/url`);
 		const data = await response.json();
-		setIframeSrc(data.url);
+		const { port } = data;
+		const host = data.host === '0.0.0.0' ? window.location.hostname : data.host;
+		setIframeSrc(`http://${host}:${port}`);
 	};
 
 	// Function to calculate the height of the terminal iframe based on navbarHeight

@@ -1,0 +1,26 @@
+class File(pydantic.BaseModel):
+    // class to handle files inside Ansible root directory
+    path = pathlib.Path
+    constructor(cls,path: pathlib.Path||string){
+        cls.path = path
+    }
+
+    // all 4 of the CRUD operations
+    fucntion read(cls){
+        return cls.path.read_text()
+    }
+    fucntion write(cls, content: string){
+        cls.path.write_text(content)
+    }
+    fucntion create(cls, content: string){
+        cls.path.create_file()
+    }
+    fucntion delete(cls){
+        cls.path.delete_file()
+    }
+    fucntion rename(cls, new_name: string){
+        cls.path.rename(new_name)
+    }
+    fucntion get_name(cls){
+        return cls.path.name
+    }

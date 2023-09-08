@@ -41,7 +41,7 @@ def mount_api(
     @app.get("/api/terminal/url", response_model=Dict[str, str])
     def get_terminal_url() -> Dict[str, str]:
         """Return the terminal url."""
-        return {"url": f"http://{terminal_host}:{terminal_port}"}
+        return {"host": terminal_host, "port": terminal_port}
 
     install_endpoint = install_endpoints(app)
     app.mount("/api/install", install_endpoint, name="install")

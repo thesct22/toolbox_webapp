@@ -1,0 +1,45 @@
+function codeeditor(){
+    onRender{
+        all_files=fetch("/api/editor/files")
+        populate_tree_view(all_files)
+    }
+    onUserClickFile(file_name){
+        file_content=fetch("/api/editor/file/read?path={file_name}")
+        populate_editor(file_content)
+    }
+    onUserClickSave(file_name){
+        file_content=get_editor_content()
+        fetch("/api/editor/file/write",{"path"=file_name,"content"=file_content})
+    }
+    onUserClickReset(file_name){
+        file_content=fetch("/api/editor/file/read?path={file_name}")
+        populate_editor(file_content)
+    }
+    onUserRightClickFileOrFolder{
+        show_context_menu()
+    }
+    onUserClickCreate(file_or_folder){
+        if file_or_folder=="file":
+            file_name=get_file_name_from_user()
+            fetch("/api/editor/file/create",{"path"=file_name})
+        else:
+            folder_name=get_folder_name_from_user()
+            fetch("/api/editor/folder/create",{"path"=folder_name})
+    }
+    onUserClickRename(file_or_folder, old_path){
+        if file_or_folder=="file":
+            file_name=get_file_name_from_user()
+            fetch("/api/editor/file/rename",{"old"=old_path,"new"=file_name})
+        else:
+            folder_name=get_folder_name_from_user()
+            fetch("/api/editor/folder/rename",{"old"=old_path,"new"=folder_name})
+    }
+    onUserClickDelete(file_or_folder, path){
+        if file_or_folder=="file":
+            fetch("/api/editor/file/delete",{"path"=path})
+        else if file_or_folder=="folder" && folder_is_empty(path):
+            fetch("/api/editor/folder/delete",{"path"=path})
+        else:
+            fetch("/api/editor/folder/delete/confirmed",{"path"=path})
+    }   
+}

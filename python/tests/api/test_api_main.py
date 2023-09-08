@@ -41,8 +41,9 @@ def test_terminal_url():
     response = client.get("/api/terminal/url")
     assert response.status_code == 200
     assert isinstance(response.json(), dict)
-    assert "url" in response.json()
-    assert isinstance(response.json()["url"], str)
-    assert "http://" in response.json()["url"]
-    assert ":8765" in response.json()["url"]
-    assert "localhost" in response.json()["url"]
+    assert "host" in response.json()
+    assert "port" in response.json()
+    assert isinstance(response.json()["host"], str)
+    assert isinstance(response.json()["port"], str)
+    assert "8765" in response.json()["port"]
+    assert "localhost" in response.json()["host"]

@@ -1,0 +1,36 @@
+class Ansible(pydantic.BaseModel):
+    // Singleton class to manage the Ansible instance.
+    
+    // instance variables like host, user, password, etc.
+
+    constructor(host_username_and_password, install_tags=None, playbooks_to_run):
+        // Initialize the Ansible instance with the given parameters.
+        // host_username_and_password is multiple parameters given as one for convenience.
+        // the instance is configured to be a singleton and will only be initialized once.
+        // the instance variables may be changed after initialization by calling
+        // the constructor whenever necessary.
+    
+    function verify_auth(cls){
+        // Verify the Ansible instance.
+        subprocess.run([
+            "sshpass", "-p", cls.password, "ssh",
+            "-o", "PreferredAuthentications=password",
+            cls.user + "@" + cls.host, "echo", "success"
+        ])
+        return subprocess.CompletedProcess.output_data
+    }
+
+    function get_command(cls){
+        // Get the Ansible command.
+        return [
+            "ansible-playbook",cls.playbook, "-i", cls.hosts,
+            "--tags", cls.tags, "--user", cls.user,
+            "-e", "ansible_ssh_pass=" + cls.password
+        ]
+    }
+
+    function run_command(cls, command){
+        // Run the Ansible command.
+        subprocess.run(command)
+        return subprocess.CompletedProcess.output_data
+    }

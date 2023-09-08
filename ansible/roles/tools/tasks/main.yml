@@ -1,0 +1,47 @@
+- name: List of tools to be always installed before running other roles
+  tags: always
+  block:
+  - name: Install tools on Debian
+    apt:
+      name: "{{ item }}"
+      state: latest
+    with_items:
+      - apt-transport-https
+      - ca-certificates
+      - curl
+      - gnupg
+      - software-properties-common
+      - wget
+    when: ansible_os_family == "Debian"
+  - name: Install tools on RedHat
+    yum:
+      name: "{{ item }}"
+      state: latest
+    with_items:
+      - curl
+      - wget
+    when: ansible_os_family == "RedHat"
+  - name: Install tools on MacOS
+    homebrew:
+      name: "{{ item }}"
+      state: latest
+    with_items:
+      - curl
+      - wget
+    when: ansible_os_family == "Darwin"
+  - name: Install tools on Alpine
+    apk:
+      name: "{{ item }}"
+      state: latest
+    with_items:
+      - curl
+      - wget
+    when: ansible_os_family == "Alpine"
+  - name: Install tools on Windows
+    win_chocolatey:
+      name: "{{ item }}"
+      state: latest
+    with_items:
+      - curl
+      - wget
+    when: ansible_os_family == "Windows"
