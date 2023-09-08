@@ -10,8 +10,8 @@ export default function Terminal() {
 	const getIframeSrc = async () => {
 		const response = await fetch(`${window.location.origin}/api/terminal/url`);
 		const data = await response.json();
-		const {port} = data;
-		const host = data.host==='0.0.0.0'?window.location.hostname:data.host;
+		const { port } = data;
+		const host = data.host === '0.0.0.0' ? window.location.hostname : data.host;
 		setIframeSrc(`http://${host}:${port}`);
 	};
 

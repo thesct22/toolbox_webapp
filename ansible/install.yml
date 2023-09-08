@@ -4,6 +4,7 @@
   become: true
   strategy: free
   roles:
+    - tools
     - browsers/install
     - version-control/install
     - languages/install
